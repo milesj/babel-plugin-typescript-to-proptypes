@@ -1,0 +1,58 @@
+{
+  "name": "babel-plugin-typescript-to-proptypes",
+  "version": "0.0.0",
+  "description": "Generate React PropTypes from TypeScript prop interfaces. ",
+  "repository": "https://github.com/milesj/babel-plugin-typescript-to-proptypes",
+  "license": "MIT",
+  "main": "./lib/index.js",
+  "keywords": [
+    "babel-plugin",
+    "typescript",
+    "prop-types"
+  ],
+  "scripts": {
+    "build": "beemo typescript --node",
+    "clean": "rimraf ./{lib,esm}/",
+    "coverage": "yarn run jest --coverage",
+    "eslint": "beemo eslint",
+    "jest": "beemo jest",
+    "package": "yarn run clean && yarn install && yarn test && yarn run build",
+    "prettier": "beemo prettier",
+    "release": "np --yolo --no-yarn",
+    "type": "beemo typescript --noEmit",
+    "prerelease": "yarn run package",
+    "pretest": "yarn run type",
+    "test": "yarn run jest",
+    "posttest": "yarn run eslint"
+  },
+  "dependencies": {
+    "@babel/helper-plugin-utils": "7.0.0-beta.51",
+    "@babel/plugin-syntax-typescript": "7.0.0-beta.51"
+  },
+  "peerDependencies": {
+    "@babel/core": ">=7.0.0-beta.50 <7.0.0-rc.0",
+    "typescript": "*"
+  },
+  "devDependencies": {
+    "@babel/core": "7.0.0-beta.51",
+    "@babel/helper-plugin-test-runner": "7.0.0-beta.51",
+    "@milesj/build-tool-config": "^0.102.2",
+    "typescript": "^2.9.2"
+  },
+  "beemo": {
+    "module": "@milesj/build-tool-config",
+    "drivers": [
+      "babel",
+      "eslint",
+      "jest",
+      "prettier",
+      "typescript"
+    ],
+    "babel": {
+      "sourceType": "module",
+      "ignore": [
+        "fixtures/**/*.js"
+      ]
+    }
+  }
+}
