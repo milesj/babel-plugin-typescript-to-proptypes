@@ -1,0 +1,34 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`plugin works 1`] = `
+"\\"use strict\\";
+
+Object.defineProperty(exports, \\"__esModule\\", {
+  value: true
+});
+exports.default = void 0;
+
+var _propTypes = _interopRequireDefault(require(\\"prop-types\\"));
+
+var _react = _interopRequireDefault(require(\\"react\\"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+interface FooProps {
+  opt?: string;
+  req: number;
+}
+
+class Foo extends _react.default.Component<FooProps> {
+  render() {
+    return null;
+  }
+
+  static propTypes = {
+    opt: _propTypes.default.string,
+    req: _propTypes.default.number.isRequired
+  };
+}
+
+exports.default = Foo;"
+`;

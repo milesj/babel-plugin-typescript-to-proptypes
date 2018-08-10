@@ -7,6 +7,6 @@ export interface FooProps {
 
 export default class Foo extends React.Component<FooProps> {
   render() {
-    return <div />;
+    return null;
   }
 }

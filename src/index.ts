@@ -8,7 +8,6 @@ import { Component, Path, TypePropertyMap } from './types';
 export default declare((api: any) => {
   api.assertVersion(7);
 
-  let reactImportPath: Path<t.ImportDeclaration> | null = null;
   let reactImportedName: string = 'React';
   let hasPropTypesImport: boolean = false;
   let components: Component<any>[] = [];
@@ -17,33 +16,47 @@ export default declare((api: any) => {
   return {
     inherits: syntaxTypeScript,
 
+    pre() {
+      console.log('PRE');
+    },
+
     post() {
-      // Add `import PropTypes from 'prop-types'` if it does not exist
-      if (reactImportPath && !hasPropTypesImport) {
-        reactImportPath.insertAfter(
-          t.importDeclaration(
-            [t.importDefaultSpecifier(t.identifier('PropTypes'))],
-            t.stringLiteral('prop-types'),
-          ),
-        );
-      }
-
-      // Add `propTypes` to each component
-      components.forEach(component => {
-        switch (component.type) {
-          case 'class':
-            addToClass(component, types, reactImportedName);
-            break;
-
-          case 'function':
-          case 'var':
-            addToFunctionOrVar(component, types, reactImportedName);
-            break;
-        }
-      });
+      console.log('POST');
     },
 
     visitor: {
+      Program: {
+        exit(path: Path<t.Program>) {
+          if (components.length === 0) {
+            return;
+          }
+
+          // Add `import PropTypes from 'prop-types'` if it does not exist
+          if (!hasPropTypesImport) {
+            path.node.body.unshift(
+              t.importDeclaration(
+                [t.importDefaultSpecifier(t.identifier('PropTypes'))],
+                t.stringLiteral('prop-types'),
+              ),
+            );
+          }
+
+          // Add `propTypes` to each component
+          components.forEach(component => {
+            switch (component.type) {
+              case 'class':
+                addToClass(component, types, reactImportedName);
+                break;
+
+              case 'function':
+              case 'var':
+                addToFunctionOrVar(component, types, reactImportedName);
+                break;
+            }
+          });
+        },
+      },
+
       ImportDeclaration(path: Path<t.ImportDeclaration>) {
         const { node } = path;
 
@@ -53,10 +66,8 @@ export default declare((api: any) => {
 
         if (
           node.source.value === 'react' &&
-          node.specifiers.length > 0 &&
-          node.specifiers[0].type === 'ImportDefaultSpecifier'
+          t.isImportDefaultSpecifier(node.specifiers[0], { type: 'ImportDefaultSpecifier' })
         ) {
-          reactImportPath = path;
           reactImportedName = node.specifiers[0].local.name;
         }
       },
@@ -69,10 +80,11 @@ export default declare((api: any) => {
           return;
         }
 
-        const valid = t.isMemberExpression(node.superClass, {
-          object: { name: reactImportedName },
-          property: { name: 'Component|PureComponent' },
-        });
+        const valid =
+          t.isMemberExpression(node.superClass) &&
+          t.isIdentifier(node.superClass.object, { name: reactImportedName }) &&
+          (t.isIdentifier(node.superClass.property, { name: 'Component' }) ||
+            t.isIdentifier(node.superClass.property, { name: 'PureComponent' }));
 
         if (valid) {
           components.push({

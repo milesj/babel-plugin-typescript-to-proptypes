@@ -8,6 +8,7 @@ logs/
 .npm
 .vscode
 .yarnclean
+.vscode
 
 # Directories
 _book/
