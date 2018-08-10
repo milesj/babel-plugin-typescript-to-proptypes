@@ -1,16 +1,9 @@
 import { declare } from '@babel/helper-plugin-utils';
 import syntaxTypeScript from '@babel/plugin-syntax-typescript';
-import { types as t, traverse } from '@babel/core';
-import convertToPropTypes from './convertToPropTypes';
-import extractGenericTypeNames from './extractGenericTypeNames';
-
-type Path<N> = traverse.NodePath<N>;
-
-type Component = {
-  node: t.ClassDeclaration | t.FunctionDeclaration | t.VariableDeclaration;
-  name: string;
-  type: 'class' | 'function' | 'var';
-};
+import { types as t } from '@babel/core';
+import addToClass from './addToClass';
+import addToFunctionOrVar from './addToFunctionOrVar';
+import { Component, Path, TypePropertyMap } from './types';
 
 export default declare((api: any) => {
   api.assertVersion(7);
@@ -18,8 +11,8 @@ export default declare((api: any) => {
   let reactImportPath: Path<t.ImportDeclaration> | null = null;
   let reactImportedName: string = 'React';
   let hasPropTypesImport: boolean = false;
-  let components: Component[] = [];
-  const types: { [key: string]: t.TSPropertySignature[] } = {};
+  let components: Component<any>[] = [];
+  const types: TypePropertyMap = {};
 
   return {
     inherits: syntaxTypeScript,
@@ -38,51 +31,14 @@ export default declare((api: any) => {
       // Add `propTypes` to each component
       components.forEach(component => {
         switch (component.type) {
-          case 'class': {
-            const node = component.node as t.ClassDeclaration;
-
-            if (!node.superTypeParameters) {
-              return;
-            }
-
-            // @ts-ignore
-            const typeNames = extractGenericTypeNames(node.superTypeParameters);
-            const propTypesList = convertToPropTypes(types, typeNames, reactImportedName);
-            let hasPropTypeProperty = false;
-
-            node.body.body.forEach(property => {
-              const valid = t.isClassProperty(property, {
-                static: true,
-                key: { name: 'propTypes' },
-                value: { type: 'ObjectExpression' },
-              });
-
-              if (valid) {
-                hasPropTypeProperty = true;
-
-                // Add to the beginning of the array so custom prop types aren't overwritten
-                (property.value as t.ObjectExpression).properties = [
-                  ...propTypesList,
-                  ...(property.value as t.ObjectExpression).properties,
-                ];
-              }
-            });
-
-            // Add a new static class property
-            if (!hasPropTypeProperty) {
-              const propertyObjectExpr = t.classProperty(
-                t.identifier('propTypes'),
-                t.objectExpression(propTypesList),
-              );
-
-              // @ts-ignore
-              propertyObjectExpr.static = true;
-
-              node.body.body.push(propertyObjectExpr);
-            }
-
+          case 'class':
+            addToClass(component, types, reactImportedName);
             break;
-          }
+
+          case 'function':
+          case 'var':
+            addToFunctionOrVar(component, types, reactImportedName);
+            break;
         }
       });
     },
@@ -106,7 +62,9 @@ export default declare((api: any) => {
       },
 
       // `class Foo extends React.Component<Props> {}`
-      ClassDeclaration({ node }: Path<t.ClassDeclaration>) {
+      ClassDeclaration(path: Path<t.ClassDeclaration>) {
+        const { node } = path;
+
         if (!node.superTypeParameters) {
           return;
         }
@@ -118,7 +76,7 @@ export default declare((api: any) => {
 
         if (valid) {
           components.push({
-            node,
+            path,
             name: node.id.name,
             type: 'class',
           });
@@ -126,10 +84,12 @@ export default declare((api: any) => {
       },
 
       // `function Foo() {}`
-      FunctionDeclaration({ node }: Path<t.FunctionDeclaration>) {
+      FunctionDeclaration(path: Path<t.FunctionDeclaration>) {
+        const { node } = path;
+
         if (node.id.name.match(/^[A-Z]/)) {
           components.push({
-            node,
+            path,
             name: node.id.name,
             type: 'function',
           });
@@ -137,7 +97,9 @@ export default declare((api: any) => {
       },
 
       // `const Foo: React.SFC<Props> = () => {};`
-      VariableDeclaration({ node }: Path<t.VariableDeclaration>) {
+      VariableDeclaration(path: Path<t.VariableDeclaration>) {
+        const { node } = path;
+
         if (node.declarations.length === 0) {
           return;
         }
@@ -159,7 +121,7 @@ export default declare((api: any) => {
 
         if (valid) {
           components.push({
-            node,
+            path,
             name: id.name,
             type: 'var',
           });
