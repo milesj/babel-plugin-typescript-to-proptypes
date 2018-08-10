@@ -1,43 +1,45 @@
 {
   "name": "babel-plugin-typescript-to-proptypes",
   "version": "0.0.0",
-  "description": "Generate React PropTypes from TypeScript prop interfaces. ",
+  "description": "Generate React PropTypes from TypeScript prop interfaces.",
   "repository": "https://github.com/milesj/babel-plugin-typescript-to-proptypes",
   "license": "MIT",
   "main": "./lib/index.js",
   "keywords": [
     "babel-plugin",
     "typescript",
+    "interfaces",
     "prop-types"
   ],
   "scripts": {
     "build": "beemo typescript --node",
-    "clean": "rimraf ./{lib,esm}/",
     "coverage": "yarn run jest --coverage",
     "eslint": "beemo eslint",
     "jest": "beemo jest",
-    "package": "yarn run clean && yarn install && yarn test && yarn run build",
     "prettier": "beemo prettier",
     "release": "np --yolo --no-yarn",
     "type": "beemo typescript --noEmit",
-    "prerelease": "yarn run package",
+    "prerelease": "yarn test && yarn run build",
     "pretest": "yarn run type",
     "test": "yarn run jest",
     "posttest": "yarn run eslint"
   },
   "dependencies": {
-    "@babel/helper-plugin-utils": "7.0.0-beta.51",
-    "@babel/plugin-syntax-typescript": "7.0.0-beta.51"
+    "@babel/helper-plugin-utils": "7.0.0-rc.1",
+    "@babel/plugin-syntax-typescript": "7.0.0-rc.1"
   },
   "peerDependencies": {
-    "@babel/core": ">=7.0.0-beta.50 <7.0.0-rc.0",
-    "typescript": "*"
+    "@babel/core": "^7.0.0-0",
+    "typescript": "^3.0.0"
   },
   "devDependencies": {
-    "@babel/core": "7.0.0-beta.51",
-    "@babel/helper-plugin-test-runner": "7.0.0-beta.51",
-    "@milesj/build-tool-config": "^0.102.2",
-    "typescript": "^2.9.2"
+    "@babel/core": "7.0.0-rc.1",
+    "@babel/helper-plugin-test-runner": "7.0.0-rc.1",
+    "@babel/preset-env": "^7.0.0-rc.1",
+    "@babel/preset-react": "^7.0.0-rc.1",
+    "@milesj/build-tool-config": "^0.116.2",
+    "babel-core": "7.0.0-bridge.0",
+    "typescript": "^3.0.1"
   },
   "beemo": {
     "module": "@milesj/build-tool-config",
@@ -52,6 +54,21 @@
       "sourceType": "module",
       "ignore": [
         "fixtures/**/*.js"
+      ]
+    },
+    "jest": {
+      "testPathIgnorePatterns": [
+        "/node_modules/",
+        "/tests/fixtures/"
+      ],
+      "testEnvironment": "node",
+      "transformIgnorePatterns": [
+        "/node_modules/",
+        "/tests/fixtures/"
+      ],
+      "modulePathIgnorePatterns": [
+        "/node_modules/",
+        "/tests/fixtures/"
       ]
     }
   }
