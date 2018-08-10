@@ -6,12 +6,13 @@ import plugin from '../src';
 describe('plugin', () => {
   it('works', () => {
     const { code } = transform(
-      fs.readFileSync(path.join(__dirname, './fixtures/class/generic-interface.js')),
+      fs.readFileSync(path.join(__dirname, './fixtures/class/generic-interface.ts')),
       {
+        filename: 'generic-interface.ts',
         presets: [
           ['@babel/preset-env', { targets: { node: '8.9' } }],
           '@babel/preset-react',
-          // '@babel/preset-typescript',
+          '@babel/preset-typescript',
         ],
         plugins: [plugin],
       },

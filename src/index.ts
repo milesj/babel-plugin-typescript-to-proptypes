@@ -16,17 +16,11 @@ export default declare((api: any) => {
   return {
     inherits: syntaxTypeScript,
 
-    pre() {
-      console.log('PRE');
-    },
-
-    post() {
-      console.log('POST');
-    },
-
     visitor: {
       Program: {
         exit(path: Path<t.Program>) {
+          console.log('EXIT', components);
+
           if (components.length === 0) {
             return;
           }
@@ -142,6 +136,8 @@ export default declare((api: any) => {
 
       // `interface FooProps {}`
       TSInterfaceDeclaration({ node }: Path<t.TSInterfaceDeclaration>) {
+        console.log(node);
+
         types[node.id.name] = node.body.body.filter(prop =>
           t.isTSPropertySignature(prop),
         ) as t.TSPropertySignature[];
