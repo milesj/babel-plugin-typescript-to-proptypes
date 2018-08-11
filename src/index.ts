@@ -48,17 +48,24 @@ export default declare((api: any) => {
             // `class Foo extends React.Component<Props> {}`
             ClassDeclaration(path: Path<t.ClassDeclaration>) {
               const { node } = path;
-              const valid =
-                t.isMemberExpression(node.superClass) &&
-                node.superTypeParameters &&
+              // prettier-ignore
+              const valid = node.superTypeParameters && (
                 // React.Component, React.PureComponent
-                ((t.isIdentifier(node.superClass.object, { name: reactImportedName }) &&
-                  (t.isIdentifier(node.superClass.property, { name: 'Component' }) ||
-                    t.isIdentifier(node.superClass.property, { name: 'PureComponent' }))) ||
-                  // Component, PureComponent
-                  (reactImportedName &&
-                    (t.isIdentifier(node.superClass, { name: 'Component' }) ||
-                      t.isIdentifier(node.superClass, { name: 'PureComponent' }))));
+                (
+                  t.isMemberExpression(node.superClass) &&
+                  t.isIdentifier(node.superClass.object, { name: reactImportedName }) && (
+                    t.isIdentifier(node.superClass.property, { name: 'Component' }) ||
+                    t.isIdentifier(node.superClass.property, { name: 'PureComponent' })
+                  )
+                ) ||
+                // Component, PureComponent
+                (
+                  reactImportedName && (
+                    t.isIdentifier(node.superClass, { name: 'Component' }) ||
+                    t.isIdentifier(node.superClass, { name: 'PureComponent' })
+                  )
+                )
+              );
 
               if (valid) {
                 addToClass(node, types, { reactImportedName, propTypesImportedName });

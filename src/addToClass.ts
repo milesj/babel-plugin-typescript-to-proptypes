@@ -17,6 +17,10 @@ export default function addToClass(
   const propTypesList = convertToPropTypes(types, typeNames, options);
   let hasPropTypesStaticProperty = false;
 
+  if (propTypesList.length === 0) {
+    return;
+  }
+
   node.body.body.forEach(property => {
     const valid =
       t.isClassProperty(property, { static: true }) &&
@@ -26,8 +30,22 @@ export default function addToClass(
     if (valid) {
       hasPropTypesStaticProperty = true;
 
-      // Add to the beginning of the array so custom prop types aren't overwritten
-      (property.value as t.ObjectExpression).properties.unshift(...propTypesList);
+      const { properties } = property.value as t.ObjectExpression;
+      const existingProps: { [key: string]: boolean } = {};
+
+      // Extract existing props so that we don't duplicate
+      properties.forEach(objectProperty => {
+        if (t.isObjectProperty(objectProperty) && t.isIdentifier(objectProperty.key)) {
+          existingProps[objectProperty.key.name] = true;
+        }
+      });
+
+      // Add to the beginning of the array so existing/custom prop types aren't overwritten
+      propTypesList.forEach(propType => {
+        if (t.isIdentifier(propType.key) && !existingProps[propType.key.name]) {
+          properties.unshift(propType);
+        }
+      });
     }
   });
 

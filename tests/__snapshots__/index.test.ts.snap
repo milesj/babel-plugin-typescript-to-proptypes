@@ -1,18 +1,129 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`plugin transforms: generic-interface.ts 1`] = `
+exports[`plugin transforms: custom-react-import-name.ts 1`] = `
 "import PropTypes from 'prop-types';
-import React from 'react';
-export interface FooProps {
-  opt?: string;
-  req: number;
+import R from 'react';
+interface Props {
+  name: string;
 }
-export default class Foo extends React.Component<FooProps> {
+export default class ClassCustomReactImportName extends R.Component<Props> {
   static propTypes = {
-    opt: PropTypes.string,
-    req: PropTypes.number.isRequired
+    name: PropTypes.string.isRequired
   };
 
+  render() {
+    return null;
+  }
+
+}"
+`;
+
+exports[`plugin transforms: custom-react-import-name-pure.ts 1`] = `
+"import PropTypes from 'prop-types';
+import R from 'react';
+interface Props {
+  name: string;
+}
+export default class ClassCustomReactImportNamePure extends R.PureComponent<Props> {
+  static propTypes = {
+    name: PropTypes.string.isRequired
+  };
+
+  render() {
+    return null;
+  }
+
+}"
+`;
+
+exports[`plugin transforms: merge-with-existing-proptypes.ts 1`] = `
+"import React from 'react';
+import PropTypes from 'prop-types';
+interface Props {
+  name: string;
+}
+export default class ClassMergeWithExistingPropTypes extends React.Component<Props> {
+  static propTypes = {
+    name: PropTypes.string.isRequired,
+    custom: PropTypes.number.isRequired
+  };
+
+  render() {
+    return null;
+  }
+
+}"
+`;
+
+exports[`plugin transforms: merge-with-no-override.ts 1`] = `
+"import React from 'react';
+import PropTypes from 'prop-types';
+interface Props {
+  name: string;
+}
+const CustomShape = PropTypes.string;
+export default class ClassMergeWithNoOverride extends React.Component<Props> {
+  static propTypes = {
+    name: CustomShape.isRequired
+  };
+
+  render() {
+    return null;
+  }
+
+}"
+`;
+
+exports[`plugin transforms: missing-type.ts 1`] = `
+"import PropTypes from 'prop-types';
+import React from 'react';
+export default class ClassMissingType extends React.Component<Props> {
+  render() {
+    return null;
+  }
+
+}"
+`;
+
+exports[`plugin transforms: named-react-imports.ts 1`] = `
+"import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+interface Props {
+  name: string;
+}
+export default class ClassNamedReactImports extends Component<Props> {
+  static propTypes = {
+    name: PropTypes.string.isRequired
+  };
+
+  render() {
+    return null;
+  }
+
+}"
+`;
+
+exports[`plugin transforms: named-react-imports-pure.ts 1`] = `
+"import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
+interface Props {
+  name: string;
+}
+export default class ClassNamedReactImportsPure extends PureComponent<Props> {
+  static propTypes = {
+    name: PropTypes.string.isRequired
+  };
+
+  render() {
+    return null;
+  }
+
+}"
+`;
+
+exports[`plugin transforms: no-generics.ts 1`] = `
+"import React from 'react';
+export default class ClassNoGenerics extends React.Component {
   render() {
     return null;
   }
@@ -27,6 +138,36 @@ export interface Props {
   name: string;
 }
 export default class NoPropTypesImport extends React.Component<Props> {
+  static propTypes = {
+    name: PropTypes.string.isRequired
+  };
+
+  render() {
+    return null;
+  }
+
+}"
+`;
+
+exports[`plugin transforms: no-type-propeties.ts 1`] = `
+"import PropTypes from 'prop-types';
+import React from 'react';
+interface Props {}
+export default class ClassNoTypeProperties extends React.Component<Props> {
+  render() {
+    return null;
+  }
+
+}"
+`;
+
+exports[`plugin transforms: standard.ts 1`] = `
+"import PropTypes from 'prop-types';
+import React from 'react';
+interface Props {
+  name: string;
+}
+export default class ClassStandard extends React.Component<Props> {
   static propTypes = {
     name: PropTypes.string.isRequired
   };
