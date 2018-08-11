@@ -1,5 +1,23 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`plugin transforms: custom-prop-types-import-name.ts 1`] = `
+"import React from 'react';
+import PT from 'prop-types';
+export interface Props {
+  name: string;
+}
+export default class WithCustomPropTypesImportName extends React.Component<Props> {
+  static propTypes = {
+    name: PT.string.isRequired
+  };
+
+  render() {
+    return null;
+  }
+
+}"
+`;
+
 exports[`plugin transforms: custom-react-import-name.ts 1`] = `
 "import PropTypes from 'prop-types';
 import R from 'react';
@@ -7,6 +25,24 @@ interface Props {
   name: string;
 }
 export default class ClassCustomReactImportName extends R.Component<Props> {
+  static propTypes = {
+    name: PropTypes.string.isRequired
+  };
+
+  render() {
+    return null;
+  }
+
+}"
+`;
+
+exports[`plugin transforms: custom-react-import-name.ts 2`] = `
+"import PropTypes from 'prop-types';
+import R from 'react';
+export interface Props {
+  name: string;
+}
+export default class WithCustomReactImportName extends R.Component<Props> {
   static propTypes = {
     name: PropTypes.string.isRequired
   };
@@ -137,6 +173,28 @@ export default class ClassMissingType extends React.Component<Props> {
 }"
 `;
 
+exports[`plugin transforms: multiple-generics.ts 1`] = `
+"import PropTypes from 'prop-types';
+import React from 'react';
+export interface AProps {
+  a: number;
+}
+export interface BProps {
+  b: boolean;
+}
+export default class MultipleGenerics extends React.Component<AProps & BProps> {
+  static propTypes = {
+    a: PropTypes.number.isRequired,
+    b: PropTypes.bool.isRequired
+  };
+
+  render() {
+    return null;
+  }
+
+}"
+`;
+
 exports[`plugin transforms: named-react-imports.ts 1`] = `
 "import PropTypes from 'prop-types';
 import React, { Component } from 'react';
@@ -206,6 +264,24 @@ exports[`plugin transforms: no-type-propeties.ts 1`] = `
 import React from 'react';
 interface Props {}
 export default class ClassNoTypeProperties extends React.Component<Props> {
+  render() {
+    return null;
+  }
+
+}"
+`;
+
+exports[`plugin transforms: prop-types-import.ts 1`] = `
+"import React from 'react';
+import PropTypes from 'prop-types';
+export interface Props {
+  name: string;
+}
+export default class WithPropTypesImport extends React.Component<Props> {
+  static propTypes = {
+    name: PropTypes.string.isRequired
+  };
+
   render() {
     return null;
   }
@@ -442,60 +518,6 @@ export default class TypeReact extends React.Component<Props> {
     event: PropTypes.object.isRequired,
     eventAlias: PropTypes.object,
     ref: PropTypes.oneOfType([PropTypes.string, PropTypes.func, PropTypes.object]).isRequired
-  };
-
-  render() {
-    return null;
-  }
-
-}"
-`;
-
-exports[`plugin transforms: with-custom-prop-types-import-name.ts 1`] = `
-"import React from 'react';
-import PT from 'prop-types';
-export interface Props {
-  name: string;
-}
-export default class WithCustomPropTypesImportName extends React.Component<Props> {
-  static propTypes = {
-    name: PT.string.isRequired
-  };
-
-  render() {
-    return null;
-  }
-
-}"
-`;
-
-exports[`plugin transforms: with-custom-react-import-name.ts 1`] = `
-"import PropTypes from 'prop-types';
-import R from 'react';
-export interface Props {
-  name: string;
-}
-export default class WithCustomReactImportName extends R.Component<Props> {
-  static propTypes = {
-    name: PropTypes.string.isRequired
-  };
-
-  render() {
-    return null;
-  }
-
-}"
-`;
-
-exports[`plugin transforms: with-prop-types-import.ts 1`] = `
-"import React from 'react';
-import PropTypes from 'prop-types';
-export interface Props {
-  name: string;
-}
-export default class WithPropTypesImport extends React.Component<Props> {
-  static propTypes = {
-    name: PropTypes.string.isRequired
   };
 
   render() {
