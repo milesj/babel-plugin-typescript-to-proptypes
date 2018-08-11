@@ -19,6 +19,10 @@ describe('plugin', () => {
   glob
     .sync('./fixtures/**/*.ts', { absolute: true, cwd: __dirname, dot: false, strict: true })
     .forEach(filePath => {
+      // if (!filePath.endsWith('extended-interfaces.ts')) {
+      //   return;
+      // }
+
       it(`transforms: ${path.basename(filePath)}`, () => {
         expect(transform(filePath)).toMatchSnapshot();
       });

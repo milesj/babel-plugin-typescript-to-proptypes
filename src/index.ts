@@ -3,6 +3,7 @@ import syntaxTypeScript from '@babel/plugin-syntax-typescript';
 import { types as t } from '@babel/core';
 import addToClass from './addToClass';
 import addToFunctionOrVar from './addToFunctionOrVar';
+import extractTypeProperties from './extractTypeProperties';
 import { Path, TypePropertyMap } from './types';
 
 export default declare((api: any) => {
@@ -111,16 +112,12 @@ export default declare((api: any) => {
             // `interface FooProps {}`
             // @ts-ignore
             TSInterfaceDeclaration({ node }: Path<t.TSInterfaceDeclaration>) {
-              types[node.id.name] = node.body.body.filter(prop =>
-                t.isTSPropertySignature(prop),
-              ) as t.TSPropertySignature[];
+              types[node.id.name] = extractTypeProperties(node, types);
             },
 
             // `type FooProps = {}`
             TSTypeAliasDeclaration({ node }: Path<t.TSTypeAliasDeclaration>) {
-              types[node.id.name] = (node.typeAnnotation as t.TSTypeLiteral).members.filter(prop =>
-                t.isTSPropertySignature(prop),
-              ) as t.TSPropertySignature[];
+              types[node.id.name] = extractTypeProperties(node, types);
             },
           });
         },

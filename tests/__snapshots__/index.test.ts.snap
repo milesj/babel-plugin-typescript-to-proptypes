@@ -36,6 +36,58 @@ export default class ClassCustomReactImportNamePure extends R.PureComponent<Prop
 }"
 `;
 
+exports[`plugin transforms: extended-interfaces.ts 1`] = `
+"import PropTypes from 'prop-types';
+import React from 'react';
+export interface AProps {
+  a: number;
+}
+export interface BProps {
+  b: boolean;
+}
+export interface Props extends AProps, BProps {
+  name: string;
+}
+export default class ExtendedInterfaces extends React.Component<Props> {
+  static propTypes = {
+    a: PropTypes.number.isRequired,
+    b: PropTypes.bool.isRequired,
+    name: PropTypes.string.isRequired
+  };
+
+  render() {
+    return null;
+  }
+
+}"
+`;
+
+exports[`plugin transforms: extended-type-aliases.ts 1`] = `
+"import PropTypes from 'prop-types';
+import React from 'react';
+export type AProps = {
+  a: number;
+};
+export type BProps = {
+  b: boolean;
+};
+export type Props = AProps & BProps & {
+  name: string;
+};
+export default class ExtendedTypeAliases extends React.Component<Props> {
+  static propTypes = {
+    a: PropTypes.number.isRequired,
+    b: PropTypes.bool.isRequired,
+    name: PropTypes.string.isRequired
+  };
+
+  render() {
+    return null;
+  }
+
+}"
+`;
+
 exports[`plugin transforms: merge-with-existing-proptypes.ts 1`] = `
 "import React from 'react';
 import PropTypes from 'prop-types';
