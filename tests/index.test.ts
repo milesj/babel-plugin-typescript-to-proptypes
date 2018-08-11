@@ -1,23 +1,26 @@
-import fs from 'fs';
 import path from 'path';
-import { transform } from '@babel/core';
+import glob from 'glob';
+import { transformFileSync } from '@babel/core';
 import plugin from '../src';
 
-describe('plugin', () => {
-  it('works', () => {
-    const { code } = transform(
-      fs.readFileSync(path.join(__dirname, './fixtures/class/generic-interface.ts')),
-      {
-        filename: 'generic-interface.ts',
-        presets: [
-          ['@babel/preset-env', { targets: { node: '8.9' } }],
-          '@babel/preset-react',
-          '@babel/preset-typescript',
-        ],
-        plugins: [plugin],
-      },
-    );
+function transform(filePath: string): string {
+  return transformFileSync(filePath, {
+    filename: filePath,
+    plugins: [plugin],
+    generatorOpts: {
+      comments: false,
+      quotes: 'single',
+      jsescOption: { quotes: 'single' },
+    },
+  }).code;
+}
 
-    expect(code).toMatchSnapshot();
-  });
+describe('plugin', () => {
+  glob
+    .sync('./fixtures/**/*.ts', { absolute: true, cwd: __dirname, dot: false, strict: true })
+    .forEach(filePath => {
+      it(`transforms: ${path.basename(filePath)}`, () => {
+        expect(transform(filePath)).toMatchSnapshot();
+      });
+    });
 });

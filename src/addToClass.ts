@@ -1,30 +1,27 @@
 import { types as t } from '@babel/core';
 import extractGenericTypeNames from './extractGenericTypeNames';
 import convertToPropTypes from './convertToPropTypes';
-import { Component, TypePropertyMap } from './types';
+import { TypePropertyMap, ConvertOptions } from './types';
 
 export default function addToClass(
-  component: Component<t.ClassDeclaration>,
+  node: t.ClassDeclaration,
   types: TypePropertyMap,
-  reactImportedName: string,
+  options: ConvertOptions,
 ) {
-  const { node } = component.path;
-
   if (!node.superTypeParameters) {
     return;
   }
 
   // @ts-ignore
   const typeNames = extractGenericTypeNames(node.superTypeParameters);
-  const propTypesList = convertToPropTypes(types, typeNames, reactImportedName);
+  const propTypesList = convertToPropTypes(types, typeNames, options);
   let hasPropTypesStaticProperty = false;
 
   node.body.body.forEach(property => {
-    const valid = t.isClassProperty(property, {
-      static: true,
-      key: { name: 'propTypes' },
-      value: { type: 'ObjectExpression' },
-    });
+    const valid =
+      t.isClassProperty(property, { static: true }) &&
+      t.isIdentifier(property.key, { name: 'propTypes' }) &&
+      t.isObjectExpression(property.value);
 
     if (valid) {
       hasPropTypesStaticProperty = true;
@@ -44,6 +41,6 @@ export default function addToClass(
     // @ts-ignore
     staticProperty.static = true;
 
-    node.body.body.push(staticProperty);
+    node.body.body.unshift(staticProperty);
   }
 }

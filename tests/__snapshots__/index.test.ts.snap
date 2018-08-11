@@ -1,25 +1,313 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`plugin works 1`] = `
-"\\"use strict\\";
+exports[`plugin transforms: generic-interface.ts 1`] = `
+"import PropTypes from 'prop-types';
+import React from 'react';
+export interface FooProps {
+  opt?: string;
+  req: number;
+}
+export default class Foo extends React.Component<FooProps> {
+  static propTypes = {
+    opt: PropTypes.string,
+    req: PropTypes.number.isRequired
+  };
 
-Object.defineProperty(exports, \\"__esModule\\", {
-  value: true
-});
-exports.default = void 0;
-
-var _propTypes = _interopRequireDefault(require(\\"prop-types\\"));
-
-var _react = _interopRequireDefault(require(\\"react\\"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-class Foo extends _react.default.Component {
   render() {
     return null;
   }
 
-}
+}"
+`;
 
-exports.default = Foo;"
+exports[`plugin transforms: no-prop-types-import.ts 1`] = `
+"import PropTypes from 'prop-types';
+import React from 'react';
+export interface Props {
+  name: string;
+}
+export default class NoPropTypesImport extends React.Component<Props> {
+  static propTypes = {
+    name: PropTypes.string.isRequired
+  };
+
+  render() {
+    return null;
+  }
+
+}"
+`;
+
+exports[`plugin transforms: type-array.ts 1`] = `
+"import PropTypes from 'prop-types';
+import React from 'react';
+export interface Props {
+  any: any[];
+  null: null[];
+  numbers?: number[];
+  strings: string[];
+  booleans: boolean[];
+  objects?: object[];
+  union: (string | number)[];
+  intersection: (string & number)[];
+  nested?: string[][];
+}
+export default class TypeArray extends React.Component<Props> {
+  static propTypes = {
+    any: PropTypes.array.isRequired,
+    null: PropTypes.array.isRequired,
+    numbers: PropTypes.arrayOf(PropTypes.number),
+    strings: PropTypes.arrayOf(PropTypes.string).isRequired,
+    booleans: PropTypes.arrayOf(PropTypes.bool).isRequired,
+    objects: PropTypes.arrayOf(PropTypes.object),
+    union: PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.string, PropTypes.number])).isRequired,
+    intersection: PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.string, PropTypes.number])).isRequired,
+    nested: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string))
+  };
+
+  render() {
+    return null;
+  }
+
+}"
+`;
+
+exports[`plugin transforms: type-enum.ts 1`] = `
+"import PropTypes from 'prop-types';
+import React from 'react';
+export interface Props {
+  union: number | string | object;
+  intersection?: number & string & object;
+  combined: number & (string | object);
+  strUnion?: 'foo' | 'bar' | 'baz';
+  strIntersection: 'foo' & 'bar' & 'baz';
+  numUnion: 1 | 2 | 3;
+  numIntersection?: 1 & 2 & 3;
+}
+export default class TypeEnum extends React.Component<Props> {
+  static propTypes = {
+    union: PropTypes.oneOfType([PropTypes.number, PropTypes.string, PropTypes.object]).isRequired,
+    intersection: PropTypes.oneOfType([PropTypes.number, PropTypes.string, PropTypes.object]),
+    combined: PropTypes.oneOfType([PropTypes.number, PropTypes.oneOfType([PropTypes.string, PropTypes.object])]).isRequired,
+    strUnion: PropTypes.oneOf(['foo', 'bar', 'baz']),
+    strIntersection: PropTypes.oneOf(['foo', 'bar', 'baz']).isRequired,
+    numUnion: PropTypes.oneOf([1, 2, 3]).isRequired,
+    numIntersection: PropTypes.oneOf([1, 2, 3])
+  };
+
+  render() {
+    return null;
+  }
+
+}"
+`;
+
+exports[`plugin transforms: type-function.ts 1`] = `
+"import PropTypes from 'prop-types';
+import React from 'react';
+export interface Props {
+  void: () => void;
+  objReturn: () => {};
+  typeReturn?: () => string;
+  args: (a: number, b: boolean) => null;
+  parens?: (() => void);
+  handler: React.ChangeEventHandler;
+}
+export default class TypeFunction extends React.Component<Props> {
+  static propTypes = {
+    void: PropTypes.func.isRequired,
+    objReturn: PropTypes.func.isRequired,
+    typeReturn: PropTypes.func,
+    args: PropTypes.func.isRequired,
+    parens: PropTypes.func,
+    handler: PropTypes.func.isRequired
+  };
+
+  render() {
+    return null;
+  }
+
+}"
+`;
+
+exports[`plugin transforms: type-object.ts 1`] = `
+"import PropTypes from 'prop-types';
+import React from 'react';
+export interface Props {
+  object: object;
+  empty: {};
+  index?: {
+    [key: string]: number;
+  };
+  shape: {
+    id: number;
+    name?: string;
+    status: 'active' | 'pending';
+  };
+}
+export default class TypeObject extends React.Component<Props> {
+  static propTypes = {
+    object: PropTypes.object.isRequired,
+    empty: PropTypes.object.isRequired,
+    index: PropTypes.objectOf(PropTypes.number),
+    shape: PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      name: PropTypes.string,
+      status: PropTypes.oneOf(['active', 'pending']).isRequired
+    }).isRequired
+  };
+
+  render() {
+    return null;
+  }
+
+}"
+`;
+
+exports[`plugin transforms: type-primitives.ts 1`] = `
+"import PropTypes from 'prop-types';
+import React from 'react';
+export interface Props {
+  number: number;
+  string: string;
+  boolean: boolean;
+  symbol: symbol;
+  numberOpt?: number;
+  stringOpt?: string;
+  booleanOpt?: boolean;
+  symbolOpt?: symbol;
+}
+export default class TypePrimitives extends React.Component<Props> {
+  static propTypes = {
+    number: PropTypes.number.isRequired,
+    string: PropTypes.string.isRequired,
+    boolean: PropTypes.bool.isRequired,
+    symbol: PropTypes.symbol.isRequired,
+    numberOpt: PropTypes.number,
+    stringOpt: PropTypes.string,
+    booleanOpt: PropTypes.bool,
+    symbolOpt: PropTypes.symbol
+  };
+
+  render() {
+    return null;
+  }
+
+}"
+`;
+
+exports[`plugin transforms: type-react.ts 1`] = `
+"import PropTypes from 'prop-types';
+import React, { ReactText, ReactNode, ReactType, ComponentType, ComponentClass, StatelessComponent, MouseEvent, ReactElement, SFCElement } from 'react';
+export interface Props {
+  text: React.ReactText;
+  textAlias?: ReactText;
+  node: React.ReactNode;
+  nodeAlias?: ReactNode;
+  type: React.ReactType;
+  typeAlias?: ReactType;
+  comp: React.ComponentType;
+  compGeneric?: React.ComponentType<any>;
+  compAlias: ComponentType;
+  cls: React.ComponentClass;
+  clsGeneric?: React.ComponentClass<any>;
+  clsAlias: ComponentClass;
+  sfc: React.StatelessComponent;
+  sfcGeneric?: React.StatelessComponent<any>;
+  sfcAlias: StatelessComponent;
+  el: React.ReactElement<any>;
+  elAlias?: ReactElement<any>;
+  sfcEl: React.SFCElement<any>;
+  sfcElAlias?: SFCElement<any>;
+  jsx: JSX.Element;
+  event: React.MouseEvent;
+  eventAlias?: MouseEvent;
+  ref: React.Ref<any>;
+}
+export default class TypeReact extends React.Component<Props> {
+  static propTypes = {
+    text: PropTypes.node.isRequired,
+    textAlias: PropTypes.node,
+    node: PropTypes.node.isRequired,
+    nodeAlias: PropTypes.node,
+    type: PropTypes.node.isRequired,
+    typeAlias: PropTypes.node,
+    comp: PropTypes.node.isRequired,
+    compGeneric: PropTypes.node,
+    compAlias: PropTypes.node.isRequired,
+    cls: PropTypes.node.isRequired,
+    clsGeneric: PropTypes.node,
+    clsAlias: PropTypes.node.isRequired,
+    sfc: PropTypes.node.isRequired,
+    sfcGeneric: PropTypes.node,
+    sfcAlias: PropTypes.node.isRequired,
+    el: PropTypes.element.isRequired,
+    elAlias: PropTypes.element,
+    sfcEl: PropTypes.element.isRequired,
+    sfcElAlias: PropTypes.element,
+    jsx: PropTypes.element.isRequired,
+    event: PropTypes.object.isRequired,
+    eventAlias: PropTypes.object,
+    ref: PropTypes.oneOfType([PropTypes.string, PropTypes.func, PropTypes.object]).isRequired
+  };
+
+  render() {
+    return null;
+  }
+
+}"
+`;
+
+exports[`plugin transforms: with-custom-prop-types-import-name.ts 1`] = `
+"import React from 'react';
+import PT from 'prop-types';
+export interface Props {
+  name: string;
+}
+export default class WithCustomPropTypesImportName extends React.Component<Props> {
+  static propTypes = {
+    name: PT.string.isRequired
+  };
+
+  render() {
+    return null;
+  }
+
+}"
+`;
+
+exports[`plugin transforms: with-custom-react-import-name.ts 1`] = `
+"import PropTypes from 'prop-types';
+import R from 'react';
+export interface Props {
+  name: string;
+}
+export default class WithCustomReactImportName extends R.Component<Props> {
+  static propTypes = {
+    name: PropTypes.string.isRequired
+  };
+
+  render() {
+    return null;
+  }
+
+}"
+`;
+
+exports[`plugin transforms: with-prop-types-import.ts 1`] = `
+"import React from 'react';
+import PropTypes from 'prop-types';
+export interface Props {
+  name: string;
+}
+export default class WithPropTypesImport extends React.Component<Props> {
+  static propTypes = {
+    name: PropTypes.string.isRequired
+  };
+
+  render() {
+    return null;
+  }
+
+}"
 `;

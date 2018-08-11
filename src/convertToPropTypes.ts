@@ -1,6 +1,6 @@
 import { types as t } from '@babel/core';
 import getTypeName from './getTypeName';
-import { PropType } from './types';
+import { PropType, ConvertOptions } from './types';
 
 function isReactTypeMatch(name: string, type: string, reactImportedName: string): boolean {
   return name === type || name === `React.${type}` || name === `${reactImportedName}.${type}`;
@@ -13,15 +13,18 @@ function wrapIsRequired(propType: PropType, optional?: boolean | null): PropType
 function createCall(
   value: t.Identifier,
   args: (PropType | t.ArrayExpression | t.ObjectExpression)[],
+  propTypesImportedName: string,
 ): t.CallExpression {
-  return t.callExpression(createMember(value), args);
+  return t.callExpression(createMember(value, propTypesImportedName), args);
 }
 
-function createMember(value: t.Identifier): t.MemberExpression {
-  return t.memberExpression(t.identifier('PropTypes'), value);
+function createMember(value: t.Identifier, propTypesImportedName: string): t.MemberExpression {
+  return t.memberExpression(t.identifier(propTypesImportedName), value);
 }
 
-function convert(type: any, reactImportedName: string): PropType | null {
+function convert(type: any, options: ConvertOptions): PropType | null {
+  const { reactImportedName, propTypesImportedName } = options;
+
   // Remove wrapping parens
   if (t.isTSParenthesizedType(type)) {
     type = type.typeAnnotation;
@@ -29,23 +32,27 @@ function convert(type: any, reactImportedName: string): PropType | null {
 
   // string -> PropTypes.string
   if (t.isTSStringKeyword(type)) {
-    return createMember(t.identifier('string'));
+    return createMember(t.identifier('string'), propTypesImportedName);
 
     // number -> PropTypes.number
   } else if (t.isTSNumberKeyword(type)) {
-    return createMember(t.identifier('number'));
+    return createMember(t.identifier('number'), propTypesImportedName);
 
     // boolean -> PropTypes.bool
   } else if (t.isTSBooleanKeyword(type)) {
-    return createMember(t.identifier('bool'));
+    return createMember(t.identifier('bool'), propTypesImportedName);
 
     // symbol -> PropTypes.symbol
   } else if (t.isTSSymbolKeyword(type)) {
-    return createMember(t.identifier('symbol'));
+    return createMember(t.identifier('symbol'), propTypesImportedName);
+
+    // object -> PropTypes.object
+  } else if (t.isTSObjectKeyword(type)) {
+    return createMember(t.identifier('object'), propTypesImportedName);
 
     // (() => void) -> PropTypes.func
   } else if (t.isTSFunctionType(type)) {
-    return createMember(t.identifier('func'));
+    return createMember(t.identifier('func'), propTypesImportedName);
 
     // React.ReactNode -> PropTypes.node
     // React.ReactElement -> PropTypes.element
@@ -66,7 +73,7 @@ function convert(type: any, reactImportedName: string): PropType | null {
       isReactTypeMatch(name, 'ComponentClass', reactImportedName) ||
       isReactTypeMatch(name, 'StatelessComponent', reactImportedName)
     ) {
-      return createMember(t.identifier('node'));
+      return createMember(t.identifier('node'), propTypesImportedName);
 
       // element
     } else if (
@@ -74,34 +81,42 @@ function convert(type: any, reactImportedName: string): PropType | null {
       isReactTypeMatch(name, 'ReactElement', reactImportedName) ||
       isReactTypeMatch(name, 'SFCElement', reactImportedName)
     ) {
-      return createMember(t.identifier('element'));
+      return createMember(t.identifier('element'), propTypesImportedName);
 
       // oneOfType
     } else if (isReactTypeMatch(name, 'Ref', reactImportedName)) {
-      return createCall(t.identifier('oneOfType'), [
-        t.arrayExpression([
-          createMember(t.identifier('string')),
-          createMember(t.identifier('func')),
-          createMember(t.identifier('object')),
-        ]),
-      ]);
+      return createCall(
+        t.identifier('oneOfType'),
+        [
+          t.arrayExpression([
+            createMember(t.identifier('string'), propTypesImportedName),
+            createMember(t.identifier('func'), propTypesImportedName),
+            createMember(t.identifier('object'), propTypesImportedName),
+          ]),
+        ],
+        propTypesImportedName,
+      );
 
       // func
     } else if (name.endsWith('Handler')) {
-      return createMember(t.identifier('func'));
+      return createMember(t.identifier('func'), propTypesImportedName);
 
       // object
     } else if (name.endsWith('Event')) {
-      return createMember(t.identifier('object'));
+      return createMember(t.identifier('object'), propTypesImportedName);
+
+      // any (we need to support all these in case of unions)
+    } else {
+      return createMember(t.identifier('any'), propTypesImportedName);
     }
 
     // [] -> PropTypes.arrayOf(), PropTypes.array
   } else if (t.isTSArrayType(type)) {
-    const args = convertArray([type.elementType], reactImportedName);
+    const args = convertArray([type.elementType], options);
 
     return args.length > 0
-      ? createCall(t.identifier('arrayOf'), args)
-      : createMember(t.identifier('array'));
+      ? createCall(t.identifier('arrayOf'), args, propTypesImportedName)
+      : createMember(t.identifier('array'), propTypesImportedName);
 
     // {} -> PropTypes.object
     // { [key: string]: string } -> PropTypes.objectOf(PropTypes.string)
@@ -109,32 +124,36 @@ function convert(type: any, reactImportedName: string): PropType | null {
   } else if (t.isTSTypeLiteral(type)) {
     // object
     if (type.members.length === 0) {
-      return createMember(t.identifier('object'));
+      return createMember(t.identifier('object'), propTypesImportedName);
 
       // objectOf
     } else if (type.members.length === 1 && t.isTSIndexSignature(type.members[0])) {
       const index = type.members[0] as t.TSIndexSignature;
 
       if (index.typeAnnotation && index.typeAnnotation.typeAnnotation) {
-        const result = convert(index.typeAnnotation.typeAnnotation, reactImportedName);
+        const result = convert(index.typeAnnotation.typeAnnotation, options);
 
         if (result) {
-          return createCall(t.identifier('objectOf'), [result]);
+          return createCall(t.identifier('objectOf'), [result], propTypesImportedName);
         }
       }
 
       // shape
     } else {
-      return createCall(t.identifier('shape'), [
-        t.objectExpression(
-          convertListToProps(
-            type.members.filter(member =>
-              t.isTSPropertySignature(member),
-            ) as t.TSPropertySignature[],
-            reactImportedName,
+      return createCall(
+        t.identifier('shape'),
+        [
+          t.objectExpression(
+            convertListToProps(
+              type.members.filter(member =>
+                t.isTSPropertySignature(member),
+              ) as t.TSPropertySignature[],
+              options,
+            ),
           ),
-        ),
-      ]);
+        ],
+        propTypesImportedName,
+      );
     }
 
     // string | number -> PropTypes.oneOfType([PropTypes.string, PropTypes.number])
@@ -148,23 +167,23 @@ function convert(type: any, reactImportedName: string): PropType | null {
       args = type.types.map(param => (param as t.TSLiteralType).literal);
       label = t.identifier('oneOf');
     } else {
-      args = convertArray(type.types, reactImportedName);
+      args = convertArray(type.types, options);
       label = t.identifier('oneOfType');
     }
 
     if (label && args.length > 0) {
-      return createCall(label, [t.arrayExpression(args)]);
+      return createCall(label, [t.arrayExpression(args)], propTypesImportedName);
     }
   }
 
   return null;
 }
 
-function convertArray(types: any[], reactImportedName: string): PropType[] {
+function convertArray(types: any[], options: ConvertOptions): PropType[] {
   const propTypes: PropType[] = [];
 
   types.forEach(type => {
-    const prop = convert(type, reactImportedName);
+    const prop = convert(type, options);
 
     if (prop) {
       propTypes.push(prop);
@@ -176,7 +195,7 @@ function convertArray(types: any[], reactImportedName: string): PropType[] {
 
 function convertListToProps(
   properties: t.TSPropertySignature[],
-  reactImportedName: string,
+  options: ConvertOptions,
 ): t.ObjectProperty[] {
   const propTypes: t.ObjectProperty[] = [];
 
@@ -185,7 +204,7 @@ function convertListToProps(
       return;
     }
 
-    const propType = convert(property.typeAnnotation.typeAnnotation, reactImportedName);
+    const propType = convert(property.typeAnnotation.typeAnnotation, options);
 
     if (propType) {
       propTypes.push(t.objectProperty(property.key, wrapIsRequired(propType, property.optional)));
@@ -198,13 +217,13 @@ function convertListToProps(
 export default function convertToPropTypes(
   types: { [key: string]: t.TSPropertySignature[] },
   typeNames: string[],
-  reactImportedName: string,
+  options: ConvertOptions,
 ): t.ObjectProperty[] {
   const properties: t.ObjectProperty[] = [];
 
   typeNames.forEach(typeName => {
     if (types[typeName]) {
-      properties.push(...convertListToProps(types[typeName], reactImportedName));
+      properties.push(...convertListToProps(types[typeName], options));
     }
   });
 
