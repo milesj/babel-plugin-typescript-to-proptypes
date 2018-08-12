@@ -1,24 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`plugin transforms: custom-prop-types-import-name.ts 1`] = `
-"import React from 'react';
-import PT from 'prop-types';
-export interface Props {
-  name: string;
-}
-export default class WithCustomPropTypesImportName extends React.Component<Props> {
-  static propTypes = {
-    name: PT.string.isRequired
-  };
-
-  render() {
-    return null;
-  }
-
-}"
-`;
-
-exports[`plugin transforms: custom-react-import-name.ts 1`] = `
+exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/class/custom-react-import-name.ts 1`] = `
 "import PropTypes from 'prop-types';
 import R from 'react';
 interface Props {
@@ -36,39 +18,7 @@ export default class ClassCustomReactImportName extends R.Component<Props> {
 }"
 `;
 
-exports[`plugin transforms: custom-react-import-name.ts 2`] = `
-"import PropTypes from 'prop-types';
-import R from 'react';
-export interface Props {
-  name: string;
-}
-export default class WithCustomReactImportName extends R.Component<Props> {
-  static propTypes = {
-    name: PropTypes.string.isRequired
-  };
-
-  render() {
-    return null;
-  }
-
-}"
-`;
-
-exports[`plugin transforms: custom-react-import-name.ts 3`] = `
-"import PropTypes from 'prop-types';
-import R from 'react';
-interface Props {
-  name: string;
-}
-export default function FuncCustomReactImportName(props: Props) {
-  return null;
-}
-FuncCustomReactImportName.propTypes = {
-  name: PropTypes.string.isRequired
-};"
-`;
-
-exports[`plugin transforms: custom-react-import-name-pure.ts 1`] = `
+exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/class/custom-react-import-name-pure.ts 1`] = `
 "import PropTypes from 'prop-types';
 import R from 'react';
 interface Props {
@@ -86,35 +36,7 @@ export default class ClassCustomReactImportNamePure extends R.PureComponent<Prop
 }"
 `;
 
-exports[`plugin transforms: export-default.ts 1`] = `
-"import PropTypes from 'prop-types';
-import React from 'react';
-interface Props {
-  name: string;
-}
-export default function FuncStandard(props: Props) {
-  return null;
-}
-FuncStandard.propTypes = {
-  name: PropTypes.string.isRequired
-};"
-`;
-
-exports[`plugin transforms: export-named.ts 1`] = `
-"import PropTypes from 'prop-types';
-import React from 'react';
-interface Props {
-  name: string;
-}
-export function FuncStandard(props: Props) {
-  return null;
-}
-FuncStandard.propTypes = {
-  name: PropTypes.string.isRequired
-};"
-`;
-
-exports[`plugin transforms: extended-interfaces.ts 1`] = `
+exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/class/extended-interfaces.ts 1`] = `
 "import PropTypes from 'prop-types';
 import React from 'react';
 export interface AProps {
@@ -140,29 +62,7 @@ export default class ClassExtendedInterfaces extends React.Component<Props> {
 }"
 `;
 
-exports[`plugin transforms: extended-interfaces.ts 2`] = `
-"import PropTypes from 'prop-types';
-import React from 'react';
-export interface AProps {
-  a: number;
-}
-export interface BProps {
-  b: boolean;
-}
-export interface Props extends AProps, BProps {
-  name: string;
-}
-export default function FuncExtendedInterfaces(props: Props) {
-  return null;
-}
-FuncExtendedInterfaces.propTypes = {
-  a: PropTypes.number.isRequired,
-  b: PropTypes.bool.isRequired,
-  name: PropTypes.string.isRequired
-};"
-`;
-
-exports[`plugin transforms: extended-type-aliases.ts 1`] = `
+exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/class/extended-type-aliases.ts 1`] = `
 "import PropTypes from 'prop-types';
 import React from 'react';
 export type AProps = {
@@ -188,29 +88,7 @@ export default class ClassExtendedTypeAliases extends React.Component<Props> {
 }"
 `;
 
-exports[`plugin transforms: extended-type-aliases.ts 2`] = `
-"import PropTypes from 'prop-types';
-import React from 'react';
-export type AProps = {
-  a: number;
-};
-export type BProps = {
-  b: boolean;
-};
-export type Props = AProps & BProps & {
-  name: string;
-};
-export default function FuncExtendedTypeAliases(props: Props) {
-  return null;
-}
-FuncExtendedTypeAliases.propTypes = {
-  a: PropTypes.number.isRequired,
-  b: PropTypes.bool.isRequired,
-  name: PropTypes.string.isRequired
-};"
-`;
-
-exports[`plugin transforms: merge-with-existing-proptypes.ts 1`] = `
+exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/class/merge-with-existing-proptypes.ts 1`] = `
 "import React from 'react';
 import PropTypes from 'prop-types';
 interface Props {
@@ -229,22 +107,7 @@ export default class ClassMergeWithExistingPropTypes extends React.Component<Pro
 }"
 `;
 
-exports[`plugin transforms: merge-with-existing-proptypes.ts 2`] = `
-"import React from 'react';
-import PropTypes from 'prop-types';
-interface Props {
-  name: string;
-}
-export default function FuncMergeWithExistingPropTypes(props: Props) {
-  return null;
-}
-FuncMergeWithExistingPropTypes.propTypes = {
-  name: PropTypes.string.isRequired,
-  custom: PropTypes.number.isRequired
-};"
-`;
-
-exports[`plugin transforms: merge-with-no-override.ts 1`] = `
+exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/class/merge-with-no-override.ts 1`] = `
 "import React from 'react';
 import PropTypes from 'prop-types';
 interface Props {
@@ -263,22 +126,7 @@ export default class ClassMergeWithNoOverride extends React.Component<Props> {
 }"
 `;
 
-exports[`plugin transforms: merge-with-no-override.ts 2`] = `
-"import React from 'react';
-import PropTypes from 'prop-types';
-interface Props {
-  name: string;
-}
-const CustomShape = PropTypes.string;
-export default function FuncMergeWithNoOverride(props: Props) {
-  return null;
-}
-FuncMergeWithNoOverride.propTypes = {
-  name: CustomShape.isRequired
-};"
-`;
-
-exports[`plugin transforms: missing-type.ts 1`] = `
+exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/class/missing-type.ts 1`] = `
 "import PropTypes from 'prop-types';
 import React from 'react';
 export default class ClassMissingType extends React.Component<Props> {
@@ -289,33 +137,7 @@ export default class ClassMissingType extends React.Component<Props> {
 }"
 `;
 
-exports[`plugin transforms: missing-type.ts 2`] = `
-"import PropTypes from 'prop-types';
-import React from 'react';
-export default function FuncMissingType(props: Props) {
-  return null;
-}"
-`;
-
-exports[`plugin transforms: multiple-annotations.ts 1`] = `
-"import PropTypes from 'prop-types';
-import React from 'react';
-export interface AProps {
-  a: number;
-}
-export interface BProps {
-  b: boolean;
-}
-export default function FuncMultipleAnnotations(props: AProps & BProps) {
-  return null;
-}
-FuncMultipleAnnotations.propTypes = {
-  a: PropTypes.number.isRequired,
-  b: PropTypes.bool.isRequired
-};"
-`;
-
-exports[`plugin transforms: multiple-generics.ts 1`] = `
+exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/class/multiple-generics.ts 1`] = `
 "import PropTypes from 'prop-types';
 import React from 'react';
 export interface AProps {
@@ -337,7 +159,7 @@ export default class ClassMultipleGenerics extends React.Component<AProps & BPro
 }"
 `;
 
-exports[`plugin transforms: named-react-imports.ts 1`] = `
+exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/class/named-react-imports.ts 1`] = `
 "import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 interface Props {
@@ -355,7 +177,7 @@ export default class ClassNamedReactImports extends Component<Props> {
 }"
 `;
 
-exports[`plugin transforms: named-react-imports-pure.ts 1`] = `
+exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/class/named-react-imports-pure.ts 1`] = `
 "import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 interface Props {
@@ -373,30 +195,7 @@ export default class ClassNamedReactImportsPure extends PureComponent<Props> {
 }"
 `;
 
-exports[`plugin transforms: no-annotations.ts 1`] = `
-"import React from 'react';
-export default function FuncNoAnnotations(props) {
-  return null;
-}"
-`;
-
-exports[`plugin transforms: no-export.ts 1`] = `
-"import PropTypes from 'prop-types';
-import React from 'react';
-interface Props {
-  name: string;
-}
-
-function FuncStandard(props: Props) {
-  return null;
-}
-
-FuncStandard.propTypes = {
-  name: PropTypes.string.isRequired
-};"
-`;
-
-exports[`plugin transforms: no-generics.ts 1`] = `
+exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/class/no-generics.ts 1`] = `
 "import React from 'react';
 export default class ClassNoGenerics extends React.Component {
   render() {
@@ -406,32 +205,7 @@ export default class ClassNoGenerics extends React.Component {
 }"
 `;
 
-exports[`plugin transforms: no-prop-types-import.ts 1`] = `
-"import PropTypes from 'prop-types';
-import React from 'react';
-export interface Props {
-  name: string;
-}
-export default class NoPropTypesImport extends React.Component<Props> {
-  static propTypes = {
-    name: PropTypes.string.isRequired
-  };
-
-  render() {
-    return null;
-  }
-
-}"
-`;
-
-exports[`plugin transforms: no-react-import.ts 1`] = `
-"interface Props {}
-export default function FuncNoReactImport(props: Props) {
-  return null;
-}"
-`;
-
-exports[`plugin transforms: no-type-propeties.ts 1`] = `
+exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/class/no-type-propeties.ts 1`] = `
 "import PropTypes from 'prop-types';
 import React from 'react';
 interface Props {}
@@ -443,34 +217,7 @@ export default class ClassNoTypeProperties extends React.Component<Props> {
 }"
 `;
 
-exports[`plugin transforms: no-type-propeties.ts 2`] = `
-"import PropTypes from 'prop-types';
-import React from 'react';
-interface Props {}
-export default function FuncNoTypeProperties(props: Props) {
-  return null;
-}"
-`;
-
-exports[`plugin transforms: prop-types-import.ts 1`] = `
-"import React from 'react';
-import PropTypes from 'prop-types';
-export interface Props {
-  name: string;
-}
-export default class WithPropTypesImport extends React.Component<Props> {
-  static propTypes = {
-    name: PropTypes.string.isRequired
-  };
-
-  render() {
-    return null;
-  }
-
-}"
-`;
-
-exports[`plugin transforms: standard.ts 1`] = `
+exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/class/standard.ts 1`] = `
 "import PropTypes from 'prop-types';
 import React from 'react';
 interface Props {
@@ -488,7 +235,57 @@ export default class ClassStandard extends React.Component<Props> {
 }"
 `;
 
-exports[`plugin transforms: standard.ts 2`] = `
+exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/custom-prop-types-import-name.ts 1`] = `
+"import React from 'react';
+import PT from 'prop-types';
+export interface Props {
+  name: string;
+}
+export default class WithCustomPropTypesImportName extends React.Component<Props> {
+  static propTypes = {
+    name: PT.string.isRequired
+  };
+
+  render() {
+    return null;
+  }
+
+}"
+`;
+
+exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/custom-react-import-name.ts 1`] = `
+"import PropTypes from 'prop-types';
+import R from 'react';
+export interface Props {
+  name: string;
+}
+export default class WithCustomReactImportName extends R.Component<Props> {
+  static propTypes = {
+    name: PropTypes.string.isRequired
+  };
+
+  render() {
+    return null;
+  }
+
+}"
+`;
+
+exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/function/custom-react-import-name.ts 1`] = `
+"import PropTypes from 'prop-types';
+import R from 'react';
+interface Props {
+  name: string;
+}
+export default function FuncCustomReactImportName(props: Props) {
+  return null;
+}
+FuncCustomReactImportName.propTypes = {
+  name: PropTypes.string.isRequired
+};"
+`;
+
+exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/function/export-default.ts 1`] = `
 "import PropTypes from 'prop-types';
 import React from 'react';
 interface Props {
@@ -502,7 +299,210 @@ FuncStandard.propTypes = {
 };"
 `;
 
-exports[`plugin transforms: type-array.ts 1`] = `
+exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/function/export-named.ts 1`] = `
+"import PropTypes from 'prop-types';
+import React from 'react';
+interface Props {
+  name: string;
+}
+export function FuncStandard(props: Props) {
+  return null;
+}
+FuncStandard.propTypes = {
+  name: PropTypes.string.isRequired
+};"
+`;
+
+exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/function/extended-interfaces.ts 1`] = `
+"import PropTypes from 'prop-types';
+import React from 'react';
+export interface AProps {
+  a: number;
+}
+export interface BProps {
+  b: boolean;
+}
+export interface Props extends AProps, BProps {
+  name: string;
+}
+export default function FuncExtendedInterfaces(props: Props) {
+  return null;
+}
+FuncExtendedInterfaces.propTypes = {
+  a: PropTypes.number.isRequired,
+  b: PropTypes.bool.isRequired,
+  name: PropTypes.string.isRequired
+};"
+`;
+
+exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/function/extended-type-aliases.ts 1`] = `
+"import PropTypes from 'prop-types';
+import React from 'react';
+export type AProps = {
+  a: number;
+};
+export type BProps = {
+  b: boolean;
+};
+export type Props = AProps & BProps & {
+  name: string;
+};
+export default function FuncExtendedTypeAliases(props: Props) {
+  return null;
+}
+FuncExtendedTypeAliases.propTypes = {
+  a: PropTypes.number.isRequired,
+  b: PropTypes.bool.isRequired,
+  name: PropTypes.string.isRequired
+};"
+`;
+
+exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/function/merge-with-existing-proptypes.ts 1`] = `
+"import React from 'react';
+import PropTypes from 'prop-types';
+interface Props {
+  name: string;
+}
+export default function FuncMergeWithExistingPropTypes(props: Props) {
+  return null;
+}
+FuncMergeWithExistingPropTypes.propTypes = {
+  name: PropTypes.string.isRequired,
+  custom: PropTypes.number.isRequired
+};"
+`;
+
+exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/function/merge-with-no-override.ts 1`] = `
+"import React from 'react';
+import PropTypes from 'prop-types';
+interface Props {
+  name: string;
+}
+const CustomShape = PropTypes.string;
+export default function FuncMergeWithNoOverride(props: Props) {
+  return null;
+}
+FuncMergeWithNoOverride.propTypes = {
+  name: CustomShape.isRequired
+};"
+`;
+
+exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/function/missing-type.ts 1`] = `
+"import PropTypes from 'prop-types';
+import React from 'react';
+export default function FuncMissingType(props: Props) {
+  return null;
+}"
+`;
+
+exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/function/multiple-annotations.ts 1`] = `
+"import PropTypes from 'prop-types';
+import React from 'react';
+export interface AProps {
+  a: number;
+}
+export interface BProps {
+  b: boolean;
+}
+export default function FuncMultipleAnnotations(props: AProps & BProps) {
+  return null;
+}
+FuncMultipleAnnotations.propTypes = {
+  a: PropTypes.number.isRequired,
+  b: PropTypes.bool.isRequired
+};"
+`;
+
+exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/function/no-annotations.ts 1`] = `
+"import React from 'react';
+export default function FuncNoAnnotations(props) {
+  return null;
+}"
+`;
+
+exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/function/no-export.ts 1`] = `
+"import PropTypes from 'prop-types';
+import React from 'react';
+interface Props {
+  name: string;
+}
+
+function FuncStandard(props: Props) {
+  return null;
+}
+
+FuncStandard.propTypes = {
+  name: PropTypes.string.isRequired
+};"
+`;
+
+exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/function/no-react-import.ts 1`] = `
+"interface Props {}
+export default function FuncNoReactImport(props: Props) {
+  return null;
+}"
+`;
+
+exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/function/no-type-propeties.ts 1`] = `
+"import PropTypes from 'prop-types';
+import React from 'react';
+interface Props {}
+export default function FuncNoTypeProperties(props: Props) {
+  return null;
+}"
+`;
+
+exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/function/standard.ts 1`] = `
+"import PropTypes from 'prop-types';
+import React from 'react';
+interface Props {
+  name: string;
+}
+export default function FuncStandard(props: Props) {
+  return null;
+}
+FuncStandard.propTypes = {
+  name: PropTypes.string.isRequired
+};"
+`;
+
+exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/no-prop-types-import.ts 1`] = `
+"import PropTypes from 'prop-types';
+import React from 'react';
+export interface Props {
+  name: string;
+}
+export default class NoPropTypesImport extends React.Component<Props> {
+  static propTypes = {
+    name: PropTypes.string.isRequired
+  };
+
+  render() {
+    return null;
+  }
+
+}"
+`;
+
+exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/prop-types-import.ts 1`] = `
+"import React from 'react';
+import PropTypes from 'prop-types';
+export interface Props {
+  name: string;
+}
+export default class WithPropTypesImport extends React.Component<Props> {
+  static propTypes = {
+    name: PropTypes.string.isRequired
+  };
+
+  render() {
+    return null;
+  }
+
+}"
+`;
+
+exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/type-array.ts 1`] = `
 "import PropTypes from 'prop-types';
 import React from 'react';
 export interface Props {
@@ -536,7 +536,7 @@ export default class TypeArray extends React.Component<Props> {
 }"
 `;
 
-exports[`plugin transforms: type-enum.ts 1`] = `
+exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/type-enum.ts 1`] = `
 "import PropTypes from 'prop-types';
 import React from 'react';
 export interface Props {
@@ -566,7 +566,7 @@ export default class TypeEnum extends React.Component<Props> {
 }"
 `;
 
-exports[`plugin transforms: type-function.ts 1`] = `
+exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/type-function.ts 1`] = `
 "import PropTypes from 'prop-types';
 import React from 'react';
 export interface Props {
@@ -594,7 +594,7 @@ export default class TypeFunction extends React.Component<Props> {
 }"
 `;
 
-exports[`plugin transforms: type-object.ts 1`] = `
+exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/type-object.ts 1`] = `
 "import PropTypes from 'prop-types';
 import React from 'react';
 export interface Props {
@@ -628,7 +628,7 @@ export default class TypeObject extends React.Component<Props> {
 }"
 `;
 
-exports[`plugin transforms: type-primitives.ts 1`] = `
+exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/type-primitives.ts 1`] = `
 "import PropTypes from 'prop-types';
 import React from 'react';
 export interface Props {
@@ -660,7 +660,7 @@ export default class TypePrimitives extends React.Component<Props> {
 }"
 `;
 
-exports[`plugin transforms: type-react.ts 1`] = `
+exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/type-react.ts 1`] = `
 "import PropTypes from 'prop-types';
 import React, { ReactText, ReactNode, ReactType, ComponentType, ComponentClass, StatelessComponent, MouseEvent, ReactElement, SFCElement } from 'react';
 export interface Props {
