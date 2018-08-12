@@ -8,8 +8,6 @@ export interface BProps {
   b: boolean;
 }
 
-export default class MultipleGenerics extends React.Component<AProps & BProps> {
-  render() {
-    return null;
-  }
+export default function FuncMultipleAnnotations(props: AProps & BProps) {
+  return null;
 }

@@ -13,7 +13,7 @@ export type Props = AProps &
     name: string;
   };
 
-export default class ExtendedTypeAliases extends React.Component<Props> {
+export default class ClassExtendedTypeAliases extends React.Component<Props> {
   render() {
     return null;
   }

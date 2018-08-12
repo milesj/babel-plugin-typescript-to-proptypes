@@ -8,11 +8,7 @@ export interface BProps {
   b: boolean;
 }
 
-export interface Props extends AProps, BProps {
-  name: string;
-}
-
-export default class ExtendedInterfaces extends React.Component<Props> {
+export default class ClassMultipleGenerics extends React.Component<AProps & BProps> {
   render() {
     return null;
   }

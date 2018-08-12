@@ -86,6 +86,34 @@ export default class ClassCustomReactImportNamePure extends R.PureComponent<Prop
 }"
 `;
 
+exports[`plugin transforms: export-default.ts 1`] = `
+"import PropTypes from 'prop-types';
+import React from 'react';
+interface Props {
+  name: string;
+}
+export default function FuncStandard(props: Props) {
+  return null;
+}
+FuncStandard.propTypes = {
+  name: PropTypes.string.isRequired
+};"
+`;
+
+exports[`plugin transforms: export-named.ts 1`] = `
+"import PropTypes from 'prop-types';
+import React from 'react';
+interface Props {
+  name: string;
+}
+export function FuncStandard(props: Props) {
+  return null;
+}
+FuncStandard.propTypes = {
+  name: PropTypes.string.isRequired
+};"
+`;
+
 exports[`plugin transforms: extended-interfaces.ts 1`] = `
 "import PropTypes from 'prop-types';
 import React from 'react';
@@ -98,7 +126,7 @@ export interface BProps {
 export interface Props extends AProps, BProps {
   name: string;
 }
-export default class ExtendedInterfaces extends React.Component<Props> {
+export default class ClassExtendedInterfaces extends React.Component<Props> {
   static propTypes = {
     a: PropTypes.number.isRequired,
     b: PropTypes.bool.isRequired,
@@ -110,6 +138,28 @@ export default class ExtendedInterfaces extends React.Component<Props> {
   }
 
 }"
+`;
+
+exports[`plugin transforms: extended-interfaces.ts 2`] = `
+"import PropTypes from 'prop-types';
+import React from 'react';
+export interface AProps {
+  a: number;
+}
+export interface BProps {
+  b: boolean;
+}
+export interface Props extends AProps, BProps {
+  name: string;
+}
+export default function FuncExtendedInterfaces(props: Props) {
+  return null;
+}
+FuncExtendedInterfaces.propTypes = {
+  a: PropTypes.number.isRequired,
+  b: PropTypes.bool.isRequired,
+  name: PropTypes.string.isRequired
+};"
 `;
 
 exports[`plugin transforms: extended-type-aliases.ts 1`] = `
@@ -124,7 +174,7 @@ export type BProps = {
 export type Props = AProps & BProps & {
   name: string;
 };
-export default class ExtendedTypeAliases extends React.Component<Props> {
+export default class ClassExtendedTypeAliases extends React.Component<Props> {
   static propTypes = {
     a: PropTypes.number.isRequired,
     b: PropTypes.bool.isRequired,
@@ -136,6 +186,28 @@ export default class ExtendedTypeAliases extends React.Component<Props> {
   }
 
 }"
+`;
+
+exports[`plugin transforms: extended-type-aliases.ts 2`] = `
+"import PropTypes from 'prop-types';
+import React from 'react';
+export type AProps = {
+  a: number;
+};
+export type BProps = {
+  b: boolean;
+};
+export type Props = AProps & BProps & {
+  name: string;
+};
+export default function FuncExtendedTypeAliases(props: Props) {
+  return null;
+}
+FuncExtendedTypeAliases.propTypes = {
+  a: PropTypes.number.isRequired,
+  b: PropTypes.bool.isRequired,
+  name: PropTypes.string.isRequired
+};"
 `;
 
 exports[`plugin transforms: merge-with-existing-proptypes.ts 1`] = `
@@ -225,6 +297,24 @@ export default function FuncMissingType(props: Props) {
 }"
 `;
 
+exports[`plugin transforms: multiple-annotations.ts 1`] = `
+"import PropTypes from 'prop-types';
+import React from 'react';
+export interface AProps {
+  a: number;
+}
+export interface BProps {
+  b: boolean;
+}
+export default function FuncMultipleAnnotations(props: AProps & BProps) {
+  return null;
+}
+FuncMultipleAnnotations.propTypes = {
+  a: PropTypes.number.isRequired,
+  b: PropTypes.bool.isRequired
+};"
+`;
+
 exports[`plugin transforms: multiple-generics.ts 1`] = `
 "import PropTypes from 'prop-types';
 import React from 'react';
@@ -234,7 +324,7 @@ export interface AProps {
 export interface BProps {
   b: boolean;
 }
-export default class MultipleGenerics extends React.Component<AProps & BProps> {
+export default class ClassMultipleGenerics extends React.Component<AProps & BProps> {
   static propTypes = {
     a: PropTypes.number.isRequired,
     b: PropTypes.bool.isRequired
@@ -288,6 +378,22 @@ exports[`plugin transforms: no-annotations.ts 1`] = `
 export default function FuncNoAnnotations(props) {
   return null;
 }"
+`;
+
+exports[`plugin transforms: no-export.ts 1`] = `
+"import PropTypes from 'prop-types';
+import React from 'react';
+interface Props {
+  name: string;
+}
+
+function FuncStandard(props: Props) {
+  return null;
+}
+
+FuncStandard.propTypes = {
+  name: PropTypes.string.isRequired
+};"
 `;
 
 exports[`plugin transforms: no-generics.ts 1`] = `
