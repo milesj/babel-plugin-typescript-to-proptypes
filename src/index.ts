@@ -31,7 +31,7 @@ export default declare((api: any) => {
                 hasPropTypesImport = true;
 
                 node.specifiers.forEach(spec => {
-                  if (t.isImportDefaultSpecifier(spec)) {
+                  if (t.isImportDefaultSpecifier(spec) || t.isImportNamespaceSpecifier(spec)) {
                     propTypesImportedName = spec.local.name;
                   }
                 });
@@ -39,7 +39,7 @@ export default declare((api: any) => {
 
               if (node.source.value === 'react') {
                 node.specifiers.forEach(spec => {
-                  if (t.isImportDefaultSpecifier(spec)) {
+                  if (t.isImportDefaultSpecifier(spec) || t.isImportNamespaceSpecifier(spec)) {
                     reactImportedName = spec.local.name;
                   }
                 });

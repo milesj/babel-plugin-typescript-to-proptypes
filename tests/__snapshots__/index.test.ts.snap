@@ -241,7 +241,25 @@ import PT from 'prop-types';
 export interface Props {
   name: string;
 }
-export default class WithCustomPropTypesImportName extends React.Component<Props> {
+export default class CustomPropTypesImportName extends React.Component<Props> {
+  static propTypes = {
+    name: PT.string.isRequired
+  };
+
+  render() {
+    return null;
+  }
+
+}"
+`;
+
+exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/custom-prop-types-import-namespace.ts 1`] = `
+"import * as React from 'react';
+import * as PT from 'prop-types';
+export interface Props {
+  name: string;
+}
+export default class CustomPropTypesImportNamespace extends React.Component<Props> {
   static propTypes = {
     name: PT.string.isRequired
   };
@@ -259,7 +277,25 @@ import R from 'react';
 export interface Props {
   name: string;
 }
-export default class WithCustomReactImportName extends R.Component<Props> {
+export default class CustomReactImportName extends R.Component<Props> {
+  static propTypes = {
+    name: PropTypes.string.isRequired
+  };
+
+  render() {
+    return null;
+  }
+
+}"
+`;
+
+exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/custom-react-import-namespace.ts 1`] = `
+"import PropTypes from 'prop-types';
+import * as R from 'react';
+export interface Props {
+  name: string;
+}
+export default class CustomReactImportNamespace extends R.Component<Props> {
   static propTypes = {
     name: PropTypes.string.isRequired
   };
@@ -491,6 +527,24 @@ export interface Props {
   name: string;
 }
 export default class WithPropTypesImport extends React.Component<Props> {
+  static propTypes = {
+    name: PropTypes.string.isRequired
+  };
+
+  render() {
+    return null;
+  }
+
+}"
+`;
+
+exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/react-import-namespace.ts 1`] = `
+"import PropTypes from 'prop-types';
+import * as React from 'react';
+export interface Props {
+  name: string;
+}
+export default class ReactImportNamespace extends React.Component<Props> {
   static propTypes = {
     name: PropTypes.string.isRequired
   };
