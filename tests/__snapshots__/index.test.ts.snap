@@ -740,6 +740,57 @@ export default class TypeArray extends React.Component<Props> {
 }"
 `;
 
+exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/type-complex.ts 1`] = `
+"import PropTypes from 'prop-types';
+import React from 'react';
+export interface Props {
+  a: number;
+  b?: string | boolean;
+  c: 1 | 'foo' | false;
+  d?: {
+    name?: string;
+  }[];
+  e: {
+    e1: string[][];
+    e2: () => void;
+    e3?: {
+      e1a: object;
+    } | null;
+  };
+  f?: any;
+  g: ((e: Event) => null) | (() => {});
+  h?: {
+    [key: string]: number;
+  } & {
+    [key: string]: string[];
+  };
+}
+export default class TypeComplex extends React.Component<Props> {
+  static propTypes = {
+    a: PropTypes.number.isRequired,
+    b: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
+    c: PropTypes.oneOf([1, 'foo', false]).isRequired,
+    d: PropTypes.arrayOf(PropTypes.shape({
+      name: PropTypes.string
+    })),
+    e: PropTypes.shape({
+      e1: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)).isRequired,
+      e2: PropTypes.func.isRequired,
+      e3: PropTypes.oneOfType([PropTypes.shape({
+        e1a: PropTypes.object.isRequired
+      })])
+    }).isRequired,
+    g: PropTypes.oneOfType([PropTypes.func, PropTypes.func]).isRequired,
+    h: PropTypes.oneOfType([PropTypes.objectOf(PropTypes.number), PropTypes.objectOf(PropTypes.arrayOf(PropTypes.string))])
+  };
+
+  render() {
+    return null;
+  }
+
+}"
+`;
+
 exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/type-enum.ts 1`] = `
 "import PropTypes from 'prop-types';
 import React from 'react';
