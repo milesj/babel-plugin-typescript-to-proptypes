@@ -47,7 +47,8 @@ export default declare((api: any) => {
             },
 
             // `class Foo extends React.Component<Props> {}`
-            ClassDeclaration(path: Path<t.ClassDeclaration>) {
+            // @ts-ignore
+            'ClassDeclaration|ClassExpression'(path: Path<t.ClassDeclaration>) {
               const { node } = path;
               // prettier-ignore
               const valid = node.superTypeParameters && (

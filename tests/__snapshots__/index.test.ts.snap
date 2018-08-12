@@ -502,6 +502,156 @@ FuncStandard.propTypes = {
 };"
 `;
 
+exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/hoc-component.ts 1`] = `
+"import PropTypes from 'prop-types';
+import React from 'react';
+interface Props {
+  name: string;
+}
+export function withClass() {
+  return Component => {
+    class HOCComponent extends React.Component<Props> {
+      static propTypes = {
+        name: PropTypes.string.isRequired
+      };
+
+      render() {
+        return null;
+      }
+
+    }
+
+    return HOCComponent;
+  };
+}
+export function withFunction() {
+  return Component => {
+    function HOCFunc(props: Props) {
+      return null;
+    }
+
+    HOCFunc.propTypes = {
+      name: PropTypes.string.isRequired
+    };
+    return HOCFunc;
+  };
+}
+export function withVar() {
+  return Component => {
+    const HOCVar: React.SFC<Props> = () => null;
+
+    HOCVar.propTypes = {
+      name: PropTypes.string.isRequired
+    };
+    return HOCVar;
+  };
+}"
+`;
+
+exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/hoc-component-returns.ts 1`] = `
+"import PropTypes from 'prop-types';
+import React from 'react';
+interface Props {
+  name: string;
+}
+export function withClass() {
+  return Component => class HOCComponent extends React.Component<Props> {
+    static propTypes = {
+      name: PropTypes.string.isRequired
+    };
+
+    render() {
+      return null;
+    }
+
+  };
+}
+export function withFunction() {
+  return Component => function HOCFunc(props: Props) {
+    return null;
+  };
+}
+export function withVar() {
+  return Component => {
+    const HOCVar: React.SFC<Props> = () => null;
+
+    HOCVar.propTypes = {
+      name: PropTypes.string.isRequired
+    };
+    return HOCVar;
+  };
+}"
+`;
+
+exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/multiple-components.ts 1`] = `
+"import PropTypes from 'prop-types';
+import React from 'react';
+interface AProps {
+  foo: string;
+}
+
+class MultipleComponentsClass extends React.Component<AProps> {
+  static propTypes = {
+    foo: PropTypes.string.isRequired
+  };
+
+  render() {
+    return null;
+  }
+
+}
+
+interface BProps {
+  bar: number;
+}
+
+function MultipleComponentsFunc(props: BProps) {
+  return null;
+}
+
+MultipleComponentsFunc.propTypes = {
+  bar: PropTypes.number.isRequired
+};
+interface CProps {
+  bar: number;
+}
+
+const MultipleComponentsVar: React.SFC<CProps> = () => null;
+
+MultipleComponentsVar.propTypes = {
+  bar: PropTypes.number.isRequired
+};"
+`;
+
+exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/nested-components.ts 1`] = `
+"import PropTypes from 'prop-types';
+import React from 'react';
+interface AProps {
+  foo: string;
+}
+interface BProps {
+  bar: number;
+}
+
+class NestedComponentsClass extends React.Component<AProps> {
+  static propTypes = {
+    foo: PropTypes.string.isRequired
+  };
+
+  render() {
+    function NestedComponentsFunc(props: BProps) {
+      return null;
+    }
+
+    NestedComponentsFunc.propTypes = {
+      bar: PropTypes.number.isRequired
+    };
+    return null;
+  }
+
+}"
+`;
+
 exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/no-prop-types-import.ts 1`] = `
 "import PropTypes from 'prop-types';
 import React from 'react';
