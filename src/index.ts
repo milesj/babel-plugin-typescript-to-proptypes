@@ -112,16 +112,35 @@ export default declare((api: any) => {
                 return;
               }
 
-              const valid = t.isGenericTypeAnnotation(
-                // @ts-ignore
-                id.typeAnnotation.typeAnnotation.typeName,
-                {
-                  left: { name: reactImportedName },
-                  right: { name: 'StatelessComponent|SFC' },
-                },
+              const type = id.typeAnnotation.typeAnnotation;
+              // prettier-ignore
+              const valid = t.isTSTypeReference(type) &&
+                type.typeParameters &&
+                type.typeParameters.params.length > 0 && (
+                // React.SFC, React.StatelessComponent
+                (
+                  t.isTSQualifiedName(type.typeName) &&
+                  t.isIdentifier(type.typeName.left, { name: reactImportedName }) &&
+                  (
+                    t.isIdentifier(type.typeName.right, { name: 'SFC' }) ||
+                    t.isIdentifier(type.typeName.right, { name: 'StatelessComponent' })
+                  )
+                ) ||
+                // SFC, StatelessComponent
+                (
+                  reactImportedName && (
+                    t.isIdentifier(type.typeName, { name: 'SFC' }) ||
+                    t.isIdentifier(type.typeName, { name: 'StatelessComponent' })
+                  )
+                )
               );
 
               if (valid) {
+                addToFunctionOrVar(path, id.name, types, {
+                  reactImportedName,
+                  propTypesImportedName,
+                });
+                componentCount += 1;
               }
             },
 

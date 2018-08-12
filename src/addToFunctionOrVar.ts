@@ -10,14 +10,27 @@ export default function addToFunctionOrVar(
   types: TypePropertyMap,
   options: ConvertOptions,
 ) {
-  // prettier-ignore
-  const typeNames = t.isFunctionDeclaration(path.node)
-    // @ts-ignore
-    ? extractGenericTypeNames(path.node.params[0].typeAnnotation.typeAnnotation)
-    : [];
+  const typeNames = [];
+
+  if (t.isFunctionDeclaration(path.node)) {
+    typeNames.push(
+      ...extractGenericTypeNames(
+        // @ts-ignore
+        path.node.params[0].typeAnnotation.typeAnnotation,
+      ),
+    );
+  } else if (t.isVariableDeclaration(path.node)) {
+    typeNames.push(
+      ...extractGenericTypeNames(
+        // @ts-ignore
+        path.node.declarations[0].id.typeAnnotation.typeAnnotation.typeParameters.params[0],
+      ),
+    );
+  }
+
   const propTypesList = convertToPropTypes(types, typeNames, options);
 
-  if (propTypesList.length === 0) {
+  if (typeNames.length === 0 || propTypesList.length === 0) {
     return;
   }
 
@@ -46,7 +59,7 @@ export default function addToFunctionOrVar(
 
     // Create a new `propTypes` expression
   } else {
-    path.insertAfter(
+    rootPath.insertAfter(
       t.expressionStatement(
         t.assignmentExpression(
           '=',

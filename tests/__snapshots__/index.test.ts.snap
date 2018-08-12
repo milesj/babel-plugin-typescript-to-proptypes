@@ -291,10 +291,10 @@ import React from 'react';
 interface Props {
   name: string;
 }
-export default function FuncStandard(props: Props) {
+export default function FuncExportDefault(props: Props) {
   return null;
 }
-FuncStandard.propTypes = {
+FuncExportDefault.propTypes = {
   name: PropTypes.string.isRequired
 };"
 `;
@@ -305,10 +305,10 @@ import React from 'react';
 interface Props {
   name: string;
 }
-export function FuncStandard(props: Props) {
+export function FuncExportNamed(props: Props) {
   return null;
 }
-FuncStandard.propTypes = {
+FuncExportNamed.propTypes = {
   name: PropTypes.string.isRequired
 };"
 `;
@@ -427,11 +427,11 @@ interface Props {
   name: string;
 }
 
-function FuncStandard(props: Props) {
+function FuncNoExport(props: Props) {
   return null;
 }
 
-FuncStandard.propTypes = {
+FuncNoExport.propTypes = {
   name: PropTypes.string.isRequired
 };"
 `;
@@ -720,4 +720,203 @@ export default class TypeReact extends React.Component<Props> {
   }
 
 }"
+`;
+
+exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/var/custom-react-import-name.ts 1`] = `
+"import R from 'react';
+interface Props {
+  name: string;
+}
+
+const VarCustomReactImportName: React.SFC<Props> = () => null;
+
+export default VarCustomReactImportName;"
+`;
+
+exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/var/export-default.ts 1`] = `
+"import PropTypes from 'prop-types';
+import React from 'react';
+interface Props {
+  name: string;
+}
+
+const VarExportDefault: React.SFC<Props> = () => null;
+
+VarExportDefault.propTypes = {
+  name: PropTypes.string.isRequired
+};
+export default VarExportDefault;"
+`;
+
+exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/var/export-named.ts 1`] = `
+"import PropTypes from 'prop-types';
+import React from 'react';
+interface Props {
+  name: string;
+}
+export const VarExportNamed: React.SFC<Props> = () => null;
+VarExportNamed.propTypes = {
+  name: PropTypes.string.isRequired
+};"
+`;
+
+exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/var/extended-interfaces.ts 1`] = `
+"import PropTypes from 'prop-types';
+import React from 'react';
+export interface AProps {
+  a: number;
+}
+export interface BProps {
+  b: boolean;
+}
+export interface Props extends AProps, BProps {
+  name: string;
+}
+
+const VarExtendedInterfaces: React.SFC<Props> = () => null;
+
+VarExtendedInterfaces.propTypes = {
+  a: PropTypes.number.isRequired,
+  b: PropTypes.bool.isRequired,
+  name: PropTypes.string.isRequired
+};
+export default VarExtendedInterfaces;"
+`;
+
+exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/var/extended-type-aliases.ts 1`] = `
+"import PropTypes from 'prop-types';
+import React from 'react';
+export type AProps = {
+  a: number;
+};
+export type BProps = {
+  b: boolean;
+};
+export type Props = AProps & BProps & {
+  name: string;
+};
+
+const VarExtendedTypeAliases: React.SFC<Props> = () => null;
+
+VarExtendedTypeAliases.propTypes = {
+  a: PropTypes.number.isRequired,
+  b: PropTypes.bool.isRequired,
+  name: PropTypes.string.isRequired
+};
+export default VarExtendedTypeAliases;"
+`;
+
+exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/var/merge-with-existing-proptypes.ts 1`] = `
+"import React from 'react';
+import PropTypes from 'prop-types';
+interface Props {
+  name: string;
+}
+
+const VarMergeWithExistingPropTypes: React.SFC<Props> = () => null;
+
+VarMergeWithExistingPropTypes.propTypes = {
+  name: PropTypes.string.isRequired,
+  custom: PropTypes.number.isRequired
+};
+export default VarMergeWithExistingPropTypes;"
+`;
+
+exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/var/merge-with-no-override.ts 1`] = `
+"import React from 'react';
+import PropTypes from 'prop-types';
+interface Props {
+  name: string;
+}
+const CustomShape = PropTypes.string;
+
+const VarMergeWithNoOverride: React.SFC<Props> = () => null;
+
+VarMergeWithNoOverride.propTypes = {
+  name: CustomShape.isRequired
+};
+export default VarMergeWithNoOverride;"
+`;
+
+exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/var/missing-type.ts 1`] = `
+"import PropTypes from 'prop-types';
+import React from 'react';
+
+const VarMissingType: React.SFC<Props> = () => null;
+
+export default VarMissingType;"
+`;
+
+exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/var/multiple-annotations.ts 1`] = `
+"import PropTypes from 'prop-types';
+import React from 'react';
+export interface AProps {
+  a: number;
+}
+export interface BProps {
+  b: boolean;
+}
+
+const VarMultipleAnnotations: React.SFC<AProps & BProps> = () => null;
+
+VarMultipleAnnotations.propTypes = {
+  a: PropTypes.number.isRequired,
+  b: PropTypes.bool.isRequired
+};
+export default VarMultipleAnnotations;"
+`;
+
+exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/var/no-annotations.ts 1`] = `
+"import React from 'react';
+
+const VarNoAnnotations: React.SFC = () => null;
+
+export default VarNoAnnotations;"
+`;
+
+exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/var/no-export.ts 1`] = `
+"import PropTypes from 'prop-types';
+import React from 'react';
+interface Props {
+  name: string;
+}
+
+const VarNoExport: React.SFC<Props> = () => null;
+
+VarNoExport.propTypes = {
+  name: PropTypes.string.isRequired
+};"
+`;
+
+exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/var/no-react-import.ts 1`] = `
+"interface Props {}
+
+const VarNoReactImport: React.SFC<Props> = () => null;
+
+export default VarNoReactImport;"
+`;
+
+exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/var/no-type-propeties.ts 1`] = `
+"import PropTypes from 'prop-types';
+import React from 'react';
+interface Props {}
+
+const VarNoTypeProperties: React.SFC<Props> = () => null;
+
+export default VarNoTypeProperties;"
+`;
+
+exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/var/standard.ts 1`] = `
+"import PropTypes from 'prop-types';
+import React from 'react';
+interface Props {
+  name: string;
+}
+
+const VarStandard: React.SFC<Props> = () => null;
+
+VarStandard.propTypes = {
+  name: PropTypes.string.isRequired
+};
+export default VarStandard;"
 `;

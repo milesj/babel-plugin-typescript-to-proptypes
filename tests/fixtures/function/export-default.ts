@@ -4,6 +4,6 @@ interface Props {
   name: string;
 }
 
-export default function FuncStandard(props: Props) {
+export default function FuncExportDefault(props: Props) {
   return null;
 }

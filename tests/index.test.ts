@@ -19,7 +19,7 @@ describe('babel-plugin-typescript-to-proptypes', () => {
   glob
     .sync('./fixtures/**/*.ts', { cwd: __dirname, dot: false, strict: true })
     .forEach(filePath => {
-      // if (!filePath.endsWith('extended-interfaces.ts')) {
+      // if (!filePath.endsWith('var/extended-interfaces.ts')) {
       //   return;
       // }
 
