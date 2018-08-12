@@ -1,6 +1,7 @@
 import { types as t } from '@babel/core';
-import extractGenericTypeNames from './extractGenericTypeNames';
 import convertToPropTypes from './convertToPropTypes';
+import extractGenericTypeNames from './extractGenericTypeNames';
+import mergePropTypes from './mergePropTypes';
 import { TypePropertyMap, ConvertOptions } from './types';
 
 export default function addToClass(
@@ -30,22 +31,8 @@ export default function addToClass(
     if (valid) {
       hasPropTypesStaticProperty = true;
 
-      const { properties } = property.value as t.ObjectExpression;
-      const existingProps: { [key: string]: boolean } = {};
-
-      // Extract existing props so that we don't duplicate
-      properties.forEach(objectProperty => {
-        if (t.isObjectProperty(objectProperty) && t.isIdentifier(objectProperty.key)) {
-          existingProps[objectProperty.key.name] = true;
-        }
-      });
-
-      // Add to the beginning of the array so existing/custom prop types aren't overwritten
-      propTypesList.forEach(propType => {
-        if (t.isIdentifier(propType.key) && !existingProps[propType.key.name]) {
-          properties.unshift(propType);
-        }
-      });
+      // Merge with existing `propTypes`
+      mergePropTypes(property.value as t.ObjectExpression, propTypesList);
     }
   });
 

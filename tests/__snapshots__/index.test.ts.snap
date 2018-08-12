@@ -54,6 +54,20 @@ export default class WithCustomReactImportName extends R.Component<Props> {
 }"
 `;
 
+exports[`plugin transforms: custom-react-import-name.ts 3`] = `
+"import PropTypes from 'prop-types';
+import R from 'react';
+interface Props {
+  name: string;
+}
+export default function FuncCustomReactImportName(props: Props) {
+  return null;
+}
+FuncCustomReactImportName.propTypes = {
+  name: PropTypes.string.isRequired
+};"
+`;
+
 exports[`plugin transforms: custom-react-import-name-pure.ts 1`] = `
 "import PropTypes from 'prop-types';
 import R from 'react';
@@ -143,6 +157,21 @@ export default class ClassMergeWithExistingPropTypes extends React.Component<Pro
 }"
 `;
 
+exports[`plugin transforms: merge-with-existing-proptypes.ts 2`] = `
+"import React from 'react';
+import PropTypes from 'prop-types';
+interface Props {
+  name: string;
+}
+export default function FuncMergeWithExistingPropTypes(props: Props) {
+  return null;
+}
+FuncMergeWithExistingPropTypes.propTypes = {
+  name: PropTypes.string.isRequired,
+  custom: PropTypes.number.isRequired
+};"
+`;
+
 exports[`plugin transforms: merge-with-no-override.ts 1`] = `
 "import React from 'react';
 import PropTypes from 'prop-types';
@@ -162,6 +191,21 @@ export default class ClassMergeWithNoOverride extends React.Component<Props> {
 }"
 `;
 
+exports[`plugin transforms: merge-with-no-override.ts 2`] = `
+"import React from 'react';
+import PropTypes from 'prop-types';
+interface Props {
+  name: string;
+}
+const CustomShape = PropTypes.string;
+export default function FuncMergeWithNoOverride(props: Props) {
+  return null;
+}
+FuncMergeWithNoOverride.propTypes = {
+  name: CustomShape.isRequired
+};"
+`;
+
 exports[`plugin transforms: missing-type.ts 1`] = `
 "import PropTypes from 'prop-types';
 import React from 'react';
@@ -170,6 +214,14 @@ export default class ClassMissingType extends React.Component<Props> {
     return null;
   }
 
+}"
+`;
+
+exports[`plugin transforms: missing-type.ts 2`] = `
+"import PropTypes from 'prop-types';
+import React from 'react';
+export default function FuncMissingType(props: Props) {
+  return null;
 }"
 `;
 
@@ -231,6 +283,13 @@ export default class ClassNamedReactImportsPure extends PureComponent<Props> {
 }"
 `;
 
+exports[`plugin transforms: no-annotations.ts 1`] = `
+"import React from 'react';
+export default function FuncNoAnnotations(props) {
+  return null;
+}"
+`;
+
 exports[`plugin transforms: no-generics.ts 1`] = `
 "import React from 'react';
 export default class ClassNoGenerics extends React.Component {
@@ -259,6 +318,13 @@ export default class NoPropTypesImport extends React.Component<Props> {
 }"
 `;
 
+exports[`plugin transforms: no-react-import.ts 1`] = `
+"interface Props {}
+export default function FuncNoReactImport(props: Props) {
+  return null;
+}"
+`;
+
 exports[`plugin transforms: no-type-propeties.ts 1`] = `
 "import PropTypes from 'prop-types';
 import React from 'react';
@@ -268,6 +334,15 @@ export default class ClassNoTypeProperties extends React.Component<Props> {
     return null;
   }
 
+}"
+`;
+
+exports[`plugin transforms: no-type-propeties.ts 2`] = `
+"import PropTypes from 'prop-types';
+import React from 'react';
+interface Props {}
+export default function FuncNoTypeProperties(props: Props) {
+  return null;
 }"
 `;
 
@@ -305,6 +380,20 @@ export default class ClassStandard extends React.Component<Props> {
   }
 
 }"
+`;
+
+exports[`plugin transforms: standard.ts 2`] = `
+"import PropTypes from 'prop-types';
+import React from 'react';
+interface Props {
+  name: string;
+}
+export default function FuncStandard(props: Props) {
+  return null;
+}
+FuncStandard.propTypes = {
+  name: PropTypes.string.isRequired
+};"
 `;
 
 exports[`plugin transforms: type-array.ts 1`] = `

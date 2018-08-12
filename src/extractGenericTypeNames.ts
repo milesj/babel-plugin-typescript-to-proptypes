@@ -1,19 +1,24 @@
 import { types as t } from '@babel/core';
 import getTypeName from './getTypeName';
 
-export default function extractGenericTypeNames(node?: t.TSTypeParameterInstantiation): string[] {
+export default function extractGenericTypeNames(node: any): string[] {
   const names: string[] = [];
 
-  const mapTypeName = (param: any) => {
-    if (t.isTSTypeReference(param)) {
-      names.push(getTypeName(param.typeName));
-    } else if (t.isTSIntersectionType(param)) {
-      param.types.forEach(mapTypeName);
-    }
-  };
+  // <Foo>
+  if (t.isTSTypeParameterInstantiation(node)) {
+    node.params.forEach(param => {
+      names.push(...extractGenericTypeNames(param));
+    });
 
-  if (node && node.params.length > 0) {
-    node.params.forEach(mapTypeName);
+    // Foo
+  } else if (t.isTSTypeReference(node)) {
+    names.push(getTypeName(node.typeName));
+
+    // Foo & Bar, Foo | Bar
+  } else if (t.isTSIntersectionType(node) || t.isTSUnionType(node)) {
+    node.types.forEach(param => {
+      names.push(...extractGenericTypeNames(param));
+    });
   }
 
   return names;

@@ -74,11 +74,27 @@ export default declare((api: any) => {
               }
             },
 
-            // `function Foo() {}`
+            // `function Foo(props: Props) {}`
             FunctionDeclaration(path: Path<t.FunctionDeclaration>) {
               const { node } = path;
+              const param = node.params[0];
+              // prettier-ignore
+              const valid =
+                param &&
+                reactImportedName &&
+                node.id.name.match(/^[A-Z]/) && (
+                  // (props: Props)
+                  (t.isIdentifier(param) && param.typeAnnotation) ||
+                  // ({ ...props }: Props)
+                  (t.isObjectPattern(param) && param.typeAnnotation)
+                );
 
-              if (node.id.name.match(/^[A-Z]/)) {
+              if (valid) {
+                addToFunctionOrVar(path, node.id.name, types, {
+                  reactImportedName,
+                  propTypesImportedName,
+                });
+                componentCount += 1;
               }
             },
 
