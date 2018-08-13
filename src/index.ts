@@ -1,4 +1,5 @@
 import { declare } from '@babel/helper-plugin-utils';
+import { addDefault } from '@babel/helper-module-imports';
 import syntaxTypeScript from '@babel/plugin-syntax-typescript';
 import { types as t } from '@babel/core';
 // import ts from 'typescript';
@@ -65,12 +66,12 @@ export default declare((api: any) => {
           // We need to do this without a visitor as we need to modify
           // the AST before anything else has can run.
           if (!hasPropTypesImport) {
-            path.node.body.unshift(
-              t.importDeclaration(
-                [t.importDefaultSpecifier(t.identifier(propTypesImportedName))],
-                t.stringLiteral('prop-types'),
-              ),
-            );
+            addDefault(path, 'prop-types', {
+              nameHint: 'pt',
+            });
+
+            // Babel prefixes with an underscore
+            propTypesImportedName = `_pt`;
           }
 
           path.traverse({
