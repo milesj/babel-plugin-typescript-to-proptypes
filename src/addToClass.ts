@@ -2,20 +2,16 @@ import { types as t } from '@babel/core';
 import convertToPropTypes from './convertToPropTypes';
 import extractGenericTypeNames from './extractGenericTypeNames';
 import mergePropTypes from './mergePropTypes';
-import { TypePropertyMap, ConvertOptions } from './types';
+import { ConvertState } from './types';
 
-export default function addToClass(
-  node: t.ClassDeclaration,
-  types: TypePropertyMap,
-  options: ConvertOptions,
-) {
+export default function addToClass(node: t.ClassDeclaration, state: ConvertState) {
   if (!node.superTypeParameters) {
     return;
   }
 
   // @ts-ignore
   const typeNames = extractGenericTypeNames(node.superTypeParameters);
-  const propTypesList = convertToPropTypes(types, typeNames, options);
+  const propTypesList = convertToPropTypes(state.componentTypes, typeNames, state);
   let hasPropTypesStaticProperty = false;
 
   if (propTypesList.length === 0) {

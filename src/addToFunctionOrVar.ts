@@ -2,13 +2,12 @@ import { types as t } from '@babel/core';
 import convertToPropTypes from './convertToPropTypes';
 import extractGenericTypeNames from './extractGenericTypeNames';
 import mergePropTypes from './mergePropTypes';
-import { Path, TypePropertyMap, ConvertOptions } from './types';
+import { Path, ConvertState } from './types';
 
 export default function addToFunctionOrVar(
   path: Path<t.FunctionDeclaration | t.VariableDeclaration>,
   name: string,
-  types: TypePropertyMap,
-  options: ConvertOptions,
+  state: ConvertState,
 ) {
   const typeNames = [];
 
@@ -28,7 +27,7 @@ export default function addToFunctionOrVar(
     );
   }
 
-  const propTypesList = convertToPropTypes(types, typeNames, options);
+  const propTypesList = convertToPropTypes(state.componentTypes, typeNames, state);
 
   if (typeNames.length === 0 || propTypesList.length === 0) {
     return;

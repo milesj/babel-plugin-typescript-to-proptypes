@@ -6,7 +6,12 @@ export type TypePropertyMap = { [key: string]: t.TSPropertySignature[] };
 
 export type PropType = t.MemberExpression | t.CallExpression;
 
-export type ConvertOptions = {
+export type ConvertState = {
   reactImportedName: string;
   propTypesImportedName: string;
+  hasPropTypesImport: boolean;
+  componentCount: number;
+  componentTypes: TypePropertyMap;
+  // From babel
+  filename: string;
 };

@@ -6,21 +6,22 @@ import { types as t } from '@babel/core';
 import addToClass from './addToClass';
 import addToFunctionOrVar from './addToFunctionOrVar';
 import extractTypeProperties from './extractTypeProperties';
-import { Path, TypePropertyMap } from './types';
+import { Path, ConvertState } from './types';
+
+function isNotTS(name: string): boolean {
+  return name.endsWith('.js') || name.endsWith('.jsx');
+}
 
 export default declare((api: any) => {
   api.assertVersion(7);
 
-  // let program;
-  // let checker;
-  let reactImportedName: string = '';
-  let propTypesImportedName: string = 'PropTypes';
-  let hasPropTypesImport: boolean = false;
-  let componentCount = 0;
-  const types: TypePropertyMap = {};
-
   return {
     inherits: syntaxTypeScript,
+
+    manipulateOptions(opts: any, parserOptions: any) {
+      // Inheriting the syntax doesn't seem to define these
+      parserOptions.plugins.push('jsx');
+    },
 
     // pre(state: any) {
     //   program = ts.createProgram([state.opts.filename], {});
@@ -31,7 +32,18 @@ export default declare((api: any) => {
 
     visitor: {
       Program: {
-        enter(path: Path<t.Program>) {
+        enter(path: Path<t.Program>, state: ConvertState) {
+          if (isNotTS(state.filename)) {
+            return;
+          }
+
+          // Setup our initial state
+          state.reactImportedName = '';
+          state.propTypesImportedName = '';
+          state.hasPropTypesImport = false;
+          state.componentCount = 0;
+          state.componentTypes = {};
+
           // Find existing `react` and `prop-types` imports
           path.node.body.forEach(node => {
             if (!t.isImportDeclaration(node)) {
@@ -39,11 +51,11 @@ export default declare((api: any) => {
             }
 
             if (node.source.value === 'prop-types') {
-              hasPropTypesImport = true;
+              state.hasPropTypesImport = true;
 
               node.specifiers.forEach(spec => {
                 if (t.isImportDefaultSpecifier(spec) || t.isImportNamespaceSpecifier(spec)) {
-                  propTypesImportedName = spec.local.name;
+                  state.propTypesImportedName = spec.local.name;
                 }
               });
             }
@@ -51,7 +63,7 @@ export default declare((api: any) => {
             if (node.source.value === 'react') {
               node.specifiers.forEach(spec => {
                 if (t.isImportDefaultSpecifier(spec) || t.isImportNamespaceSpecifier(spec)) {
-                  reactImportedName = spec.local.name;
+                  state.reactImportedName = spec.local.name;
                 }
               });
             }
@@ -60,13 +72,11 @@ export default declare((api: any) => {
           // Add `prop-types` import if it does not exist.
           // We need to do this without a visitor as we need to modify
           // the AST before anything else has can run.
-          if (!hasPropTypesImport) {
-            addDefault(path, 'prop-types', {
+          if (!state.hasPropTypesImport && state.reactImportedName) {
+            state.hasPropTypesImport = true;
+            state.propTypesImportedName = addDefault(path, 'prop-types', {
               nameHint: 'pt',
-            });
-
-            // Babel prefixes with an underscore
-            propTypesImportedName = `_pt`;
+            }).name;
           }
 
           path.traverse({
@@ -79,14 +89,14 @@ export default declare((api: any) => {
                 // React.Component, React.PureComponent
                 (
                   t.isMemberExpression(node.superClass) &&
-                  t.isIdentifier(node.superClass.object, { name: reactImportedName }) && (
+                  t.isIdentifier(node.superClass.object, { name: state.reactImportedName }) && (
                     t.isIdentifier(node.superClass.property, { name: 'Component' }) ||
                     t.isIdentifier(node.superClass.property, { name: 'PureComponent' })
                   )
                 ) ||
                 // Component, PureComponent
                 (
-                  reactImportedName && (
+                  state.reactImportedName && (
                     t.isIdentifier(node.superClass, { name: 'Component' }) ||
                     t.isIdentifier(node.superClass, { name: 'PureComponent' })
                   )
@@ -94,8 +104,8 @@ export default declare((api: any) => {
               );
 
               if (valid) {
-                addToClass(node, types, { reactImportedName, propTypesImportedName });
-                componentCount += 1;
+                addToClass(node, state);
+                state.componentCount += 1;
               }
             },
 
@@ -106,7 +116,7 @@ export default declare((api: any) => {
               // prettier-ignore
               const valid =
                 param &&
-                reactImportedName &&
+                state.reactImportedName &&
                 node.id.name.match(/^[A-Z]/) && (
                   // (props: Props)
                   (t.isIdentifier(param) && param.typeAnnotation) ||
@@ -115,11 +125,8 @@ export default declare((api: any) => {
                 );
 
               if (valid) {
-                addToFunctionOrVar(path, node.id.name, types, {
-                  reactImportedName,
-                  propTypesImportedName,
-                });
-                componentCount += 1;
+                addToFunctionOrVar(path, node.id.name, state);
+                state.componentCount += 1;
               }
             },
 
@@ -145,7 +152,7 @@ export default declare((api: any) => {
                 // React.SFC, React.StatelessComponent
                 (
                   t.isTSQualifiedName(type.typeName) &&
-                  t.isIdentifier(type.typeName.left, { name: reactImportedName }) &&
+                  t.isIdentifier(type.typeName.left, { name: state.reactImportedName }) &&
                   (
                     t.isIdentifier(type.typeName.right, { name: 'SFC' }) ||
                     t.isIdentifier(type.typeName.right, { name: 'StatelessComponent' })
@@ -153,7 +160,7 @@ export default declare((api: any) => {
                 ) ||
                 // SFC, StatelessComponent
                 (
-                  reactImportedName && (
+                  state.reactImportedName && (
                     t.isIdentifier(type.typeName, { name: 'SFC' }) ||
                     t.isIdentifier(type.typeName, { name: 'StatelessComponent' })
                   )
@@ -161,29 +168,32 @@ export default declare((api: any) => {
               );
 
               if (valid) {
-                addToFunctionOrVar(path, id.name, types, {
-                  reactImportedName,
-                  propTypesImportedName,
-                });
-                componentCount += 1;
+                addToFunctionOrVar(path, id.name, state);
+                state.componentCount += 1;
               }
             },
 
             // `interface FooProps {}`
             // @ts-ignore
             TSInterfaceDeclaration({ node }: Path<t.TSInterfaceDeclaration>) {
-              types[node.id.name] = extractTypeProperties(node, types);
+              state.componentTypes[node.id.name] = extractTypeProperties(
+                node,
+                state.componentTypes,
+              );
             },
 
             // `type FooProps = {}`
             TSTypeAliasDeclaration({ node }: Path<t.TSTypeAliasDeclaration>) {
-              types[node.id.name] = extractTypeProperties(node, types);
+              state.componentTypes[node.id.name] = extractTypeProperties(
+                node,
+                state.componentTypes,
+              );
             },
           });
         },
 
-        exit(path: Path<t.Program>) {
-          if (componentCount !== 0) {
+        exit(path: Path<t.Program>, state: ConvertState) {
+          if (isNotTS(state.filename) || state.componentCount !== 0) {
             return;
           }
 

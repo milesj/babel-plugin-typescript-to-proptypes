@@ -1,6 +1,6 @@
 import { types as t } from '@babel/core';
 import getTypeName from './getTypeName';
-import { PropType, ConvertOptions } from './types';
+import { PropType, TypePropertyMap, ConvertState } from './types';
 
 function isReactTypeMatch(name: string, type: string, reactImportedName: string): boolean {
   return name === type || name === `React.${type}` || name === `${reactImportedName}.${type}`;
@@ -22,8 +22,8 @@ function createMember(value: t.Identifier, propTypesImportedName: string): t.Mem
   return t.memberExpression(t.identifier(propTypesImportedName), value);
 }
 
-function convert(type: any, options: ConvertOptions): PropType | null {
-  const { reactImportedName, propTypesImportedName } = options;
+function convert(type: any, state: ConvertState): PropType | null {
+  const { reactImportedName, propTypesImportedName } = state;
 
   // Remove wrapping parens
   if (t.isTSParenthesizedType(type)) {
@@ -112,7 +112,7 @@ function convert(type: any, options: ConvertOptions): PropType | null {
 
     // [] -> PropTypes.arrayOf(), PropTypes.array
   } else if (t.isTSArrayType(type)) {
-    const args = convertArray([type.elementType], options);
+    const args = convertArray([type.elementType], state);
 
     return args.length > 0
       ? createCall(t.identifier('arrayOf'), args, propTypesImportedName)
@@ -131,7 +131,7 @@ function convert(type: any, options: ConvertOptions): PropType | null {
       const index = type.members[0] as t.TSIndexSignature;
 
       if (index.typeAnnotation && index.typeAnnotation.typeAnnotation) {
-        const result = convert(index.typeAnnotation.typeAnnotation, options);
+        const result = convert(index.typeAnnotation.typeAnnotation, state);
 
         if (result) {
           return createCall(t.identifier('objectOf'), [result], propTypesImportedName);
@@ -148,7 +148,7 @@ function convert(type: any, options: ConvertOptions): PropType | null {
               type.members.filter(member =>
                 t.isTSPropertySignature(member),
               ) as t.TSPropertySignature[],
-              options,
+              state,
             ),
           ),
         ],
@@ -167,7 +167,7 @@ function convert(type: any, options: ConvertOptions): PropType | null {
       args = type.types.map(param => (param as t.TSLiteralType).literal);
       label = t.identifier('oneOf');
     } else {
-      args = convertArray(type.types, options);
+      args = convertArray(type.types, state);
       label = t.identifier('oneOfType');
     }
 
@@ -179,11 +179,11 @@ function convert(type: any, options: ConvertOptions): PropType | null {
   return null;
 }
 
-function convertArray(types: any[], options: ConvertOptions): PropType[] {
+function convertArray(types: any[], state: ConvertState): PropType[] {
   const propTypes: PropType[] = [];
 
   types.forEach(type => {
-    const prop = convert(type, options);
+    const prop = convert(type, state);
 
     if (prop) {
       propTypes.push(prop);
@@ -195,7 +195,7 @@ function convertArray(types: any[], options: ConvertOptions): PropType[] {
 
 function convertListToProps(
   properties: t.TSPropertySignature[],
-  options: ConvertOptions,
+  state: ConvertState,
 ): t.ObjectProperty[] {
   const propTypes: t.ObjectProperty[] = [];
 
@@ -204,7 +204,7 @@ function convertListToProps(
       return;
     }
 
-    const propType = convert(property.typeAnnotation.typeAnnotation, options);
+    const propType = convert(property.typeAnnotation.typeAnnotation, state);
 
     if (propType) {
       propTypes.push(t.objectProperty(property.key, wrapIsRequired(propType, property.optional)));
@@ -215,15 +215,15 @@ function convertListToProps(
 }
 
 export default function convertToPropTypes(
-  types: { [key: string]: t.TSPropertySignature[] },
+  types: TypePropertyMap,
   typeNames: string[],
-  options: ConvertOptions,
+  state: ConvertState,
 ): t.ObjectProperty[] {
   const properties: t.ObjectProperty[] = [];
 
   typeNames.forEach(typeName => {
     if (types[typeName]) {
-      properties.push(...convertListToProps(types[typeName], options));
+      properties.push(...convertListToProps(types[typeName], state));
     }
   });
 
