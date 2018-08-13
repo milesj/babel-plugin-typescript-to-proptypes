@@ -22,11 +22,6 @@ export default declare((api: any) => {
   return {
     inherits: syntaxTypeScript,
 
-    manipulateOptions(opts: any, parserOptions: any) {
-      // Inheriting the syntax doesn't seem to define these
-      parserOptions.plugins.push('classProperties', 'classPrivateProperties', 'jsx');
-    },
-
     // pre(state: any) {
     //   program = ts.createProgram([state.opts.filename], {});
     //   checker = program.getTypeChecker();

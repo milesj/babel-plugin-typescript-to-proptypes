@@ -5,7 +5,7 @@ export interface Props {
   name: string;
 }
 
-export default class WithPropTypesImport extends React.Component<Props> {
+export default class PropTypesImport extends React.Component<Props> {
   render() {
     return null;
   }

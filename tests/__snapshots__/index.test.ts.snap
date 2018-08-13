@@ -676,7 +676,7 @@ import PropTypes from 'prop-types';
 export interface Props {
   name: string;
 }
-export default class WithPropTypesImport extends React.Component<Props> {
+export default class PropTypesImport extends React.Component<Props> {
   static propTypes = {
     name: PropTypes.string.isRequired
   };
@@ -1178,6 +1178,21 @@ VarStandard.propTypes = {
   name: _pt.string.isRequired
 };
 export default VarStandard;"
+`;
+
+exports[`babel-plugin-typescript-to-proptypes works correctly when file is JSX/TSX 1`] = `
+"import _pt from 'prop-types';
+import React from 'react';
+export default class JSX extends React.Component {
+  static propTypes = {
+    name: _pt.string.isRequired
+  };
+
+  render() {
+    return <div />;
+  }
+
+}"
 `;
 
 exports[`babel-plugin-typescript-to-proptypes works correctly when transpiling down to ES3 1`] = `

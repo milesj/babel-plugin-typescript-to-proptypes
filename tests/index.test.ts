@@ -132,4 +132,12 @@ describe('babel-plugin-typescript-to-proptypes', () => {
       }),
     ).toMatchSnapshot();
   });
+
+  it('works correctly when file is JSX/TSX', () => {
+    expect(
+      transform(path.join(__dirname, './fixtures/special/jsx.tsx'), {
+        presets: [['@babel/preset-typescript', { isTSX: true, allExtensions: true }]],
+      }),
+    ).toMatchSnapshot();
+  });
 });
