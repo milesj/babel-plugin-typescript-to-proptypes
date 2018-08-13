@@ -13,16 +13,15 @@
   ],
   "scripts": {
     "build": "beemo typescript --node",
-    "coverage": "yarn run jest --coverage",
+    "coverage": "npm run jest --coverage",
     "eslint": "beemo eslint",
-    "jest": "beemo jest",
+    "jest": "jest",
     "prettier": "beemo prettier",
     "release": "np --yolo --no-yarn",
     "type": "beemo typescript --noEmit",
-    "prerelease": "yarn test && yarn run build",
-    "pretest": "yarn run type",
-    "test": "yarn run jest",
-    "posttest": "yarn run eslint"
+    "prerelease": "npm test && npm run build",
+    "pretest": "npm run type",
+    "test": "npm run jest"
   },
   "dependencies": {
     "@babel/helper-plugin-utils": "7.0.0-rc.1",
@@ -74,6 +73,11 @@
       "modulePathIgnorePatterns": [
         "/node_modules/",
         "/tests/fixtures/"
+      ]
+    },
+    "typescript": {
+      "exclude": [
+        "./tests/fixtures/**/*"
       ]
     }
   }

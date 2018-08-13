@@ -1,5 +1,7 @@
 # babel-plugin-typescript-to-proptypes
 
+[![Build Status](https://travis-ci.org/milesj/babel-plugin-typescript-to-proptypes.svg?branch=master)](https://travis-ci.org/milesj/babel-plugin-typescript-to-proptypes)
+
 A Babel plugin to generate React PropTypes from TypeScript interfaces or type aliases.
 
 ## Examples

@@ -10,6 +10,7 @@ function transform(filePath: string): string {
     generatorOpts: {
       comments: false,
       quotes: 'single',
+      // @ts-ignore
       jsescOption: { quotes: 'single' },
     },
   }).code;
