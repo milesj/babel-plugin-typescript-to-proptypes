@@ -1,6 +1,7 @@
 import { declare } from '@babel/helper-plugin-utils';
 import syntaxTypeScript from '@babel/plugin-syntax-typescript';
 import { types as t } from '@babel/core';
+// import ts from 'typescript';
 import addToClass from './addToClass';
 import addToFunctionOrVar from './addToFunctionOrVar';
 import extractTypeProperties from './extractTypeProperties';
@@ -9,6 +10,8 @@ import { Path, TypePropertyMap } from './types';
 export default declare((api: any) => {
   api.assertVersion(7);
 
+  // let program;
+  // let checker;
   let reactImportedName: string = '';
   let propTypesImportedName: string = 'PropTypes';
   let hasPropTypesImport: boolean = false;
@@ -21,6 +24,13 @@ export default declare((api: any) => {
     manipulateOptions(opts: any, parserOptions: any) {
       parserOptions.plugins.push('classProperties');
     },
+
+    // pre(state: any) {
+    //   program = ts.createProgram([state.opts.filename], {});
+    //   checker = program.getTypeChecker();
+
+    //   console.log(checker.getSymbolAtLocation(program.getSourceFile(state.opts.filename)!));
+    // },
 
     visitor: {
       Program: {
