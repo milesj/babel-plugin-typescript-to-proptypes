@@ -3,23 +3,30 @@ import glob from 'glob';
 import { transformFileSync } from '@babel/core';
 import plugin from '../src';
 
-function transform(filePath: string): string {
-  return transformFileSync(filePath, {
-    filename: filePath,
-    plugins: [plugin],
-    generatorOpts: {
-      comments: false,
-      quotes: 'single',
-      // @ts-ignore
-      jsescOption: { quotes: 'single' },
-    },
-  }).code;
+function transform(filePath: string, options: any = {}): string {
+  return (
+    transformFileSync(filePath, {
+      filename: filePath,
+      plugins: [plugin],
+      generatorOpts: {
+        comments: false,
+        quotes: 'single',
+        // @ts-ignore
+        jsescOption: { quotes: 'single' },
+      },
+      ...options,
+    }).code || ''
+  );
 }
 
 describe('babel-plugin-typescript-to-proptypes', () => {
   glob
     .sync('./fixtures/**/*.ts', { cwd: __dirname, dot: false, strict: true })
     .forEach(filePath => {
+      if (filePath.includes('/special/')) {
+        return;
+      }
+
       // if (!filePath.endsWith('var/extended-interfaces.ts')) {
       //   return;
       // }
@@ -28,4 +35,101 @@ describe('babel-plugin-typescript-to-proptypes', () => {
         expect(transform(path.join(__dirname, filePath))).toMatchSnapshot();
       });
     });
+
+  it('works correctly when transpiling down to ES3', () => {
+    expect(
+      transform(path.join(__dirname, './fixtures/special/es-target.ts'), {
+        presets: ['@babel/preset-typescript', ['@babel/preset-env', { targets: { ie: '8' } }]],
+        plugins: [plugin, '@babel/plugin-proposal-class-properties'],
+      }),
+    ).toMatchSnapshot();
+
+    // loose
+    expect(
+      transform(path.join(__dirname, './fixtures/special/es-target.ts'), {
+        presets: [
+          '@babel/preset-typescript',
+          ['@babel/preset-env', { targets: { ie: '8' }, loose: true }],
+        ],
+        plugins: [plugin, '@babel/plugin-proposal-class-properties'],
+      }),
+    ).toMatchSnapshot();
+  });
+
+  it('works correctly when transpiling down to ES5', () => {
+    expect(
+      transform(path.join(__dirname, './fixtures/special/es-target.ts'), {
+        presets: ['@babel/preset-typescript', ['@babel/preset-env', { targets: { ie: '10' } }]],
+        plugins: [plugin, '@babel/plugin-proposal-class-properties'],
+      }),
+    ).toMatchSnapshot();
+
+    // loose
+    expect(
+      transform(path.join(__dirname, './fixtures/special/es-target.ts'), {
+        presets: [
+          '@babel/preset-typescript',
+          ['@babel/preset-env', { targets: { ie: '10' }, loose: true }],
+        ],
+        plugins: [plugin, '@babel/plugin-proposal-class-properties'],
+      }),
+    ).toMatchSnapshot();
+  });
+
+  it('works correctly when transpiling down to ES6', () => {
+    expect(
+      transform(path.join(__dirname, './fixtures/special/es-target.ts'), {
+        presets: [['@babel/preset-env', { targets: { node: '9' } }]],
+      }),
+    ).toMatchSnapshot();
+
+    // loose
+    expect(
+      transform(path.join(__dirname, './fixtures/special/es-target.ts'), {
+        presets: [['@babel/preset-env', { targets: { node: '9' }, loose: true }]],
+      }),
+    ).toMatchSnapshot();
+  });
+
+  it('works correctly when using the typescript preset', () => {
+    expect(
+      transform(path.join(__dirname, './fixtures/special/ts-preset.ts'), {
+        presets: ['@babel/preset-typescript'],
+      }),
+    ).toMatchSnapshot();
+  });
+
+  it('works correctly when using the transform runtime', () => {
+    expect(
+      transform(path.join(__dirname, './fixtures/special/ts-preset.ts'), {
+        presets: ['@babel/preset-typescript'],
+        plugins: [plugin, '@babel/plugin-transform-runtime'],
+      }),
+    ).toMatchSnapshot();
+  });
+
+  it('works correctly when using ALL the things', () => {
+    expect(
+      transform(path.join(__dirname, './fixtures/special/ts-preset.ts'), {
+        presets: [
+          '@babel/preset-typescript',
+          '@babel/preset-react',
+          ['@babel/preset-env', { targets: { node: '9' } }],
+        ],
+        plugins: [plugin, '@babel/plugin-transform-runtime'],
+      }),
+    ).toMatchSnapshot();
+
+    // Swap order & loose
+    expect(
+      transform(path.join(__dirname, './fixtures/special/ts-preset.ts'), {
+        presets: [
+          ['@babel/preset-env', { targets: { node: '9' }, loose: true }],
+          '@babel/preset-react',
+          '@babel/preset-typescript',
+        ],
+        plugins: ['@babel/plugin-transform-runtime', plugin],
+      }),
+    ).toMatchSnapshot();
+  });
 });

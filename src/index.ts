@@ -22,7 +22,8 @@ export default declare((api: any) => {
     inherits: syntaxTypeScript,
 
     manipulateOptions(opts: any, parserOptions: any) {
-      parserOptions.plugins.push('classProperties');
+      // Inheriting the syntax doesn't seem to define these
+      parserOptions.plugins.push('classProperties', 'classPrivateProperties', 'jsx');
     },
 
     // pre(state: any) {
@@ -35,27 +36,44 @@ export default declare((api: any) => {
     visitor: {
       Program: {
         enter(path: Path<t.Program>) {
+          // Find existing `react` and `prop-types` imports
+          path.node.body.forEach(node => {
+            if (!t.isImportDeclaration(node)) {
+              return;
+            }
+
+            if (node.source.value === 'prop-types') {
+              hasPropTypesImport = true;
+
+              node.specifiers.forEach(spec => {
+                if (t.isImportDefaultSpecifier(spec) || t.isImportNamespaceSpecifier(spec)) {
+                  propTypesImportedName = spec.local.name;
+                }
+              });
+            }
+
+            if (node.source.value === 'react') {
+              node.specifiers.forEach(spec => {
+                if (t.isImportDefaultSpecifier(spec) || t.isImportNamespaceSpecifier(spec)) {
+                  reactImportedName = spec.local.name;
+                }
+              });
+            }
+          });
+
+          // Add `prop-types` import if it does not exist.
+          // We need to do this without a visitor as we need to modify
+          // the AST before anything else has can run.
+          if (!hasPropTypesImport) {
+            path.node.body.unshift(
+              t.importDeclaration(
+                [t.importDefaultSpecifier(t.identifier(propTypesImportedName))],
+                t.stringLiteral('prop-types'),
+              ),
+            );
+          }
+
           path.traverse({
-            ImportDeclaration({ node }: Path<t.ImportDeclaration>) {
-              if (node.source.value === 'prop-types') {
-                hasPropTypesImport = true;
-
-                node.specifiers.forEach(spec => {
-                  if (t.isImportDefaultSpecifier(spec) || t.isImportNamespaceSpecifier(spec)) {
-                    propTypesImportedName = spec.local.name;
-                  }
-                });
-              }
-
-              if (node.source.value === 'react') {
-                node.specifiers.forEach(spec => {
-                  if (t.isImportDefaultSpecifier(spec) || t.isImportNamespaceSpecifier(spec)) {
-                    reactImportedName = spec.local.name;
-                  }
-                });
-              }
-            },
-
             // `class Foo extends React.Component<Props> {}`
             // @ts-ignore
             'ClassDeclaration|ClassExpression'(path: Path<t.ClassDeclaration>) {
@@ -169,15 +187,19 @@ export default declare((api: any) => {
         },
 
         exit(path: Path<t.Program>) {
-          // Add `import PropTypes from 'prop-types'` if it does not exist
-          if (componentCount > 0 && !hasPropTypesImport) {
-            path.node.body.unshift(
-              t.importDeclaration(
-                [t.importDefaultSpecifier(t.identifier(propTypesImportedName))],
-                t.stringLiteral('prop-types'),
-              ),
-            );
+          if (componentCount !== 0) {
+            return;
           }
+
+          // Remove the `prop-types` import of no components exist
+          path.get('body').forEach(bodyPath => {
+            if (
+              t.isImportDeclaration(bodyPath.node) &&
+              bodyPath.node.source.value === 'prop-types'
+            ) {
+              bodyPath.remove();
+            }
+          });
         },
       },
     },

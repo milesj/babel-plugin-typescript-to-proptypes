@@ -114,7 +114,12 @@ module.exports = function() {
   }
 
   return {
+    // Required
+    presets: ['@babel/preset-typescript', '@babel/preset-react']
     plugins,
   };
 };
 ```
+
+When transpiling down to ES5 or lower, the `@babel/plugin-proposal-class-properties` plugin is
+required.
