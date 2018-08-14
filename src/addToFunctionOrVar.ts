@@ -40,13 +40,13 @@ export default function addToFunctionOrVar(
   const existingExpr = rootPath
     .getAllNextSiblings()
     .filter(
-      path =>
-        t.isExpressionStatement(path.node) &&
-        t.isAssignmentExpression(path.node.expression, { operator: '=' }) &&
-        t.isMemberExpression(path.node.expression.left) &&
-        t.isObjectExpression(path.node.expression.right) &&
-        t.isIdentifier(path.node.expression.left.object, { name }) &&
-        t.isIdentifier(path.node.expression.left.property, { name: 'propTypes' }),
+      sibPath =>
+        t.isExpressionStatement(sibPath.node) &&
+        t.isAssignmentExpression(sibPath.node.expression, { operator: '=' }) &&
+        t.isMemberExpression(sibPath.node.expression.left) &&
+        t.isObjectExpression(sibPath.node.expression.right) &&
+        t.isIdentifier(sibPath.node.expression.left.object, { name }) &&
+        t.isIdentifier(sibPath.node.expression.left.property, { name: 'propTypes' }),
     );
 
   // Merge with existing `propTypes`

@@ -89,8 +89,8 @@ Example.propTypes = {
 
 ## Requirements
 
-- Babel 7
-- TypeScript 2
+- Babel 7+
+- TypeScript 2+
 
 ## Installation
 

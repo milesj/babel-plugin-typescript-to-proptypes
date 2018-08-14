@@ -21,7 +21,8 @@
     "type": "beemo typescript --noEmit",
     "prerelease": "npm test && npm run build",
     "pretest": "npm run type",
-    "test": "npm run jest"
+    "test": "npm run jest",
+    "posttest": "npm run eslint"
   },
   "dependencies": {
     "@babel/helper-module-imports": "^7.0.0-rc.1",
@@ -30,7 +31,7 @@
   },
   "peerDependencies": {
     "@babel/core": "^7.0.0-0",
-    "typescript": "^3.0.0"
+    "typescript": "^2.0.0 || ^3.0.0"
   },
   "devDependencies": {
     "@babel/core": "7.0.0-rc.1",
@@ -39,7 +40,7 @@
     "@babel/preset-env": "^7.0.0-rc.1",
     "@babel/preset-react": "^7.0.0-rc.1",
     "@babel/preset-typescript": "^7.0.0-rc.1",
-    "@milesj/build-tool-config": "^0.116.2",
+    "@milesj/build-tool-config": "^0.117.1",
     "@types/babel-core": "^6.25.5",
     "@types/babel-types": "^7.0.4",
     "babel-core": "7.0.0-bridge.0",
@@ -58,7 +59,18 @@
     "babel": {
       "sourceType": "module",
       "ignore": [
-        "fixtures/**/*.js"
+        "tests/fixtures/**/*.js"
+      ]
+    },
+    "eslint": {
+      "rules": {
+        "complexity": "off",
+        "no-param-reassign": "off",
+        "no-use-before-define": "off",
+        "typescript/no-use-before-define": "off"
+      },
+      "ignore": [
+        "tests/fixtures/"
       ]
     },
     "jest": {

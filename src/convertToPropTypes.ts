@@ -10,16 +10,16 @@ function wrapIsRequired(propType: PropType, optional?: boolean | null): PropType
   return optional ? propType : t.memberExpression(propType, t.identifier('isRequired'));
 }
 
+function createMember(value: t.Identifier, propTypesImportedName: string): t.MemberExpression {
+  return t.memberExpression(t.identifier(propTypesImportedName), value);
+}
+
 function createCall(
   value: t.Identifier,
   args: (PropType | t.ArrayExpression | t.ObjectExpression)[],
   propTypesImportedName: string,
 ): t.CallExpression {
   return t.callExpression(createMember(value, propTypesImportedName), args);
-}
-
-function createMember(value: t.Identifier, propTypesImportedName: string): t.MemberExpression {
-  return t.memberExpression(t.identifier(propTypesImportedName), value);
 }
 
 function convert(type: any, state: ConvertState): PropType | null {
@@ -104,11 +104,10 @@ function convert(type: any, state: ConvertState): PropType | null {
       // object
     } else if (name.endsWith('Event')) {
       return createMember(t.identifier('object'), propTypesImportedName);
-
-      // any (we need to support all these in case of unions)
-    } else {
-      return createMember(t.identifier('any'), propTypesImportedName);
     }
+
+    // any (we need to support all these in case of unions)
+    return createMember(t.identifier('any'), propTypesImportedName);
 
     // [] -> PropTypes.arrayOf(), PropTypes.array
   } else if (t.isTSArrayType(type)) {

@@ -8,12 +8,14 @@ import addToFunctionOrVar from './addToFunctionOrVar';
 import extractTypeProperties from './extractTypeProperties';
 import { Path, ConvertState } from './types';
 
+const BABEL_VERSION = 7;
+
 function isNotTS(name: string): boolean {
   return name.endsWith('.js') || name.endsWith('.jsx');
 }
 
 export default declare((api: any) => {
-  api.assertVersion(7);
+  api.assertVersion(BABEL_VERSION);
 
   return {
     inherits: syntaxTypeScript,
@@ -32,7 +34,7 @@ export default declare((api: any) => {
 
     visitor: {
       Program: {
-        enter(path: Path<t.Program>, state: ConvertState) {
+        enter(programPath: Path<t.Program>, state: ConvertState) {
           if (isNotTS(state.filename)) {
             return;
           }
@@ -45,7 +47,7 @@ export default declare((api: any) => {
           state.componentTypes = {};
 
           // Find existing `react` and `prop-types` imports
-          path.node.body.forEach(node => {
+          programPath.node.body.forEach(node => {
             if (!t.isImportDeclaration(node)) {
               return;
             }
@@ -74,15 +76,15 @@ export default declare((api: any) => {
           // the AST before anything else has can run.
           if (!state.hasPropTypesImport && state.reactImportedName) {
             state.hasPropTypesImport = true;
-            state.propTypesImportedName = addDefault(path, 'prop-types', {
+            state.propTypesImportedName = addDefault(programPath, 'prop-types', {
               nameHint: 'pt',
             }).name;
           }
 
-          path.traverse({
+          programPath.traverse({
             // `class Foo extends React.Component<Props> {}`
             // @ts-ignore
-            'ClassDeclaration|ClassExpression'(path: Path<t.ClassDeclaration>) {
+            'ClassDeclaration|ClassExpression': (path: Path<t.ClassDeclaration>) => {
               const { node } = path;
               // prettier-ignore
               const valid = node.superTypeParameters && (
@@ -117,7 +119,7 @@ export default declare((api: any) => {
               const valid =
                 param &&
                 state.reactImportedName &&
-                node.id.name.match(/^[A-Z]/) && (
+                node.id.name.match(/^[A-Z]/u) && (
                   // (props: Props)
                   (t.isIdentifier(param) && param.typeAnnotation) ||
                   // ({ ...props }: Props)
@@ -128,6 +130,23 @@ export default declare((api: any) => {
                 addToFunctionOrVar(path, node.id.name, state);
                 state.componentCount += 1;
               }
+            },
+
+            // `interface FooProps {}`
+            // @ts-ignore
+            TSInterfaceDeclaration({ node }: Path<t.TSInterfaceDeclaration>) {
+              state.componentTypes[node.id.name] = extractTypeProperties(
+                node,
+                state.componentTypes,
+              );
+            },
+
+            // `type FooProps = {}`
+            TSTypeAliasDeclaration({ node }: Path<t.TSTypeAliasDeclaration>) {
+              state.componentTypes[node.id.name] = extractTypeProperties(
+                node,
+                state.componentTypes,
+              );
             },
 
             // `const Foo: React.SFC<Props> = () => {};`
@@ -171,23 +190,6 @@ export default declare((api: any) => {
                 addToFunctionOrVar(path, id.name, state);
                 state.componentCount += 1;
               }
-            },
-
-            // `interface FooProps {}`
-            // @ts-ignore
-            TSInterfaceDeclaration({ node }: Path<t.TSInterfaceDeclaration>) {
-              state.componentTypes[node.id.name] = extractTypeProperties(
-                node,
-                state.componentTypes,
-              );
-            },
-
-            // `type FooProps = {}`
-            TSTypeAliasDeclaration({ node }: Path<t.TSTypeAliasDeclaration>) {
-              state.componentTypes[node.id.name] = extractTypeProperties(
-                node,
-                state.componentTypes,
-              );
             },
           });
         },
