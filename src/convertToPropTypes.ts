@@ -36,6 +36,8 @@ function convert(type: any, state: ConvertState): PropType | null {
     type = type.typeAnnotation;
   }
 
+  state.propTypeCount += 1;
+
   // any -> PropTypes.any
   if (t.isTSAnyKeyword(type)) {
     return createMember(t.identifier('any'), propTypesImportedName);
@@ -194,6 +196,8 @@ function convert(type: any, state: ConvertState): PropType | null {
       return createCall(label, [t.arrayExpression(args)], propTypesImportedName);
     }
   }
+
+  state.propTypeCount -= 1;
 
   return null;
 }

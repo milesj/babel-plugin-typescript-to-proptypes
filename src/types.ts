@@ -10,7 +10,7 @@ export type ConvertState = {
   reactImportedName: string;
   propTypesImportedName: string;
   hasPropTypesImport: boolean;
-  componentCount: number;
+  propTypeCount: number;
   componentTypes: TypePropertyMap;
   // From babel
   filename: string;

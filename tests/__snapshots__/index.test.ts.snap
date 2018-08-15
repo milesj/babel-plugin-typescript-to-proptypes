@@ -181,8 +181,7 @@ export default class ClassMergeWithNoOverride extends React.Component<Props> {
 `;
 
 exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/class/missing-type.ts 1`] = `
-"import _pt from 'prop-types';
-import React from 'react';
+"import React from 'react';
 export default class ClassMissingType extends React.Component<Props> {
   render() {
     return null;
@@ -260,8 +259,7 @@ export default class ClassNoGenerics extends React.Component {
 `;
 
 exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/class/no-type-propeties.ts 1`] = `
-"import _pt from 'prop-types';
-import React from 'react';
+"import React from 'react';
 interface Props {}
 export default class ClassNoTypeProperties extends React.Component<Props> {
   render() {
@@ -478,8 +476,7 @@ FuncMergeWithNoOverride.propTypes = {
 `;
 
 exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/function/missing-type.ts 1`] = `
-"import _pt from 'prop-types';
-import React from 'react';
+"import React from 'react';
 export default function FuncMissingType(props: Props) {
   return null;
 }"
@@ -534,8 +531,7 @@ export default function FuncNoReactImport(props: Props) {
 `;
 
 exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/function/no-type-propeties.ts 1`] = `
-"import _pt from 'prop-types';
-import React from 'react';
+"import React from 'react';
 interface Props {}
 export default function FuncNoTypeProperties(props: Props) {
   return null;
@@ -728,6 +724,10 @@ exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/no-remove-ex
 "import React from 'react';
 import PropTypes from 'prop-types';
 export default class NoRemoveExistingPropTypesImport extends React.Component {
+  static propTypes = {
+    name: PropTypes.string
+  };
+
   render() {
     return null;
   }
@@ -1210,8 +1210,7 @@ export default VarMergeWithNoOverride;"
 `;
 
 exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/var/missing-type.ts 1`] = `
-"import _pt from 'prop-types';
-import React from 'react';
+"import React from 'react';
 
 const VarMissingType: React.SFC<Props> = () => null;
 
@@ -1268,8 +1267,7 @@ export default VarNoReactImport;"
 `;
 
 exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/var/no-type-propeties.ts 1`] = `
-"import _pt from 'prop-types';
-import React from 'react';
+"import React from 'react';
 interface Props {}
 
 const VarNoTypeProperties: React.SFC<Props> = () => null;

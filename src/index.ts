@@ -43,7 +43,7 @@ export default declare((api: any) => {
           state.reactImportedName = '';
           state.propTypesImportedName = '';
           state.hasPropTypesImport = false;
-          state.componentCount = 0;
+          state.propTypeCount = 0;
           state.componentTypes = {};
 
           // Find existing `react` and `prop-types` imports
@@ -106,7 +106,6 @@ export default declare((api: any) => {
 
               if (valid) {
                 addToClass(node, state);
-                state.componentCount += 1;
               }
             },
 
@@ -127,7 +126,13 @@ export default declare((api: any) => {
 
               if (valid) {
                 addToFunctionOrVar(path, node.id.name, state);
-                state.componentCount += 1;
+              }
+            },
+
+            // PropTypes.*
+            MemberExpression({ node }: Path<t.MemberExpression>) {
+              if (t.isIdentifier(node.object, { name: state.propTypesImportedName })) {
+                state.propTypeCount += 1;
               }
             },
 
@@ -187,29 +192,26 @@ export default declare((api: any) => {
 
               if (valid) {
                 addToFunctionOrVar(path, id.name, state);
-                state.componentCount += 1;
               }
             },
           });
         },
 
         exit(path: Path<t.Program>, state: ConvertState) {
-          if (isNotTS(state.filename)) {
+          if (isNotTS(state.filename) || state.propTypeCount !== 0) {
             return;
           }
 
           // Remove the `prop-types` import of no components exist,
           // and be sure not to remove pre-existing imports.
-          if (!state.hasPropTypesImport && state.componentCount === 0) {
-            path.get('body').forEach(bodyPath => {
-              if (
-                t.isImportDeclaration(bodyPath.node) &&
-                bodyPath.node.source.value === 'prop-types'
-              ) {
-                bodyPath.remove();
-              }
-            });
-          }
+          path.get('body').forEach(bodyPath => {
+            if (
+              t.isImportDeclaration(bodyPath.node) &&
+              bodyPath.node.source.value === 'prop-types'
+            ) {
+              bodyPath.remove();
+            }
+          });
         },
       },
     },
