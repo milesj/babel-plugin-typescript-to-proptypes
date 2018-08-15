@@ -1,5 +1,26 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/avoids-state.ts 1`] = `
+"import _pt from 'prop-types';
+import React from 'react';
+export interface Props {
+  name: string;
+}
+export interface State {
+  age: number;
+}
+export default class AvoidsState extends React.Component<Props, State> {
+  static propTypes = {
+    name: _pt.string.isRequired
+  };
+
+  render() {
+    return null;
+  }
+
+}"
+`;
+
 exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/class/custom-react-import-name.ts 1`] = `
 "import _pt from 'prop-types';
 import R from 'react';

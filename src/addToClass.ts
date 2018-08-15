@@ -5,12 +5,12 @@ import mergePropTypes from './mergePropTypes';
 import { ConvertState } from './types';
 
 export default function addToClass(node: t.ClassDeclaration, state: ConvertState) {
-  if (!node.superTypeParameters) {
+  if (!node.superTypeParameters || node.superTypeParameters.params.length <= 0) {
     return;
   }
 
   // @ts-ignore
-  const typeNames = extractGenericTypeNames(node.superTypeParameters);
+  const typeNames = extractGenericTypeNames(node.superTypeParameters.params[0]);
   const propTypesList = convertToPropTypes(state.componentTypes, typeNames, state);
   let hasPropTypesStaticProperty = false;
 
