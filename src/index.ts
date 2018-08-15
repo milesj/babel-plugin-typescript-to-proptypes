@@ -80,6 +80,11 @@ export default declare((api: any) => {
             }).name;
           }
 
+          // Abort early if we're definitely not in a file that needs conversion
+          if (!state.propTypesImportedName && !state.reactImportedName) {
+            return;
+          }
+
           programPath.traverse({
             // `class Foo extends React.Component<Props> {}`
             // @ts-ignore

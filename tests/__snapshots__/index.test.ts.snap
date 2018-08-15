@@ -735,6 +735,8 @@ export default class NoRemoveExistingPropTypesImport extends React.Component {
 }"
 `;
 
+exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/non-react-file.ts 1`] = `"export default function noop() {}"`;
+
 exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/prop-types-import.ts 1`] = `
 "import React from 'react';
 import PropTypes from 'prop-types';
