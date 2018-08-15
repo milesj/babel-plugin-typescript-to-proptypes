@@ -124,7 +124,7 @@ function convert(type: any, state: ConvertState): PropType | null {
       return createCall(t.identifier('instanceOf'), [t.identifier(name)], propTypesImportedName);
 
       // custom prop type variables (must be last)
-    } else if (hasCustomPropTypeSuffix(name, state.opts.customPropTypeSuffixes)) {
+    } else if (hasCustomPropTypeSuffix(name, state.options.customPropTypeSuffixes)) {
       return t.identifier(name);
     }
 

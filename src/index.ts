@@ -6,7 +6,7 @@ import { types as t } from '@babel/core';
 import addToClass from './addToClass';
 import addToFunctionOrVar from './addToFunctionOrVar';
 import extractTypeProperties from './extractTypeProperties';
-import { Path, ConvertState } from './types';
+import { Path, ConvertState, PluginOptions } from './types';
 
 const BABEL_VERSION = 7;
 
@@ -14,7 +14,7 @@ function isNotTS(name: string): boolean {
   return name.endsWith('.js') || name.endsWith('.jsx');
 }
 
-export default declare((api: any) => {
+export default declare((api: any, options: PluginOptions) => {
   api.assertVersion(BABEL_VERSION);
 
   return {
@@ -25,26 +25,31 @@ export default declare((api: any) => {
       parserOptions.plugins.push('jsx');
     },
 
-    // pre(state: any) {
-    //   program = ts.createProgram([state.opts.filename], {});
-    //   checker = program.getTypeChecker();
+    post() {
+      // console.log(this.state);
+    },
 
-    //   console.log(checker.getSymbolAtLocation(program.getSourceFile(state.opts.filename)!));
-    // },
+    pre() {
+      (this as any).state = {
+        componentTypes: {},
+        filePath: '',
+        hasPropTypesImport: false,
+        options,
+        propTypeCount: 0,
+        propTypesImportedName: '',
+        reactImportedName: '',
+      };
+    },
 
     visitor: {
       Program: {
-        enter(programPath: Path<t.Program>, state: ConvertState) {
-          if (isNotTS(state.filename)) {
+        enter(programPath: Path<t.Program>, { filename }: any) {
+          const { state } = this as any;
+          state.filePath = filename;
+
+          if (isNotTS(filename)) {
             return;
           }
-
-          // Setup our initial state
-          state.reactImportedName = '';
-          state.propTypesImportedName = '';
-          state.hasPropTypesImport = false;
-          state.propTypeCount = 0;
-          state.componentTypes = {};
 
           // Find existing `react` and `prop-types` imports
           programPath.node.body.forEach(node => {
@@ -202,8 +207,10 @@ export default declare((api: any) => {
           });
         },
 
-        exit(path: Path<t.Program>, state: ConvertState) {
-          if (isNotTS(state.filename) || state.propTypeCount !== 0) {
+        exit(path: Path<t.Program>, { filename }: any) {
+          const { state } = this as any;
+
+          if (isNotTS(filename) || state.propTypeCount !== 0) {
             return;
           }
 
