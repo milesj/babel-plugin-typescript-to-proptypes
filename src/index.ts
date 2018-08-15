@@ -75,7 +75,6 @@ export default declare((api: any) => {
           // We need to do this without a visitor as we need to modify
           // the AST before anything else has can run.
           if (!state.hasPropTypesImport && state.reactImportedName) {
-            state.hasPropTypesImport = true;
             state.propTypesImportedName = addDefault(programPath, 'prop-types', {
               nameHint: 'pt',
             }).name;
@@ -195,19 +194,22 @@ export default declare((api: any) => {
         },
 
         exit(path: Path<t.Program>, state: ConvertState) {
-          if (isNotTS(state.filename) || state.componentCount !== 0) {
+          if (isNotTS(state.filename)) {
             return;
           }
 
-          // Remove the `prop-types` import of no components exist
-          path.get('body').forEach(bodyPath => {
-            if (
-              t.isImportDeclaration(bodyPath.node) &&
-              bodyPath.node.source.value === 'prop-types'
-            ) {
-              bodyPath.remove();
-            }
-          });
+          // Remove the `prop-types` import of no components exist,
+          // and be sure not to remove pre-existing imports.
+          if (!state.hasPropTypesImport && state.componentCount === 0) {
+            path.get('body').forEach(bodyPath => {
+              if (
+                t.isImportDeclaration(bodyPath.node) &&
+                bodyPath.node.source.value === 'prop-types'
+              ) {
+                bodyPath.remove();
+              }
+            });
+          }
         },
       },
     },
