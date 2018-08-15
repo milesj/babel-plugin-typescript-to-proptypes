@@ -2,12 +2,13 @@ import path from 'path';
 import glob from 'glob';
 import { transformFileSync } from '@babel/core';
 import plugin from '../src';
+import { PluginOptions } from '../src/types';
 
-function transform(filePath: string, options: any = {}): string {
+function transform(filePath: string, options: any = {}, pluginOptions: PluginOptions = {}): string {
   return (
     transformFileSync(filePath, {
       filename: filePath,
-      plugins: [plugin],
+      plugins: [[plugin, pluginOptions]],
       generatorOpts: {
         comments: false,
         quotes: 'single',
@@ -138,6 +139,18 @@ describe('babel-plugin-typescript-to-proptypes', () => {
       transform(path.join(__dirname, './fixtures/special/jsx.tsx'), {
         presets: [['@babel/preset-typescript', { isTSX: true, allExtensions: true }]],
       }),
+    ).toMatchSnapshot();
+  });
+
+  it('supports custom prop type suffixes', () => {
+    expect(
+      transform(
+        path.join(__dirname, './fixtures/special/custom-suffix.ts'),
+        {},
+        {
+          customPropTypeSuffixes: ['Shape', 'PropType'],
+        },
+      ),
     ).toMatchSnapshot();
   });
 });

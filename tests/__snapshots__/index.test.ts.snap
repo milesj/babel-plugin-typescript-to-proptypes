@@ -1,5 +1,38 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`babel-plugin-typescript-to-proptypes supports custom prop type suffixes 1`] = `
+"import React from 'react';
+import PropTypes from 'prop-types';
+const NameShape = PropTypes.string;
+const AgePropType = PropTypes.number;
+type NameShape = string;
+type AgePropType = number;
+type HeightUnsupported = number;
+export interface Props {
+  name: NameShape;
+  nameOpt?: NameShape;
+  age: AgePropType;
+  ageOpt?: AgePropType;
+  both: NameShape | AgePropType | boolean;
+  height: HeightUnsupported;
+}
+export default class CustomSuffix extends React.Component<Props> {
+  static propTypes = {
+    name: NameShape.isRequired,
+    nameOpt: NameShape,
+    age: AgePropType.isRequired,
+    ageOpt: AgePropType,
+    both: PropTypes.oneOfType([NameShape, AgePropType, PropTypes.bool]).isRequired,
+    height: PropTypes.any.isRequired
+  };
+
+  render() {
+    return null;
+  }
+
+}"
+`;
+
 exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/avoids-state.ts 1`] = `
 "import _pt from 'prop-types';
 import React from 'react';
@@ -283,36 +316,6 @@ export interface Props {
 export default class CustomPropTypesImportNamespace extends React.Component<Props> {
   static propTypes = {
     name: PT.string.isRequired
-  };
-
-  render() {
-    return null;
-  }
-
-}"
-`;
-
-exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/custom-prop-types-shape.ts 1`] = `
-"import React from 'react';
-import PropTypes from 'prop-types';
-const NameShape = PropTypes.string;
-const AgePropType = PropTypes.number;
-type NameShape = string;
-type AgePropType = number;
-export interface Props {
-  name: NameShape;
-  nameOpt?: NameShape;
-  age: AgePropType;
-  ageOpt?: AgePropType;
-  both: NameShape | AgePropType | boolean;
-}
-export default class CustomPropTypesShape extends React.Component<Props> {
-  static propTypes = {
-    name: NameShape.isRequired,
-    nameOpt: NameShape,
-    age: AgePropType.isRequired,
-    ageOpt: AgePropType,
-    both: PropTypes.oneOfType([NameShape, AgePropType, PropTypes.bool]).isRequired
   };
 
   render() {
@@ -714,6 +717,17 @@ export default class NoPropTypesImport extends React.Component<Props> {
     name: _pt.string.isRequired
   };
 
+  render() {
+    return null;
+  }
+
+}"
+`;
+
+exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/no-remove-existing-prop-types-import.ts 1`] = `
+"import React from 'react';
+import PropTypes from 'prop-types';
+export default class NoRemoveExistingPropTypesImport extends React.Component {
   render() {
     return null;
   }

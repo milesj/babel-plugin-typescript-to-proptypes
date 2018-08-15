@@ -6,6 +6,7 @@ const AgePropType = PropTypes.number;
 
 type NameShape = string;
 type AgePropType = number;
+type HeightUnsupported = number;
 
 export interface Props {
   name: NameShape;
@@ -13,9 +14,10 @@ export interface Props {
   age: AgePropType;
   ageOpt?: AgePropType;
   both: NameShape | AgePropType | boolean;
+  height: HeightUnsupported;
 }
 
-export default class CustomPropTypesShape extends React.Component<Props> {
+export default class CustomSuffix extends React.Component<Props> {
   render() {
     return null;
   }

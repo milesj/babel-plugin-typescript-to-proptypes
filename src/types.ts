@@ -14,4 +14,9 @@ export type ConvertState = {
   componentTypes: TypePropertyMap;
   // From babel
   filename: string;
+  opts: PluginOptions;
+};
+
+export type PluginOptions = {
+  customPropTypeSuffixes?: string[];
 };

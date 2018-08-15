@@ -4,6 +4,10 @@ import { PropType, TypePropertyMap, ConvertState } from './types';
 
 const NATIVE_BUILT_INS = ['Date', 'Error', 'RegExp', 'Map', 'WeakMap', 'Set', 'WeakSet', 'Promise'];
 
+function hasCustomPropTypeSuffix(name: string, suffixes?: string[]): boolean {
+  return !!suffixes && suffixes.some(suffix => name.endsWith(suffix));
+}
+
 function isReactTypeMatch(name: string, type: string, reactImportedName: string): boolean {
   return name === type || name === `React.${type}` || name === `${reactImportedName}.${type}`;
 }
@@ -113,13 +117,13 @@ function convert(type: any, state: ConvertState): PropType | null {
     } else if (name.endsWith('Event')) {
       return createMember(t.identifier('object'), propTypesImportedName);
 
-      // custom prop type variables
-    } else if (name.endsWith('Shape') || name.endsWith('PropType')) {
-      return t.identifier(name);
-
       // native built-ins
     } else if (NATIVE_BUILT_INS.includes(name)) {
       return createCall(t.identifier('instanceOf'), [t.identifier(name)], propTypesImportedName);
+
+      // custom prop type variables (must be last)
+    } else if (hasCustomPropTypeSuffix(name, state.opts.customPropTypeSuffixes)) {
+      return t.identifier(name);
     }
 
     // any (we need to support all these in case of unions)
