@@ -743,7 +743,7 @@ export interface Props {
 }
 export default class TypeArray extends React.Component<Props> {
   static propTypes = {
-    any: _pt.array.isRequired,
+    any: _pt.arrayOf(_pt.any).isRequired,
     null: _pt.array.isRequired,
     numbers: _pt.arrayOf(_pt.number),
     strings: _pt.arrayOf(_pt.string).isRequired,
@@ -801,6 +801,7 @@ export default class TypeComplex extends React.Component<Props> {
         e1a: _pt.object.isRequired
       })])
     }).isRequired,
+    f: _pt.any,
     g: _pt.oneOfType([_pt.func, _pt.func]).isRequired,
     h: _pt.oneOfType([_pt.objectOf(_pt.number), _pt.objectOf(_pt.arrayOf(_pt.string))])
   };
@@ -908,10 +909,12 @@ exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/type-primiti
 "import _pt from 'prop-types';
 import React from 'react';
 export interface Props {
+  any: any;
   number: number;
   string: string;
   boolean: boolean;
   symbol: symbol;
+  anyOpt?: any;
   numberOpt?: number;
   stringOpt?: string;
   booleanOpt?: boolean;
@@ -919,10 +922,12 @@ export interface Props {
 }
 export default class TypePrimitives extends React.Component<Props> {
   static propTypes = {
+    any: _pt.any.isRequired,
     number: _pt.number.isRequired,
     string: _pt.string.isRequired,
     boolean: _pt.bool.isRequired,
     symbol: _pt.symbol.isRequired,
+    anyOpt: _pt.any,
     numberOpt: _pt.number,
     stringOpt: _pt.string,
     booleanOpt: _pt.bool,

@@ -1,10 +1,12 @@
 import React from 'react';
 
 export interface Props {
+  any: any;
   number: number;
   string: string;
   boolean: boolean;
   symbol: symbol;
+  anyOpt?: any;
   numberOpt?: number;
   stringOpt?: string;
   booleanOpt?: boolean;

@@ -30,8 +30,12 @@ function convert(type: any, state: ConvertState): PropType | null {
     type = type.typeAnnotation;
   }
 
-  // string -> PropTypes.string
-  if (t.isTSStringKeyword(type)) {
+  // any -> PropTypes.any
+  if (t.isTSAnyKeyword(type)) {
+    return createMember(t.identifier('any'), propTypesImportedName);
+
+    // string -> PropTypes.string
+  } else if (t.isTSStringKeyword(type)) {
     return createMember(t.identifier('string'), propTypesImportedName);
 
     // number -> PropTypes.number
