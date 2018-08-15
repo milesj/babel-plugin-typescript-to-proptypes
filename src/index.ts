@@ -6,7 +6,7 @@ import { types as t } from '@babel/core';
 import addToClass from './addToClass';
 import addToFunctionOrVar from './addToFunctionOrVar';
 import extractTypeProperties from './extractTypeProperties';
-import { Path, ConvertState, PluginOptions } from './types';
+import { Path, PluginOptions } from './types';
 
 const BABEL_VERSION = 7;
 
@@ -26,10 +26,12 @@ export default declare((api: any, options: PluginOptions) => {
     },
 
     post() {
-      // console.log(this.state);
+      // Free up any memory we're hogging
+      (this as any).state = null;
     },
 
     pre() {
+      // Setup initial state
       (this as any).state = {
         componentTypes: {},
         filePath: '',
