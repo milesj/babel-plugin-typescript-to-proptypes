@@ -2,6 +2,8 @@ import { types as t } from '@babel/core';
 import getTypeName from './getTypeName';
 import { PropType, TypePropertyMap, ConvertState } from './types';
 
+const NATIVE_BUILT_INS = ['Date', 'Error', 'RegExp', 'Map', 'WeakMap', 'Set', 'WeakSet', 'Promise'];
+
 function isReactTypeMatch(name: string, type: string, reactImportedName: string): boolean {
   return name === type || name === `React.${type}` || name === `${reactImportedName}.${type}`;
 }
@@ -64,7 +66,9 @@ function convert(type: any, state: ConvertState): PropType | null {
     // React.MouseEventHandler -> PropTypes.func
     // React.Ref -> PropTypes.oneOfType()
     // JSX.Element -> PropTypes.element
-    // CustomType -> PropTypes.any TODO
+    // FooShape, FooPropType -> FooShape, FooPropType
+    // Date, Error, RegExp -> Date, Error, RegExp
+    // CustomType -> PropTypes.any
   } else if (t.isTSTypeReference(type)) {
     const name = getTypeName(type.typeName);
 
@@ -112,6 +116,10 @@ function convert(type: any, state: ConvertState): PropType | null {
       // custom prop type variables
     } else if (name.endsWith('Shape') || name.endsWith('PropType')) {
       return t.identifier(name);
+
+      // native built-ins
+    } else if (NATIVE_BUILT_INS.includes(name)) {
+      return createCall(t.identifier('instanceOf'), [t.identifier(name)], propTypesImportedName);
     }
 
     // any (we need to support all these in case of unions)

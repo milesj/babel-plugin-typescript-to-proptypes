@@ -791,6 +791,48 @@ export default class TypeArray extends React.Component<Props> {
 }"
 `;
 
+exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/type-builtins.ts 1`] = `
+"import _pt from 'prop-types';
+import React from 'react';
+export interface Props {
+  error: Error;
+  errorOpt?: Error;
+  date: Date;
+  dateOpt?: Date;
+  regexp: RegExp;
+  regexpOpt?: RegExp;
+  map: Map<string, number>;
+  mapOpt?: WeakMap<object, number>;
+  set: Set<number>;
+  setOpt?: WeakSet<object>;
+  promise: Promise<any>;
+  promiseOpt?: Promise<any>;
+  union: Error | Date | RegExp | null;
+}
+export default class TypeBuiltins extends React.Component<Props> {
+  static propTypes = {
+    error: _pt.instanceOf(Error).isRequired,
+    errorOpt: _pt.instanceOf(Error),
+    date: _pt.instanceOf(Date).isRequired,
+    dateOpt: _pt.instanceOf(Date),
+    regexp: _pt.instanceOf(RegExp).isRequired,
+    regexpOpt: _pt.instanceOf(RegExp),
+    map: _pt.instanceOf(Map).isRequired,
+    mapOpt: _pt.instanceOf(WeakMap),
+    set: _pt.instanceOf(Set).isRequired,
+    setOpt: _pt.instanceOf(WeakSet),
+    promise: _pt.instanceOf(Promise).isRequired,
+    promiseOpt: _pt.instanceOf(Promise),
+    union: _pt.oneOfType([_pt.instanceOf(Error), _pt.instanceOf(Date), _pt.instanceOf(RegExp)]).isRequired
+  };
+
+  render() {
+    return null;
+  }
+
+}"
+`;
+
 exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/type-complex.ts 1`] = `
 "import _pt from 'prop-types';
 import React from 'react';
