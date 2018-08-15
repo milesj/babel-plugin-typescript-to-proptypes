@@ -108,6 +108,10 @@ function convert(type: any, state: ConvertState): PropType | null {
       // object
     } else if (name.endsWith('Event')) {
       return createMember(t.identifier('object'), propTypesImportedName);
+
+      // custom prop type variables
+    } else if (name.endsWith('Shape') || name.endsWith('PropType')) {
+      return t.identifier(name);
     }
 
     // any (we need to support all these in case of unions)
