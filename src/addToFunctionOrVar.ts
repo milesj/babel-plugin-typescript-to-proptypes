@@ -56,6 +56,12 @@ export default function addToFunctionOrVar(
 
     mergePropTypes(expression.right as t.ObjectExpression, propTypesList, state);
 
+    if (state.options.forbidExtraProps) {
+      expression.right = t.callExpression(t.identifier(state.airbnbPropTypes.forbidImport), [
+        expression.right as t.ObjectExpression,
+      ]);
+    }
+
     // Create a new `propTypes` expression
   } else {
     const objectExpr = t.objectExpression(propTypesList);

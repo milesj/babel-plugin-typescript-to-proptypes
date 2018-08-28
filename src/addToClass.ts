@@ -29,6 +29,12 @@ export default function addToClass(node: t.ClassDeclaration, state: ConvertState
 
       // Merge with existing `propTypes`
       mergePropTypes(property.value as t.ObjectExpression, propTypesList, state);
+
+      if (state.options.forbidExtraProps) {
+        property.value = t.callExpression(t.identifier(state.airbnbPropTypes.forbidImport), [
+          property.value as t.ObjectExpression,
+        ]);
+      }
     }
   });
 

@@ -62,10 +62,10 @@ interface Props {
   age: number;
 }
 export default class MergeForbidExtraProps extends React.Component<Props> {
-  static propTypes = {
+  static propTypes = _forbidExtraProps({
     name: _pt.string.isRequired,
     age: int()
-  };
+  });
 
   render() {
     return null;
