@@ -28,7 +28,7 @@ export default function addToClass(node: t.ClassDeclaration, state: ConvertState
       hasPropTypesStaticProperty = true;
 
       // Merge with existing `propTypes`
-      mergePropTypes(property.value as t.ObjectExpression, propTypesList, state);
+      mergePropTypes(property.value as t.ObjectExpression, propTypesList);
 
       if (state.options.forbidExtraProps) {
         property.value = t.callExpression(t.identifier(state.airbnbPropTypes.forbidImport), [

@@ -131,6 +131,19 @@ export default declare((api: any, options: PluginOptions) => {
           }
 
           programPath.traverse({
+            // airbnbPropTypes.componentWithName()
+            CallExpression({ node }: Path<t.CallExpression>) {
+              const { namedImports } = state.airbnbPropTypes;
+
+              if (
+                options.forbidExtraProps &&
+                t.isIdentifier(node.callee) &&
+                namedImports.includes(node.callee.name)
+              ) {
+                state.airbnbPropTypes.count += 1;
+              }
+            },
+
             // `class Foo extends React.Component<Props> {}`
             // @ts-ignore
             'ClassDeclaration|ClassExpression': (path: Path<t.ClassDeclaration>) => {
@@ -176,6 +189,15 @@ export default declare((api: any, options: PluginOptions) => {
 
               if (valid) {
                 addToFunctionOrVar(path, node.id.name, state);
+              }
+            },
+
+            // airbnbPropTypes.nonNegativeInteger
+            Identifier({ node }: Path<t.Identifier>) {
+              const { namedImports } = state.airbnbPropTypes;
+
+              if (options.forbidExtraProps && namedImports.includes(node.name)) {
+                state.airbnbPropTypes.count += 1;
               }
             },
 
@@ -261,14 +283,6 @@ export default declare((api: any, options: PluginOptions) => {
               state.propTypes.count === 0 &&
               t.isImportDeclaration(bodyPath.node) &&
               bodyPath.node.source.value === 'prop-types'
-            ) {
-              bodyPath.remove();
-            }
-
-            if (
-              !state.options.forbidExtraProps &&
-              t.isImportDeclaration(bodyPath.node) &&
-              bodyPath.node.source.value === 'airbnb-prop-types'
             ) {
               bodyPath.remove();
             }

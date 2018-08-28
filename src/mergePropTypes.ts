@@ -1,10 +1,8 @@
 import { types as t } from '@babel/core';
-import { ConvertState } from './types';
 
 export default function mergePropTypes(
   objectExpr: t.ObjectExpression,
   propTypes: t.ObjectProperty[],
-  state: ConvertState,
 ) {
   const { properties } = objectExpr;
   const existingProps: { [key: string]: boolean } = {};
@@ -13,22 +11,6 @@ export default function mergePropTypes(
   properties.forEach(property => {
     if (t.isObjectProperty(property) && t.isIdentifier(property.key)) {
       existingProps[property.key.name] = true;
-
-      // Check for `airbnb-prop-types`
-      if (state.options.forbidExtraProps) {
-        const { namedImports } = state.airbnbPropTypes;
-
-        if (
-          // componentWithName()
-          (t.isCallExpression(property.value) &&
-            t.isIdentifier(property.value.callee) &&
-            namedImports.includes(property.value.callee.name)) ||
-          // nonNegativeInteger
-          (t.isIdentifier(property.value) && namedImports.includes(property.value.name))
-        ) {
-          state.airbnbPropTypes.count += 1;
-        }
-      }
     }
   });
 
