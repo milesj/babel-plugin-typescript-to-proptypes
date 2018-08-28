@@ -83,12 +83,17 @@ function convert(type: any, state: ConvertState): PropType | null {
     if (
       isReactTypeMatch(name, 'ReactText', reactImportedName) ||
       isReactTypeMatch(name, 'ReactNode', reactImportedName) ||
-      isReactTypeMatch(name, 'ReactType', reactImportedName) ||
+      isReactTypeMatch(name, 'ReactType', reactImportedName)
+    ) {
+      return createMember(t.identifier('node'), propTypesImportedName);
+
+      // function
+    } else if (
       isReactTypeMatch(name, 'ComponentType', reactImportedName) ||
       isReactTypeMatch(name, 'ComponentClass', reactImportedName) ||
       isReactTypeMatch(name, 'StatelessComponent', reactImportedName)
     ) {
-      return createMember(t.identifier('node'), propTypesImportedName);
+      return createMember(t.identifier('func'), propTypesImportedName);
 
       // element
     } else if (
