@@ -1,12 +1,12 @@
 import { declare } from '@babel/helper-plugin-utils';
-import { addDefault } from '@babel/helper-module-imports';
+import { addDefault, addNamed } from '@babel/helper-module-imports';
 import syntaxTypeScript from '@babel/plugin-syntax-typescript';
 import { types as t } from '@babel/core';
 // import ts from 'typescript';
 import addToClass from './addToClass';
 import addToFunctionOrVar from './addToFunctionOrVar';
 import extractTypeProperties from './extractTypeProperties';
-import { Path, PluginOptions } from './types';
+import { Path, PluginOptions, ConvertState } from './types';
 
 const BABEL_VERSION = 7;
 
@@ -33,12 +33,20 @@ export default declare((api: any, options: PluginOptions) => {
     pre() {
       // Setup initial state
       (this as any).state = {
+        airbnbPropTypes: {
+          count: 0,
+          forbidImport: '',
+          hasImport: false,
+          namedImports: [],
+        },
         componentTypes: {},
         filePath: '',
-        hasPropTypesImport: false,
         options,
-        propTypeCount: 0,
-        propTypesImportedName: '',
+        propTypes: {
+          count: 0,
+          defaultImport: '',
+          hasImport: false,
+        },
         reactImportedName: '',
       };
     },
@@ -46,7 +54,8 @@ export default declare((api: any, options: PluginOptions) => {
     visitor: {
       Program: {
         enter(programPath: Path<t.Program>, { filename }: any) {
-          const { state } = this as any;
+          const state = (this as any).state as ConvertState;
+
           state.filePath = filename;
 
           if (isNotTS(filename)) {
@@ -60,12 +69,25 @@ export default declare((api: any, options: PluginOptions) => {
             }
 
             if (node.source.value === 'prop-types') {
-              state.hasPropTypesImport = true;
+              state.propTypes.hasImport = true;
 
               node.specifiers.forEach(spec => {
                 if (t.isImportDefaultSpecifier(spec) || t.isImportNamespaceSpecifier(spec)) {
-                  state.propTypesImportedName = spec.local.name;
+                  state.propTypes.defaultImport = spec.local.name;
                 }
+              });
+            }
+
+            if (node.source.value === 'airbnb-prop-types') {
+              state.airbnbPropTypes.hasImport = true;
+              state.airbnbPropTypes.namedImports = node.specifiers.map(spec => {
+                const { name } = spec.local;
+
+                if (name === 'forbidExtraProps') {
+                  state.airbnbPropTypes.forbidImport = name;
+                }
+
+                return name;
               });
             }
 
@@ -81,14 +103,30 @@ export default declare((api: any, options: PluginOptions) => {
           // Add `prop-types` import if it does not exist.
           // We need to do this without a visitor as we need to modify
           // the AST before anything else has can run.
-          if (!state.hasPropTypesImport && state.reactImportedName) {
-            state.propTypesImportedName = addDefault(programPath, 'prop-types', {
+          if (!state.propTypes.hasImport && state.reactImportedName) {
+            state.propTypes.hasImport = true;
+            state.propTypes.defaultImport = addDefault(programPath, 'prop-types', {
               nameHint: 'pt',
             }).name;
           }
 
+          if (
+            (!state.airbnbPropTypes.hasImport || !state.airbnbPropTypes.forbidImport) &&
+            state.reactImportedName &&
+            options.forbidExtraProps
+          ) {
+            state.airbnbPropTypes.hasImport = true;
+            state.airbnbPropTypes.forbidImport = addNamed(
+              programPath,
+              'forbidExtraProps',
+              'airbnb-prop-types',
+            ).name;
+
+            state.airbnbPropTypes.count += 1;
+          }
+
           // Abort early if we're definitely not in a file that needs conversion
-          if (!state.propTypesImportedName && !state.reactImportedName) {
+          if (!state.propTypes.defaultImport && !state.reactImportedName) {
             return;
           }
 
@@ -143,8 +181,8 @@ export default declare((api: any, options: PluginOptions) => {
 
             // PropTypes.*
             MemberExpression({ node }: Path<t.MemberExpression>) {
-              if (t.isIdentifier(node.object, { name: state.propTypesImportedName })) {
-                state.propTypeCount += 1;
+              if (t.isIdentifier(node.object, { name: state.propTypes.defaultImport })) {
+                state.propTypes.count += 1;
               }
             },
 
@@ -210,9 +248,9 @@ export default declare((api: any, options: PluginOptions) => {
         },
 
         exit(path: Path<t.Program>, { filename }: any) {
-          const { state } = this as any;
+          const state = (this as any).state as ConvertState;
 
-          if (isNotTS(filename) || state.propTypeCount !== 0) {
+          if (isNotTS(filename)) {
             return;
           }
 
@@ -220,8 +258,17 @@ export default declare((api: any, options: PluginOptions) => {
           // and be sure not to remove pre-existing imports.
           path.get('body').forEach(bodyPath => {
             if (
+              state.propTypes.count === 0 &&
               t.isImportDeclaration(bodyPath.node) &&
               bodyPath.node.source.value === 'prop-types'
+            ) {
+              bodyPath.remove();
+            }
+
+            if (
+              !state.options.forbidExtraProps &&
+              t.isImportDeclaration(bodyPath.node) &&
+              bodyPath.node.source.value === 'airbnb-prop-types'
             ) {
               bodyPath.remove();
             }

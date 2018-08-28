@@ -153,4 +153,28 @@ describe('babel-plugin-typescript-to-proptypes', () => {
       ),
     ).toMatchSnapshot();
   });
+
+  it('supports forbid extra props', () => {
+    expect(
+      transform(
+        path.join(__dirname, './fixtures/special/forbid-extra-props.ts'),
+        {},
+        {
+          forbidExtraProps: true,
+        },
+      ),
+    ).toMatchSnapshot();
+  });
+
+  it('supports merging with forbid extra props', () => {
+    expect(
+      transform(
+        path.join(__dirname, './fixtures/special/merge-forbid-extra-props.ts'),
+        {},
+        {
+          forbidExtraProps: true,
+        },
+      ),
+    ).toMatchSnapshot();
+  });
 });

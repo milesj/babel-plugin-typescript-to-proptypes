@@ -33,6 +33,47 @@ export default class CustomSuffix extends React.Component<Props> {
 }"
 `;
 
+exports[`babel-plugin-typescript-to-proptypes supports forbid extra props 1`] = `
+"import { forbidExtraProps as _forbidExtraProps } from 'airbnb-prop-types';
+import _pt from 'prop-types';
+import React from 'react';
+interface Props {
+  name: string;
+}
+export default class ForbidExtraProps extends React.Component<Props> {
+  static propTypes = _forbidExtraProps({
+    name: _pt.string.isRequired
+  });
+
+  render() {
+    return null;
+  }
+
+}"
+`;
+
+exports[`babel-plugin-typescript-to-proptypes supports merging with forbid extra props 1`] = `
+"import { forbidExtraProps as _forbidExtraProps } from 'airbnb-prop-types';
+import _pt from 'prop-types';
+import React from 'react';
+import { integer as int } from 'airbnb-prop-types';
+interface Props {
+  name: string;
+  age: number;
+}
+export default class MergeForbidExtraProps extends React.Component<Props> {
+  static propTypes = {
+    name: _pt.string.isRequired,
+    age: int()
+  };
+
+  render() {
+    return null;
+  }
+
+}"
+`;
+
 exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/avoids-state.ts 1`] = `
 "import _pt from 'prop-types';
 import React from 'react';

@@ -28,15 +28,18 @@ export default function addToClass(node: t.ClassDeclaration, state: ConvertState
       hasPropTypesStaticProperty = true;
 
       // Merge with existing `propTypes`
-      mergePropTypes(property.value as t.ObjectExpression, propTypesList);
+      mergePropTypes(property.value as t.ObjectExpression, propTypesList, state);
     }
   });
 
   // Add a new static `propTypes` class property
   if (!hasPropTypesStaticProperty) {
+    const objectExpr = t.objectExpression(propTypesList);
     const staticProperty = t.classProperty(
       t.identifier('propTypes'),
-      t.objectExpression(propTypesList),
+      state.options.forbidExtraProps
+        ? t.callExpression(t.identifier(state.airbnbPropTypes.forbidImport), [objectExpr])
+        : objectExpr,
     );
 
     // @ts-ignore

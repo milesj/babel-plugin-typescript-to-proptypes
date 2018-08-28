@@ -54,16 +54,20 @@ export default function addToFunctionOrVar(
     const statement = existingExpr[0].node as t.ExpressionStatement;
     const expression = statement.expression as t.AssignmentExpression;
 
-    mergePropTypes(expression.right as t.ObjectExpression, propTypesList);
+    mergePropTypes(expression.right as t.ObjectExpression, propTypesList, state);
 
     // Create a new `propTypes` expression
   } else {
+    const objectExpr = t.objectExpression(propTypesList);
+
     rootPath.insertAfter(
       t.expressionStatement(
         t.assignmentExpression(
           '=',
           t.memberExpression(t.identifier(name), t.identifier('propTypes')),
-          t.objectExpression(propTypesList),
+          state.options.forbidExtraProps
+            ? t.callExpression(t.identifier(state.airbnbPropTypes.forbidImport), [objectExpr])
+            : objectExpr,
         ),
       ),
     );

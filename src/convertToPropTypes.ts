@@ -29,14 +29,15 @@ function createCall(
 }
 
 function convert(type: any, state: ConvertState): PropType | null {
-  const { reactImportedName, propTypesImportedName } = state;
+  const { reactImportedName, propTypes } = state;
+  const propTypesImportedName = propTypes.defaultImport;
 
   // Remove wrapping parens
   if (t.isTSParenthesizedType(type)) {
     type = type.typeAnnotation;
   }
 
-  state.propTypeCount += 1;
+  state.propTypes.count += 1;
 
   // any -> PropTypes.any
   if (t.isTSAnyKeyword(type)) {
@@ -197,7 +198,7 @@ function convert(type: any, state: ConvertState): PropType | null {
     }
   }
 
-  state.propTypeCount -= 1;
+  state.propTypes.count -= 1;
 
   return null;
 }

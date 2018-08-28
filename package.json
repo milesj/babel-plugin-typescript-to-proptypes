@@ -67,6 +67,7 @@
         "complexity": "off",
         "no-param-reassign": "off",
         "no-use-before-define": "off",
+        "react/forbid-foreign-prop-types": "off",
         "typescript/no-use-before-define": "off"
       },
       "ignore": [
