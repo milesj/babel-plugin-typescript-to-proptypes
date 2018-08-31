@@ -40,7 +40,7 @@
     "@babel/preset-env": "^7.0.0",
     "@babel/preset-react": "^7.0.0",
     "@babel/preset-typescript": "^7.0.0",
-    "@milesj/build-tool-config": "^0.117.1",
+    "@milesj/build-tool-config": "^0.119.1",
     "@types/babel-core": "^6.25.5",
     "@types/babel-types": "^7.0.4",
     "babel-core": "7.0.0-bridge.0",
