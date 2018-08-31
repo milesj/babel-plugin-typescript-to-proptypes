@@ -1,9 +1,18 @@
 import { types as t } from '@babel/core';
+import { ConvertState } from './types';
 
-export default function mergePropTypes(
-  objectExpr: t.ObjectExpression,
+export function createPropTypesObject(
   propTypes: t.ObjectProperty[],
-) {
+  state: ConvertState,
+): t.CallExpression | t.ObjectExpression {
+  const object = t.objectExpression(propTypes);
+
+  return state.options.forbidExtraProps
+    ? t.callExpression(t.identifier(state.airbnbPropTypes.forbidImport), [object])
+    : object;
+}
+
+export function mergePropTypes(objectExpr: t.ObjectExpression, propTypes: t.ObjectProperty[]) {
   const { properties } = objectExpr;
   const existingProps: { [key: string]: boolean } = {};
 

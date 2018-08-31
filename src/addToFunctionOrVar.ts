@@ -1,7 +1,7 @@
 import { types as t } from '@babel/core';
 import convertToPropTypes from './convertToPropTypes';
 import extractGenericTypeNames from './extractGenericTypeNames';
-import mergePropTypes from './mergePropTypes';
+import { createPropTypesObject, mergePropTypes } from './propTypes';
 import { Path, ConvertState } from './types';
 
 export default function addToFunctionOrVar(
@@ -64,16 +64,12 @@ export default function addToFunctionOrVar(
 
     // Create a new `propTypes` expression
   } else {
-    const objectExpr = t.objectExpression(propTypesList);
-
     rootPath.insertAfter(
       t.expressionStatement(
         t.assignmentExpression(
           '=',
           t.memberExpression(t.identifier(name), t.identifier('propTypes')),
-          state.options.forbidExtraProps
-            ? t.callExpression(t.identifier(state.airbnbPropTypes.forbidImport), [objectExpr])
-            : objectExpr,
+          createPropTypesObject(propTypesList, state),
         ),
       ),
     );

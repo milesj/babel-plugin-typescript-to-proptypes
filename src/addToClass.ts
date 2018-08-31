@@ -1,7 +1,7 @@
 import { types as t } from '@babel/core';
 import convertToPropTypes from './convertToPropTypes';
 import extractGenericTypeNames from './extractGenericTypeNames';
-import mergePropTypes from './mergePropTypes';
+import { createPropTypesObject, mergePropTypes } from './propTypes';
 import { ConvertState } from './types';
 
 export default function addToClass(node: t.ClassDeclaration, state: ConvertState) {
@@ -40,12 +40,9 @@ export default function addToClass(node: t.ClassDeclaration, state: ConvertState
 
   // Add a new static `propTypes` class property
   if (!hasPropTypesStaticProperty) {
-    const objectExpr = t.objectExpression(propTypesList);
     const staticProperty = t.classProperty(
       t.identifier('propTypes'),
-      state.options.forbidExtraProps
-        ? t.callExpression(t.identifier(state.airbnbPropTypes.forbidImport), [objectExpr])
-        : objectExpr,
+      createPropTypesObject(propTypesList, state),
     );
 
     // @ts-ignore
