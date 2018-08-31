@@ -54,13 +54,7 @@ export default function addToFunctionOrVar(
     const statement = existingExpr[0].node as t.ExpressionStatement;
     const expression = statement.expression as t.AssignmentExpression;
 
-    mergePropTypes(expression.right as t.ObjectExpression, propTypesList);
-
-    if (state.options.forbidExtraProps) {
-      expression.right = t.callExpression(t.identifier(state.airbnbPropTypes.forbidImport), [
-        expression.right as t.ObjectExpression,
-      ]);
-    }
+    expression.right = mergePropTypes(expression.right, propTypesList, state);
 
     // Create a new `propTypes` expression
   } else {

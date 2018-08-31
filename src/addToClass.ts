@@ -22,19 +22,13 @@ export default function addToClass(node: t.ClassDeclaration, state: ConvertState
     const valid =
       t.isClassProperty(property, { static: true }) &&
       t.isIdentifier(property.key, { name: 'propTypes' }) &&
-      t.isObjectExpression(property.value);
+      (t.isObjectExpression(property.value) || t.isCallExpression(property.value));
 
     if (valid) {
       hasPropTypesStaticProperty = true;
 
       // Merge with existing `propTypes`
-      mergePropTypes(property.value as t.ObjectExpression, propTypesList);
-
-      if (state.options.forbidExtraProps) {
-        property.value = t.callExpression(t.identifier(state.airbnbPropTypes.forbidImport), [
-          property.value as t.ObjectExpression,
-        ]);
-      }
+      property.value = mergePropTypes(property.value, propTypesList, state);
     }
   });
 

@@ -7,13 +7,33 @@ export function createPropTypesObject(
 ): t.CallExpression | t.ObjectExpression {
   const object = t.objectExpression(propTypes);
 
+  // Wrap with forbid
   return state.options.forbidExtraProps
     ? t.callExpression(t.identifier(state.airbnbPropTypes.forbidImport), [object])
     : object;
 }
 
-export function mergePropTypes(objectExpr: t.ObjectExpression, propTypes: t.ObjectProperty[]) {
-  const { properties } = objectExpr;
+export function mergePropTypes(
+  expr: any,
+  propTypes: t.ObjectProperty[],
+  state: ConvertState,
+  wrapForbid: boolean = true,
+): t.CallExpression | t.ObjectExpression {
+  if (t.isCallExpression(expr)) {
+    if (t.isIdentifier(expr.callee, { name: 'forbidExtraProps' })) {
+      expr.arguments.forEach((arg, index) => {
+        expr.arguments[index] = mergePropTypes(arg, propTypes, state, false);
+      });
+    }
+
+    return expr;
+  }
+
+  if (!t.isObjectExpression(expr)) {
+    return expr;
+  }
+
+  const { properties } = expr;
   const existingProps: { [key: string]: boolean } = {};
 
   // Extract existing props so that we don't duplicate
@@ -29,4 +49,11 @@ export function mergePropTypes(objectExpr: t.ObjectExpression, propTypes: t.Obje
       properties.unshift(propType);
     }
   });
+
+  // Wrap with forbid
+  if (wrapForbid && state.options.forbidExtraProps) {
+    return t.callExpression(t.identifier(state.airbnbPropTypes.forbidImport), [expr]);
+  }
+
+  return expr;
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { integer as int } from 'airbnb-prop-types';
+import { forbidExtraProps, integer as int } from 'airbnb-prop-types';
 
 interface Props {
   name: string;
@@ -7,9 +7,9 @@ interface Props {
 }
 
 export default class MergeForbidExtraProps extends React.Component<Props> {
-  static propTypes = {
+  static propTypes = forbidExtraProps({
     age: int(),
-  };
+  });
 
   render() {
     return null;

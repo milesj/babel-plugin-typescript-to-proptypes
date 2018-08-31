@@ -79,16 +79,29 @@ export default declare((api: any, options: PluginOptions) => {
             }
 
             if (node.source.value === 'airbnb-prop-types') {
+              let hasForbidImport = false;
+
               state.airbnbPropTypes.hasImport = true;
               state.airbnbPropTypes.namedImports = node.specifiers.map(spec => {
                 const { name } = spec.local;
 
                 if (name === 'forbidExtraProps') {
+                  hasForbidImport = true;
                   state.airbnbPropTypes.forbidImport = name;
                 }
 
                 return name;
               });
+
+              if (!hasForbidImport) {
+                node.specifiers.push(
+                  t.importSpecifier(
+                    t.identifier('forbidExtraProps'),
+                    t.identifier('forbidExtraProps'),
+                  ),
+                );
+                state.airbnbPropTypes.forbidImport = 'forbidExtraProps';
+              }
             }
 
             if (node.source.value === 'react') {
@@ -111,7 +124,7 @@ export default declare((api: any, options: PluginOptions) => {
           }
 
           if (
-            (!state.airbnbPropTypes.hasImport || !state.airbnbPropTypes.forbidImport) &&
+            !state.airbnbPropTypes.hasImport &&
             state.reactImportedName &&
             options.forbidExtraProps
           ) {
