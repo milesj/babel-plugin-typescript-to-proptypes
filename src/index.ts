@@ -6,6 +6,7 @@ import { types as t } from '@babel/core';
 import addToClass from './addToClass';
 import addToFunctionOrVar from './addToFunctionOrVar';
 import extractTypeProperties from './extractTypeProperties';
+import upsertImport from './upsertImport';
 import { Path, PluginOptions, ConvertState } from './types';
 
 const BABEL_VERSION = 7;
@@ -69,47 +70,28 @@ export default declare((api: any, options: PluginOptions) => {
             }
 
             if (node.source.value === 'prop-types') {
-              state.propTypes.hasImport = true;
-
-              node.specifiers.forEach(spec => {
-                if (t.isImportDefaultSpecifier(spec) || t.isImportNamespaceSpecifier(spec)) {
-                  state.propTypes.defaultImport = spec.local.name;
-                }
+              const response = upsertImport(node, {
+                checkForDefault: 'PropTypes',
               });
+
+              state.propTypes.hasImport = true;
+              state.propTypes.defaultImport = response.defaultImport;
             }
 
             if (node.source.value === 'airbnb-prop-types') {
-              let hasForbidImport = false;
+              const response = upsertImport(node, { checkForNamed: 'forbidExtraProps' });
 
               state.airbnbPropTypes.hasImport = true;
-              state.airbnbPropTypes.namedImports = node.specifiers.map(spec => {
-                const { name } = spec.local;
-
-                if (name === 'forbidExtraProps') {
-                  hasForbidImport = true;
-                  state.airbnbPropTypes.forbidImport = name;
-                }
-
-                return name;
-              });
-
-              if (!hasForbidImport) {
-                node.specifiers.push(
-                  t.importSpecifier(
-                    t.identifier('forbidExtraProps'),
-                    t.identifier('forbidExtraProps'),
-                  ),
-                );
-                state.airbnbPropTypes.forbidImport = 'forbidExtraProps';
-              }
+              state.airbnbPropTypes.namedImports = response.namedImports;
+              state.airbnbPropTypes.forbidImport = response.namedImport;
             }
 
             if (node.source.value === 'react') {
-              node.specifiers.forEach(spec => {
-                if (t.isImportDefaultSpecifier(spec) || t.isImportNamespaceSpecifier(spec)) {
-                  state.reactImportedName = spec.local.name;
-                }
+              const response = upsertImport(node, {
+                checkForDefault: 'React',
               });
+
+              state.reactImportedName = response.defaultImport;
             }
           });
 
@@ -117,7 +99,6 @@ export default declare((api: any, options: PluginOptions) => {
           // We need to do this without a visitor as we need to modify
           // the AST before anything else has can run.
           if (!state.propTypes.hasImport && state.reactImportedName) {
-            state.propTypes.hasImport = true;
             state.propTypes.defaultImport = addDefault(programPath, 'prop-types', {
               nameHint: 'pt',
             }).name;
@@ -128,7 +109,6 @@ export default declare((api: any, options: PluginOptions) => {
             state.reactImportedName &&
             options.forbidExtraProps
           ) {
-            state.airbnbPropTypes.hasImport = true;
             state.airbnbPropTypes.forbidImport = addNamed(
               programPath,
               'forbidExtraProps',

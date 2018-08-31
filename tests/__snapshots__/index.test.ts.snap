@@ -363,6 +363,24 @@ export default class CustomPropTypesImportNamespace extends React.Component<Prop
 }"
 `;
 
+exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/custom-prop-types-named-no-default.ts 1`] = `
+"import React from 'react';
+import PropTypes, { ValidationMap } from 'prop-types';
+export interface Props {
+  name: string;
+}
+export default class CustomPropTypesNamedNoDefault extends React.Component<Props> {
+  static propTypes = {
+    name: PropTypes.string.isRequired
+  };
+
+  render() {
+    return null;
+  }
+
+}"
+`;
+
 exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/custom-react-import-name.ts 1`] = `
 "import _pt from 'prop-types';
 import R from 'react';
