@@ -16,7 +16,10 @@ function findStaticProperty(
   );
 }
 
-export default function addToClass(node: t.ClassDeclaration, state: ConvertState) {
+export default function addToClass(
+  node: t.ClassDeclaration,
+  state: ConvertState,
+) {
   if (!node.superTypeParameters || node.superTypeParameters.params.length <= 0) {
     return;
   }
@@ -31,7 +34,7 @@ export default function addToClass(node: t.ClassDeclaration, state: ConvertState
       }
     });
   }
-
+  
   const typeNames = extractGenericTypeNames(node.superTypeParameters.params[0]);
   const propTypesList = convertToPropTypes(
     state.componentTypes,
@@ -49,9 +52,10 @@ export default function addToClass(node: t.ClassDeclaration, state: ConvertState
   if (propTypes) {
     propTypes.value = mergePropTypes(propTypes.value, propTypesList, state);
   } else {
+    const isVariable = state.options.declarePropTypeVariables && typeNames.length === 1;
     const staticProperty = t.classProperty(
       t.identifier('propTypes'),
-      createPropTypesObject(propTypesList, state),
+      isVariable ? t.identifier(typeNames[0]) : createPropTypesObject(propTypesList, state),
     );
 
     // @ts-ignore
