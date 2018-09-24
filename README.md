@@ -208,3 +208,43 @@ class Example extends React.Component {
   }
 }
 ```
+
+- `declarePropTypeVariables` (boolean) - Adding declarations for variables of PropTypes. Defaults to `false`.
+
+```js
+module.exports = {
+  plugins: [['babel-plugin-typescript-to-proptypes', { declarePropTypeVariables: true }]],
+};
+```
+
+```js
+// Example.d.ts
+// Before
+import React from 'react';
+
+export interface Props {
+  name?: string;
+}
+
+// After
+import React from 'react';
+import PropTypes from 'prop-types';
+
+export const Props = {
+  name: PropTypes.string
+};
+```
+
+```js
+// Example.js
+import React from 'react';
+import Props from './Example.d.ts';
+
+export class Example extends React.Component {
+  static propTypes = Props;
+
+  render() {
+    return <div />;
+  }
+}
+```
