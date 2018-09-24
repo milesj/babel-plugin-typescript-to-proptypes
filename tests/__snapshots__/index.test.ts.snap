@@ -1,5 +1,30 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`babel-plugin-typescript-to-proptypes supports adding variables for props 1`] = `
+"import _pt from 'prop-types';
+import React from 'react';
+interface AProps {
+  a: number;
+}
+const AProps = {
+  a: _pt.number.isRequired
+};
+interface BProps {
+  b: boolean;
+}
+const BProps = {
+  b: _pt.bool.isRequired
+};
+export interface Props extends AProps, BProps {
+  name: string;
+}
+export const Props = {
+  a: _pt.number.isRequired,
+  b: _pt.bool.isRequired,
+  name: _pt.string.isRequired
+};"
+`;
+
 exports[`babel-plugin-typescript-to-proptypes supports custom prop type suffixes 1`] = `
 "import React from 'react';
 import PropTypes from 'prop-types';
@@ -94,6 +119,31 @@ export default class AvoidsState extends React.Component<Props, State> {
 }"
 `;
 
+exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/avoids-state.ts with adding variables for props 1`] = `
+"import _pt from 'prop-types';
+import React from 'react';
+export interface Props {
+  name: string;
+}
+export const Props = {
+  name: _pt.string.isRequired
+};
+export interface State {
+  age: number;
+}
+export const State = {
+  age: _pt.number.isRequired
+};
+export default class AvoidsState extends React.Component<Props, State> {
+  static propTypes = Props;
+
+  render() {
+    return null;
+  }
+
+}"
+`;
+
 exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/class/custom-react-import-name.ts 1`] = `
 "import _pt from 'prop-types';
 import R from 'react';
@@ -122,6 +172,25 @@ export default class ClassCustomReactImportNamePure extends R.PureComponent<Prop
   static propTypes = {
     name: _pt.string.isRequired
   };
+
+  render() {
+    return null;
+  }
+
+}"
+`;
+
+exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/class/custom-react-import-name-pure.ts with adding variables for props 1`] = `
+"import _pt from 'prop-types';
+import R from 'react';
+interface Props {
+  name: string;
+}
+const Props = {
+  name: _pt.string.isRequired
+};
+export default class ClassCustomReactImportNamePure extends R.PureComponent<Props> {
+  static propTypes = Props;
 
   render() {
     return null;

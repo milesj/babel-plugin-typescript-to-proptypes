@@ -178,4 +178,30 @@ describe('babel-plugin-typescript-to-proptypes', () => {
       ),
     ).toMatchSnapshot();
   });
+
+  glob
+    .sync('./fixtures/**/*.ts', { cwd: __dirname, dot: false, strict: true })
+    .slice(0, 2)
+    .forEach(filePath => {
+      if (filePath.includes('/special/')) {
+        return;
+      }
+
+      it(`transforms ${filePath} with adding variables for props`, () => {
+        expect(transform(path.join(__dirname, filePath), {}, { declarePropTypeVariables: true })).toMatchSnapshot();
+      });
+    });
+  
+  it('supports adding variables for props', () => {
+    expect(
+      transform(
+        path.join(__dirname, './fixtures/special/add-variables.ts'),
+        {},
+        {
+          declarePropTypeVariables: true,
+        },
+      ),
+    ).toMatchSnapshot();
+  });
+
 });
