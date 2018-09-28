@@ -202,7 +202,6 @@ export default declare((api: any, options: PluginOptions) => {
             },
 
             // `interface FooProps {}`
-            // @ts-ignore
             TSInterfaceDeclaration({ node }: Path<t.TSInterfaceDeclaration>) {
               state.componentTypes[node.id.name] = extractTypeProperties(
                 node,

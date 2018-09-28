@@ -12,10 +12,10 @@
     "prop-types"
   ],
   "scripts": {
-    "build": "beemo typescript --node",
+    "build": "beemo typescript",
     "coverage": "npm run jest --coverage",
     "eslint": "beemo eslint",
-    "jest": "jest",
+    "jest": "beemo jest",
     "prettier": "beemo prettier",
     "release": "np --yolo --no-yarn",
     "type": "beemo typescript --noEmit",
@@ -34,21 +34,21 @@
     "typescript": "^2.0.0 || ^3.0.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.0.0",
-    "@babel/plugin-proposal-class-properties": "^7.0.0",
-    "@babel/plugin-transform-runtime": "^7.0.0",
-    "@babel/preset-env": "^7.0.0",
+    "@babel/core": "^7.1.0",
+    "@babel/plugin-proposal-class-properties": "^7.1.0",
+    "@babel/plugin-transform-runtime": "^7.1.0",
+    "@babel/preset-env": "^7.1.0",
     "@babel/preset-react": "^7.0.0",
-    "@babel/preset-typescript": "^7.0.0",
-    "@milesj/build-tool-config": "^0.119.1",
+    "@babel/preset-typescript": "^7.1.0",
+    "@milesj/build-tools": "^0.1.0",
     "@types/babel-core": "^6.25.5",
     "@types/babel-types": "^7.0.4",
     "babel-core": "7.0.0-bridge.0",
     "glob": "^7.1.2",
-    "typescript": "^3.0.1"
+    "typescript": "^3.1.1"
   },
   "beemo": {
-    "module": "@milesj/build-tool-config",
+    "module": "@milesj/build-tools",
     "drivers": [
       "babel",
       "eslint",
@@ -56,6 +56,9 @@
       "prettier",
       "typescript"
     ],
+    "settings": {
+      "node": true
+    },
     "babel": {
       "sourceType": "module",
       "ignore": [

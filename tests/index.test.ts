@@ -7,12 +7,13 @@ import { PluginOptions } from '../src/types';
 function transform(filePath: string, options: any = {}, pluginOptions: PluginOptions = {}): string {
   return (
     transformFileSync(filePath, {
+      babelrc: false,
+      configFile: false,
       filename: filePath,
       plugins: [[plugin, pluginOptions]],
       generatorOpts: {
         comments: false,
         quotes: 'single',
-        // @ts-ignore
         jsescOption: { quotes: 'single' },
       },
       ...options,

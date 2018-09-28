@@ -9,7 +9,6 @@ export default function addToClass(node: t.ClassDeclaration, state: ConvertState
     return;
   }
 
-  // @ts-ignore
   const typeNames = extractGenericTypeNames(node.superTypeParameters.params[0]);
   const propTypesList = convertToPropTypes(state.componentTypes, typeNames, state);
   let hasPropTypesStaticProperty = false;
