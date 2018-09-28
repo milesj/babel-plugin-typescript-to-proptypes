@@ -225,6 +225,7 @@ function convertArray(types: any[], state: ConvertState): PropType[] {
 function convertListToProps(
   properties: t.TSPropertySignature[],
   state: ConvertState,
+  defaultProps: string[] = [],
 ): t.ObjectProperty[] {
   const propTypes: t.ObjectProperty[] = [];
 
@@ -236,7 +237,15 @@ function convertListToProps(
     const propType = convert(property.typeAnnotation.typeAnnotation, state);
 
     if (propType) {
-      propTypes.push(t.objectProperty(property.key, wrapIsRequired(propType, property.optional)));
+      propTypes.push(
+        t.objectProperty(
+          property.key,
+          wrapIsRequired(
+            propType,
+            property.optional || defaultProps.includes((property.key as t.Identifier).name),
+          ),
+        ),
+      );
     }
   });
 
@@ -247,12 +256,13 @@ export default function convertToPropTypes(
   types: TypePropertyMap,
   typeNames: string[],
   state: ConvertState,
+  defaultProps: string[],
 ): t.ObjectProperty[] {
   const properties: t.ObjectProperty[] = [];
 
   typeNames.forEach(typeName => {
     if (types[typeName]) {
-      properties.push(...convertListToProps(types[typeName], state));
+      properties.push(...convertListToProps(types[typeName], state, defaultProps));
     }
   });
 

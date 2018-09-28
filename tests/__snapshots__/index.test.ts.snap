@@ -130,6 +130,27 @@ export default class ClassCustomReactImportNamePure extends R.PureComponent<Prop
 }"
 `;
 
+exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/class/default-props.ts 1`] = `
+"import _pt from 'prop-types';
+import React from 'react';
+interface Props {
+  name: string;
+}
+export default class ClassDefaultProps extends React.Component<Props> {
+  static propTypes = {
+    name: _pt.string
+  };
+  static defaultProps = {
+    name: 'Foo'
+  };
+
+  render() {
+    return null;
+  }
+
+}"
+`;
+
 exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/class/extended-interfaces.ts 1`] = `
 "import _pt from 'prop-types';
 import React from 'react';
@@ -428,6 +449,23 @@ export default function FuncCustomReactImportName(props: Props) {
 }
 FuncCustomReactImportName.propTypes = {
   name: _pt.string.isRequired
+};"
+`;
+
+exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/function/default-props.ts 1`] = `
+"import _pt from 'prop-types';
+import React from 'react';
+interface Props {
+  name: string;
+}
+export default function FuncDefaultProps(props: Props) {
+  return null;
+}
+FuncDefaultProps.propTypes = {
+  name: _pt.string
+};
+FuncDefaultProps.defaultProps = {
+  name: 'Foo'
 };"
 `;
 
@@ -1162,6 +1200,24 @@ VarCustomReactImportName.propTypes = {
   name: _pt.string.isRequired
 };
 export default VarCustomReactImportName;"
+`;
+
+exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/var/default-props.ts 1`] = `
+"import _pt from 'prop-types';
+import React from 'react';
+interface Props {
+  name: string;
+}
+
+const VarDefaultProps: React.SFC<Props> = () => null;
+
+VarDefaultProps.propTypes = {
+  name: _pt.string
+};
+VarDefaultProps.defaultProps = {
+  name: 'Foo'
+};
+export default VarDefaultProps;"
 `;
 
 exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/var/export-default.ts 1`] = `

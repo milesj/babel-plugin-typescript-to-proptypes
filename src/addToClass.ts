@@ -4,35 +4,51 @@ import extractGenericTypeNames from './extractGenericTypeNames';
 import { createPropTypesObject, mergePropTypes } from './propTypes';
 import { ConvertState } from './types';
 
+function findStaticProperty(
+  node: t.ClassDeclaration,
+  name: string,
+): t.ClassProperty | t.ClassMethod | undefined {
+  return node.body.body.find(
+    property =>
+      t.isClassProperty(property, { static: true }) &&
+      t.isIdentifier(property.key, { name }) &&
+      (t.isObjectExpression(property.value) || t.isCallExpression(property.value)),
+  );
+}
+
 export default function addToClass(node: t.ClassDeclaration, state: ConvertState) {
   if (!node.superTypeParameters || node.superTypeParameters.params.length <= 0) {
     return;
   }
 
-  const typeNames = extractGenericTypeNames(node.superTypeParameters.params[0]);
-  const propTypesList = convertToPropTypes(state.componentTypes, typeNames, state);
-  let hasPropTypesStaticProperty = false;
+  const defaultProps = findStaticProperty(node, 'defaultProps');
+  const defaultPropsKeyList: string[] = [];
 
-  if (propTypesList.length === 0) {
+  if (defaultProps && t.isClassProperty(defaultProps) && t.isObjectExpression(defaultProps.value)) {
+    defaultProps.value.properties.forEach(prop => {
+      if (t.isProperty(prop) && t.isIdentifier(prop.key)) {
+        defaultPropsKeyList.push(prop.key.name);
+      }
+    });
+  }
+
+  const typeNames = extractGenericTypeNames(node.superTypeParameters.params[0]);
+  const propTypesList = convertToPropTypes(
+    state.componentTypes,
+    typeNames,
+    state,
+    defaultPropsKeyList,
+  );
+
+  if (typeNames.length === 0 || propTypesList.length === 0) {
     return;
   }
 
-  node.body.body.forEach(property => {
-    const valid =
-      t.isClassProperty(property, { static: true }) &&
-      t.isIdentifier(property.key, { name: 'propTypes' }) &&
-      (t.isObjectExpression(property.value) || t.isCallExpression(property.value));
+  const propTypes = findStaticProperty(node, 'propTypes');
 
-    if (valid) {
-      hasPropTypesStaticProperty = true;
-
-      // Merge with existing `propTypes`
-      property.value = mergePropTypes(property.value, propTypesList, state);
-    }
-  });
-
-  // Add a new static `propTypes` class property
-  if (!hasPropTypesStaticProperty) {
+  if (propTypes) {
+    propTypes.value = mergePropTypes(propTypes.value, propTypesList, state);
+  } else {
     const staticProperty = t.classProperty(
       t.identifier('propTypes'),
       createPropTypesObject(propTypesList, state),
