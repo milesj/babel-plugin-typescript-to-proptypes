@@ -13,16 +13,16 @@
   ],
   "scripts": {
     "build": "beemo typescript",
-    "coverage": "npm run jest --coverage",
+    "coverage": "yarn run jest --coverage",
     "eslint": "beemo eslint",
     "jest": "beemo jest",
     "prettier": "beemo prettier",
     "release": "np --yolo --no-yarn",
     "type": "beemo typescript --noEmit",
-    "prerelease": "npm test && npm run build",
-    "pretest": "npm run type",
-    "test": "npm run jest",
-    "posttest": "npm run eslint"
+    "prerelease": "yarn test && yarn run build",
+    "pretest": "yarn run type",
+    "test": "yarn run jest",
+    "posttest": "yarn run eslint"
   },
   "dependencies": {
     "@babel/helper-module-imports": "^7.0.0",

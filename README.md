@@ -102,22 +102,21 @@ npm install --save-dev babel-plugin-typescript-to-proptypes
 
 ## Usage
 
-Add the plugin to your Babel config. It's preferred to enable this plugin for development only.
+Add the plugin to your Babel config. It's preferred to enable this plugin for development only, or
+when building a library.
 
 ```js
 // babel.config.js
-module.exports = function() {
-  const plugins = [];
+const plugins = [];
 
-  if (process.env.NODE_ENV !== 'production') {
-    plugins.push('babel-plugin-typescript-to-proptypes');
-  }
+if (process.env.NODE_ENV !== 'production') {
+  plugins.push('babel-plugin-typescript-to-proptypes');
+}
 
-  return {
-    // Required
-    presets: ['@babel/preset-typescript', '@babel/preset-react']
-    plugins,
-  };
+module.exports = {
+  // Required
+  presets: ['@babel/preset-typescript', '@babel/preset-react']
+  plugins,
 };
 ```
 
