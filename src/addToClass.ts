@@ -52,7 +52,11 @@ export default function addToClass(
   if (propTypes) {
     propTypes.value = mergePropTypes(propTypes.value, propTypesList, state);
   } else {
-    const isVariable = state.options.declarePropTypeVariables && typeNames.length === 1;
+    const isVariable = (
+      state.options.declarePropTypeVariables &&
+      typeNames.length === 1 &&
+      typeof state.componentTypes[typeNames[0]] !== 'undefined'
+    );
     const staticProperty = t.classProperty(
       t.identifier('propTypes'),
       isVariable ? t.identifier(typeNames[0]) : createPropTypesObject(propTypesList, state),
