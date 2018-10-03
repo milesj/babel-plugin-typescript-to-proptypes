@@ -84,12 +84,18 @@ export default function addToFunctionOrVar(
   if (propTypes) {
     propTypes.right = mergePropTypes(propTypes.right, propTypesList, state);
   } else {
+    const isVariable = (
+      state.options.declarePropTypeVariables &&
+      typeNames.length === 1 &&
+      state.componentTypes[typeNames[0]]
+    );
+
     rootPath.insertAfter(
       t.expressionStatement(
         t.assignmentExpression(
           '=',
           t.memberExpression(t.identifier(name), t.identifier('propTypes')),
-          createPropTypesObject(propTypesList, state),
+          isVariable ? t.identifier(typeNames[0]) : createPropTypesObject(propTypesList, state),
         ),
       ),
     );

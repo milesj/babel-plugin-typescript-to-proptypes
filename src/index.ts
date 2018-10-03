@@ -5,6 +5,7 @@ import { types as t } from '@babel/core';
 // import ts from 'typescript';
 import addToClass from './addToClass';
 import addToFunctionOrVar from './addToFunctionOrVar';
+import addVariable from './addVariable';
 import extractTypeProperties from './extractTypeProperties';
 import upsertImport from './upsertImport';
 import { Path, PluginOptions, ConvertState } from './types';
@@ -202,19 +203,32 @@ export default declare((api: any, options: PluginOptions) => {
             },
 
             // `interface FooProps {}`
-            TSInterfaceDeclaration({ node }: Path<t.TSInterfaceDeclaration>) {
+            // @ts-ignore
+            TSInterfaceDeclaration(path: Path<t.TSInterfaceDeclaration>) {
+              const { node } = path;
+
               state.componentTypes[node.id.name] = extractTypeProperties(
                 node,
                 state.componentTypes,
               );
+
+              if (state.options.declarePropTypeVariables) {
+                addVariable(path, node.id.name, state);
+              }
             },
 
             // `type FooProps = {}`
-            TSTypeAliasDeclaration({ node }: Path<t.TSTypeAliasDeclaration>) {
+            TSTypeAliasDeclaration(path: Path<t.TSTypeAliasDeclaration>) {
+              const { node } = path;
+
               state.componentTypes[node.id.name] = extractTypeProperties(
                 node,
                 state.componentTypes,
               );
+
+              if (state.options.declarePropTypeVariables) {
+                addVariable(path, node.id.name, state);
+              }
             },
 
             // `const Foo: React.SFC<Props> = () => {};`
