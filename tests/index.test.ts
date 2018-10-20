@@ -1,5 +1,5 @@
 import path from 'path';
-import glob from 'glob';
+import glob from 'fast-glob';
 import { transformFileSync } from '@babel/core';
 import plugin from '../src';
 import { PluginOptions } from '../src/types';
@@ -22,21 +22,21 @@ function transform(filePath: string, options: any = {}, pluginOptions: PluginOpt
 }
 
 describe('babel-plugin-typescript-to-proptypes', () => {
-  glob
-    .sync('./fixtures/**/*.ts', { cwd: __dirname, dot: false, strict: true })
-    .forEach(filePath => {
-      if (filePath.includes('/special/')) {
-        return;
-      }
+  glob.sync('./fixtures/**/*.ts', { cwd: __dirname, dot: false }).forEach(basePath => {
+    const filePath = String(basePath);
 
-      // if (!filePath.endsWith('var/extended-interfaces.ts')) {
-      //   return;
-      // }
+    if (filePath.includes('/special/')) {
+      return;
+    }
 
-      it(`transforms ${filePath}`, () => {
-        expect(transform(path.join(__dirname, filePath))).toMatchSnapshot();
-      });
+    // if (!filePath.endsWith('var/extended-interfaces.ts')) {
+    //   return;
+    // }
+
+    it(`transforms ${filePath}`, () => {
+      expect(transform(path.join(__dirname, filePath))).toMatchSnapshot();
     });
+  });
 
   it('works correctly when transpiling down to ES3', () => {
     expect(
