@@ -110,7 +110,7 @@ describe('babel-plugin-typescript-to-proptypes', () => {
     ).toMatchSnapshot();
   });
 
-  it('works correctly when using ALL the things', () => {
+  it.only('works correctly when using ALL the things', () => {
     expect(
       transform(path.join(__dirname, './fixtures/special/ts-preset.ts'), {
         presets: [
