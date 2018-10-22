@@ -29,5 +29,5 @@ export type ConvertState = {
 export type PluginOptions = {
   customPropTypeSuffixes?: string[];
   forbidExtraProps?: boolean;
-  typeCheck?: boolean;
+  typeCheck?: boolean | string;
 };

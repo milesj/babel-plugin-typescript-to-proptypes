@@ -110,7 +110,7 @@ describe('babel-plugin-typescript-to-proptypes', () => {
     ).toMatchSnapshot();
   });
 
-  it.only('works correctly when using ALL the things', () => {
+  it('works correctly when using ALL the things', () => {
     expect(
       transform(path.join(__dirname, './fixtures/special/ts-preset.ts'), {
         presets: [
@@ -143,39 +143,43 @@ describe('babel-plugin-typescript-to-proptypes', () => {
     ).toMatchSnapshot();
   });
 
-  it('supports custom prop type suffixes', () => {
-    expect(
-      transform(
-        path.join(__dirname, './fixtures/special/custom-suffix.ts'),
-        {},
-        {
-          customPropTypeSuffixes: ['Shape', 'PropType'],
-        },
-      ),
-    ).toMatchSnapshot();
+  describe('customPropTypeSuffixes', () => {
+    it('supports custom prop type suffixes', () => {
+      expect(
+        transform(
+          path.join(__dirname, './fixtures/special/custom-suffix.ts'),
+          {},
+          {
+            customPropTypeSuffixes: ['Shape', 'PropType'],
+          },
+        ),
+      ).toMatchSnapshot();
+    });
   });
 
-  it('supports forbid extra props', () => {
-    expect(
-      transform(
-        path.join(__dirname, './fixtures/special/forbid-extra-props.ts'),
-        {},
-        {
-          forbidExtraProps: true,
-        },
-      ),
-    ).toMatchSnapshot();
-  });
+  describe('forbidExtraProps', () => {
+    it('supports forbid extra props', () => {
+      expect(
+        transform(
+          path.join(__dirname, './fixtures/special/forbid-extra-props.ts'),
+          {},
+          {
+            forbidExtraProps: true,
+          },
+        ),
+      ).toMatchSnapshot();
+    });
 
-  it('supports merging with forbid extra props', () => {
-    expect(
-      transform(
-        path.join(__dirname, './fixtures/special/merge-forbid-extra-props.ts'),
-        {},
-        {
-          forbidExtraProps: true,
-        },
-      ),
-    ).toMatchSnapshot();
+    it('supports merging with forbid extra props', () => {
+      expect(
+        transform(
+          path.join(__dirname, './fixtures/special/merge-forbid-extra-props.ts'),
+          {},
+          {
+            forbidExtraProps: true,
+          },
+        ),
+      ).toMatchSnapshot();
+    });
   });
 });

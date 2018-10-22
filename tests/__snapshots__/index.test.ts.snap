@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`babel-plugin-typescript-to-proptypes supports custom prop type suffixes 1`] = `
+exports[`babel-plugin-typescript-to-proptypes customPropTypeSuffixes supports custom prop type suffixes 1`] = `
 "import React from 'react';
 import PropTypes from 'prop-types';
 const NameShape = PropTypes.string;
@@ -33,7 +33,7 @@ export default class CustomSuffix extends React.Component<Props> {
 }"
 `;
 
-exports[`babel-plugin-typescript-to-proptypes supports forbid extra props 1`] = `
+exports[`babel-plugin-typescript-to-proptypes forbidExtraProps supports forbid extra props 1`] = `
 "import { forbidExtraProps as _forbidExtraProps } from 'airbnb-prop-types';
 import _pt from 'prop-types';
 import React from 'react';
@@ -52,7 +52,7 @@ export default class ForbidExtraProps extends React.Component<Props> {
 }"
 `;
 
-exports[`babel-plugin-typescript-to-proptypes supports merging with forbid extra props 1`] = `
+exports[`babel-plugin-typescript-to-proptypes forbidExtraProps supports merging with forbid extra props 1`] = `
 "import _pt from 'prop-types';
 import React from 'react';
 import { forbidExtraProps, integer as int } from 'airbnb-prop-types';
@@ -1697,7 +1697,8 @@ var _react = _interopRequireDefault(require('react'));
 
 class TSPreset extends _react.default.Component {
   static propTypes = {
-    name: _propTypes.default.string.isRequired
+    name: _propTypes.default.string.isRequired,
+    list: _propTypes.default.any.isRequired
   };
 
   render() {
@@ -1723,7 +1724,8 @@ var _react = _interopRequireDefault(require('react'));
 
 class TSPreset extends _react.default.Component {
   static propTypes = {
-    name: _propTypes.default.string.isRequired
+    name: _propTypes.default.string.isRequired,
+    list: _propTypes.default.any.isRequired
   };
 
   render() {
@@ -1740,7 +1742,8 @@ exports[`babel-plugin-typescript-to-proptypes works correctly when using the tra
 import React from 'react';
 export default class TSPreset extends React.Component {
   static propTypes = {
-    name: _pt.string.isRequired
+    name: _pt.string.isRequired,
+    list: _pt.any.isRequired
   };
 
   render() {
@@ -1755,7 +1758,8 @@ exports[`babel-plugin-typescript-to-proptypes works correctly when using the typ
 import React from 'react';
 export default class TSPreset extends React.Component {
   static propTypes = {
-    name: _pt.string.isRequired
+    name: _pt.string.isRequired,
+    list: _pt.any.isRequired
   };
 
   render() {

@@ -1,5 +1,3 @@
-import fs from 'fs';
-import { join } from 'path';
 import ts from 'typescript';
 import { declare } from '@babel/helper-plugin-utils';
 import { addDefault, addNamed } from '@babel/helper-module-imports';
@@ -8,41 +6,17 @@ import { types as t } from '@babel/core';
 import addToClass from './addToClass';
 import addToFunctionOrVar from './addToFunctionOrVar';
 import extractTypeProperties from './extractTypeProperties';
+import { loadTypeChecker } from './typeChecker';
 import upsertImport from './upsertImport';
 import { Path, PluginOptions, ConvertState } from './types';
 
 const BABEL_VERSION = 7;
-let tsConfig: ts.CompilerOptions;
 
 function isNotTS(name: string): boolean {
   return name.endsWith('.js') || name.endsWith('.jsx');
 }
 
-function loadTSConfig(): ts.CompilerOptions {
-  if (tsConfig) {
-    return tsConfig;
-  }
-
-  const { config, error } = ts.readConfigFile(join(process.cwd(), 'tsconfig.json'), path =>
-    fs.readFileSync(path, 'utf8'),
-  );
-
-  if (error) {
-    throw error;
-  }
-
-  const { options, errors } = ts.parseJsonConfigFileContent(config, ts.sys, process.cwd());
-
-  if (errors.length > 0) {
-    throw errors[0];
-  }
-
-  tsConfig = options;
-
-  return options;
-}
-
-export default declare((api: any, options: PluginOptions) => {
+export default declare((api: any, options: PluginOptions, root: string) => {
   api.assertVersion(BABEL_VERSION);
 
   return {
@@ -92,7 +66,7 @@ export default declare((api: any, options: PluginOptions) => {
           }
 
           if (options.typeCheck) {
-            state.typeChecker = ts.createProgram([state.filePath], loadTSConfig()).getTypeChecker();
+            state.typeChecker = loadTypeChecker(options.typeCheck, root);
           }
 
           // Find existing `react` and `prop-types` imports
