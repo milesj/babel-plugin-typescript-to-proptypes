@@ -182,4 +182,28 @@ describe('babel-plugin-typescript-to-proptypes', () => {
       ).toMatchSnapshot();
     });
   });
+
+  describe('typeCheck', () => {
+    glob
+      .sync('./fixtures/special/checker/*.ts', { cwd: __dirname, dot: false })
+      .forEach(basePath => {
+        const filePath = String(basePath);
+
+        if (path.basename(filePath) === 'types.ts') {
+          return;
+        }
+
+        it(`transforms ${filePath}`, () => {
+          expect(
+            transform(
+              path.join(__dirname, filePath),
+              {},
+              {
+                typeCheck: './tests/fixtures/special/checker/*.ts',
+              },
+            ),
+          ).toMatchSnapshot();
+        });
+      });
+  });
 });

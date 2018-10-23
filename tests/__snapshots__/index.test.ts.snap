@@ -90,113 +90,6 @@ export default class AvoidsState extends React.Component<Props, State> {
 }"
 `;
 
-exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/checker/inline-ref-bool.ts 1`] = `
-"import _pt from 'prop-types';
-import React from 'react';
-type Checked = boolean;
-interface Props {
-  checked: Checked;
-}
-export default class CheckerInlineRefBool extends React.Component<Props> {
-  static propTypes = {
-    checked: _pt.bool.isRequired
-  };
-
-  render() {
-    return null;
-  }
-
-}"
-`;
-
-exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/checker/inline-ref-shape-interface.ts 1`] = `
-"import _pt from 'prop-types';
-import React from 'react';
-interface Location {
-  lat?: number;
-  long: number;
-}
-interface Props {
-  location: Location;
-}
-export default class CheckerInlineRefShapeInterface extends React.Component<Props> {
-  static propTypes = {
-    location: _pt.shape({
-      lat: _pt.number,
-      long: _pt.number.isRequired
-    }).isRequired
-  };
-
-  render() {
-    return null;
-  }
-
-}"
-`;
-
-exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/checker/inline-ref-shape-type-alias.ts 1`] = `
-"import _pt from 'prop-types';
-import React from 'react';
-type Location = {
-  lat?: number;
-  long: number;
-};
-interface Props {
-  location: Location;
-}
-export default class CheckerInlineRefShapeTypeAlias extends React.Component<Props> {
-  static propTypes = {
-    location: _pt.shape({
-      lat: _pt.number,
-      long: _pt.number.isRequired
-    }).isRequired
-  };
-
-  render() {
-    return null;
-  }
-
-}"
-`;
-
-exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/checker/inline-ref-string.ts 1`] = `
-"import _pt from 'prop-types';
-import React from 'react';
-type Status = string;
-interface Props {
-  status: Status;
-}
-export default class CheckerInlineRefString extends React.Component<Props> {
-  static propTypes = {
-    status: _pt.string.isRequired
-  };
-
-  render() {
-    return null;
-  }
-
-}"
-`;
-
-exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/checker/inline-ref-union.ts 1`] = `
-"import _pt from 'prop-types';
-import React from 'react';
-type List = 'foo' | 'bar' | 'baz';
-interface Props {
-  list: List;
-}
-export default class CheckerInlineRefUnion extends React.Component<Props> {
-  static propTypes = {
-    list: _pt.oneOf(['foo', 'bar', 'baz']).isRequired
-  };
-
-  render() {
-    return null;
-  }
-
-}"
-`;
-
 exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/class/custom-react-import-name.ts 1`] = `
 "import _pt from 'prop-types';
 import R from 'react';
@@ -1507,6 +1400,208 @@ VarStandard.propTypes = {
   name: _pt.string.isRequired
 };
 export default VarStandard;"
+`;
+
+exports[`babel-plugin-typescript-to-proptypes typeCheck transforms ./fixtures/special/checker/inline-ref-bool.ts 1`] = `
+"import _pt from 'prop-types';
+import React from 'react';
+type Checked = boolean;
+interface Props {
+  checked: Checked;
+}
+export default class CheckerInlineRefBool extends React.Component<Props> {
+  static propTypes = {
+    checked: _pt.bool.isRequired
+  };
+
+  render() {
+    return null;
+  }
+
+}"
+`;
+
+exports[`babel-plugin-typescript-to-proptypes typeCheck transforms ./fixtures/special/checker/inline-ref-shape-interface.ts 1`] = `
+"import _pt from 'prop-types';
+import React from 'react';
+interface Location {
+  lat?: number;
+  long: number;
+}
+interface Props {
+  location: Location;
+}
+export default class CheckerInlineRefShapeInterface extends React.Component<Props> {
+  static propTypes = {
+    location: _pt.shape({
+      lat: _pt.number,
+      long: _pt.number.isRequired
+    }).isRequired
+  };
+
+  render() {
+    return null;
+  }
+
+}"
+`;
+
+exports[`babel-plugin-typescript-to-proptypes typeCheck transforms ./fixtures/special/checker/inline-ref-shape-type-alias.ts 1`] = `
+"import _pt from 'prop-types';
+import React from 'react';
+type Location = {
+  lat?: number;
+  long: number;
+};
+interface Props {
+  location: Location;
+}
+export default class CheckerInlineRefShapeTypeAlias extends React.Component<Props> {
+  static propTypes = {
+    location: _pt.shape({
+      lat: _pt.number,
+      long: _pt.number.isRequired
+    }).isRequired
+  };
+
+  render() {
+    return null;
+  }
+
+}"
+`;
+
+exports[`babel-plugin-typescript-to-proptypes typeCheck transforms ./fixtures/special/checker/inline-ref-string.ts 1`] = `
+"import _pt from 'prop-types';
+import React from 'react';
+type Status = string;
+interface Props {
+  status: Status;
+}
+export default class CheckerInlineRefString extends React.Component<Props> {
+  static propTypes = {
+    status: _pt.string.isRequired
+  };
+
+  render() {
+    return null;
+  }
+
+}"
+`;
+
+exports[`babel-plugin-typescript-to-proptypes typeCheck transforms ./fixtures/special/checker/inline-ref-union.ts 1`] = `
+"import _pt from 'prop-types';
+import React from 'react';
+type List = 'foo' | 'bar' | 'baz';
+interface Props {
+  list: List;
+}
+export default class CheckerInlineRefUnion extends React.Component<Props> {
+  static propTypes = {
+    list: _pt.oneOf(['foo', 'bar', 'baz']).isRequired
+  };
+
+  render() {
+    return null;
+  }
+
+}"
+`;
+
+exports[`babel-plugin-typescript-to-proptypes typeCheck transforms ./fixtures/special/checker/ref-bool.ts 1`] = `
+"import _pt from 'prop-types';
+import React from 'react';
+import { Checked } from './types';
+interface Props {
+  checked: Checked;
+}
+export default class CheckerInlineRefBool extends React.Component<Props> {
+  static propTypes = {
+    checked: _pt.any.isRequired
+  };
+
+  render() {
+    return null;
+  }
+
+}"
+`;
+
+exports[`babel-plugin-typescript-to-proptypes typeCheck transforms ./fixtures/special/checker/ref-shape-interface.ts 1`] = `
+"import _pt from 'prop-types';
+import React from 'react';
+import { Location } from './types';
+interface Props {
+  location: Location;
+}
+export default class CheckerInlineRefShapeInterface extends React.Component<Props> {
+  static propTypes = {
+    location: _pt.any.isRequired
+  };
+
+  render() {
+    return null;
+  }
+
+}"
+`;
+
+exports[`babel-plugin-typescript-to-proptypes typeCheck transforms ./fixtures/special/checker/ref-shape-type-alias.ts 1`] = `
+"import _pt from 'prop-types';
+import React from 'react';
+import { LocationAlias } from './types';
+interface Props {
+  location: LocationAlias;
+}
+export default class CheckerInlineRefShapeTypeAlias extends React.Component<Props> {
+  static propTypes = {
+    location: _pt.any.isRequired
+  };
+
+  render() {
+    return null;
+  }
+
+}"
+`;
+
+exports[`babel-plugin-typescript-to-proptypes typeCheck transforms ./fixtures/special/checker/ref-string.ts 1`] = `
+"import _pt from 'prop-types';
+import React from 'react';
+import { Status } from './types';
+interface Props {
+  status: Status;
+}
+export default class CheckerInlineRefString extends React.Component<Props> {
+  static propTypes = {
+    status: _pt.any.isRequired
+  };
+
+  render() {
+    return null;
+  }
+
+}"
+`;
+
+exports[`babel-plugin-typescript-to-proptypes typeCheck transforms ./fixtures/special/checker/ref-union.ts 1`] = `
+"import _pt from 'prop-types';
+import React from 'react';
+import { List } from './types';
+interface Props {
+  list: List;
+}
+export default class CheckerInlineRefUnion extends React.Component<Props> {
+  static propTypes = {
+    list: _pt.any.isRequired
+  };
+
+  render() {
+    return null;
+  }
+
+}"
 `;
 
 exports[`babel-plugin-typescript-to-proptypes works correctly when file is JSX/TSX 1`] = `
