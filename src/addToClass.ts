@@ -1,5 +1,5 @@
 import { types as t } from '@babel/core';
-import convertToPropTypes from './convertToPropTypes';
+import convertToPropTypes from './convertBabelToPropTypes';
 import extractGenericTypeNames from './extractGenericTypeNames';
 import { createPropTypesObject, mergePropTypes } from './propTypes';
 import { ConvertState } from './types';

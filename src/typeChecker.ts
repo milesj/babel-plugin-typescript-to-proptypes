@@ -4,7 +4,7 @@ import glob from 'fast-glob';
 import ts from 'typescript';
 
 let config: ts.CompilerOptions;
-let checker: ts.TypeChecker;
+let program: ts.Program;
 
 export function loadTSConfig(): ts.CompilerOptions {
   if (config) {
@@ -31,17 +31,15 @@ export function loadTSConfig(): ts.CompilerOptions {
   return options;
 }
 
-export function loadTypeChecker(pattern: true | string, root: string): ts.TypeChecker {
-  if (checker) {
-    return checker;
+export function loadProgram(pattern: true | string, root: string): ts.Program {
+  if (program) {
+    return program;
   }
 
-  checker = ts
-    .createProgram(
-      glob.sync(pattern === true ? './src/**/*.ts' : pattern, { absolute: true, cwd: root }),
-      loadTSConfig(),
-    )
-    .getTypeChecker();
+  program = ts.createProgram(
+    glob.sync(pattern === true ? './src/**/*.ts' : pattern, { absolute: true, cwd: root }),
+    loadTSConfig(),
+  );
 
-  return checker;
+  return program;
 }

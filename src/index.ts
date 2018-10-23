@@ -1,4 +1,3 @@
-import ts from 'typescript';
 import { declare } from '@babel/helper-plugin-utils';
 import { addDefault, addNamed } from '@babel/helper-module-imports';
 import syntaxTypeScript from '@babel/plugin-syntax-typescript';
@@ -6,7 +5,7 @@ import { types as t } from '@babel/core';
 import addToClass from './addToClass';
 import addToFunctionOrVar from './addToFunctionOrVar';
 import extractTypeProperties from './extractTypeProperties';
-import { loadTypeChecker } from './typeChecker';
+import { loadProgram } from './typeChecker';
 import upsertImport from './upsertImport';
 import { Path, PluginOptions, ConvertState } from './types';
 
@@ -67,7 +66,8 @@ export default declare((api: any, options: PluginOptions, root: string) => {
           }
 
           if (options.typeCheck) {
-            state.typeChecker = loadTypeChecker(options.typeCheck, root);
+            state.typeProgram = loadProgram(options.typeCheck, root);
+            state.typeChecker = state.typeProgram.getTypeChecker();
           }
 
           // Find existing `react` and `prop-types` imports

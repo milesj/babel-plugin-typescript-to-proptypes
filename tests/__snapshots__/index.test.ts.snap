@@ -1517,10 +1517,6 @@ interface Props {
   checked: Checked;
 }
 export default class CheckerInlineRefBool extends React.Component<Props> {
-  static propTypes = {
-    checked: _pt.any.isRequired
-  };
-
   render() {
     return null;
   }
@@ -1536,10 +1532,6 @@ interface Props {
   location: Location;
 }
 export default class CheckerInlineRefShapeInterface extends React.Component<Props> {
-  static propTypes = {
-    location: _pt.any.isRequired
-  };
-
   render() {
     return null;
   }
@@ -1555,10 +1547,6 @@ interface Props {
   location: LocationAlias;
 }
 export default class CheckerInlineRefShapeTypeAlias extends React.Component<Props> {
-  static propTypes = {
-    location: _pt.any.isRequired
-  };
-
   render() {
     return null;
   }
@@ -1574,10 +1562,6 @@ interface Props {
   status: Status;
 }
 export default class CheckerInlineRefString extends React.Component<Props> {
-  static propTypes = {
-    status: _pt.any.isRequired
-  };
-
   render() {
     return null;
   }
@@ -1593,10 +1577,6 @@ interface Props {
   list: List;
 }
 export default class CheckerInlineRefUnion extends React.Component<Props> {
-  static propTypes = {
-    list: _pt.any.isRequired
-  };
-
   render() {
     return null;
   }

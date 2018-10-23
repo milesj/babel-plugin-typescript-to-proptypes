@@ -1,5 +1,7 @@
 import { types as t } from '@babel/core';
+import { convertSymbolFromSource } from './convertTSToPropTypes';
 import getTypeName from './getTypeName';
+import { createCall, createMember } from './propTypes';
 import { PropType, TypePropertyMap, ConvertState } from './types';
 
 const NATIVE_BUILT_INS = ['Date', 'Error', 'RegExp', 'Map', 'WeakMap', 'Set', 'WeakSet', 'Promise'];
@@ -14,18 +16,6 @@ function isReactTypeMatch(name: string, type: string, reactImportedName: string)
 
 function wrapIsRequired(propType: PropType, optional?: boolean | null): PropType {
   return optional ? propType : t.memberExpression(propType, t.identifier('isRequired'));
-}
-
-function createMember(value: t.Identifier, propTypesImportedName: string): t.MemberExpression {
-  return t.memberExpression(t.identifier(propTypesImportedName), value);
-}
-
-function createCall(
-  value: t.Identifier,
-  args: (PropType | t.ArrayExpression | t.ObjectExpression)[],
-  propTypesImportedName: string,
-): t.CallExpression {
-  return t.callExpression(createMember(value, propTypesImportedName), args);
 }
 
 function convert(type: any, state: ConvertState): PropType | null {
@@ -133,9 +123,13 @@ function convert(type: any, state: ConvertState): PropType | null {
     } else if (state.referenceTypes[name]) {
       return convert(state.referenceTypes[name], state);
 
-      // custom prop type variables (must be last)
+      // custom prop type variables
     } else if (hasCustomPropTypeSuffix(name, state.options.customPropTypeSuffixes)) {
       return t.identifier(name);
+
+      // external references (uses type checker)
+    } else if (state.typeChecker) {
+      return convertSymbolFromSource(state.filePath, name, state);
     }
 
     // any (we need to support all these in case of unions)

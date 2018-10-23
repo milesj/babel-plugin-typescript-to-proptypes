@@ -25,6 +25,7 @@ export type ConvertState = {
   reactImportedName: string;
   referenceTypes: { [key: string]: t.TSInterfaceDeclaration | t.TSTypeAliasDeclaration };
   typeChecker?: ts.TypeChecker;
+  typeProgram?: ts.Program;
 };
 
 export type PluginOptions = {
