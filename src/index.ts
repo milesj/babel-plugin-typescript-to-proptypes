@@ -51,6 +51,7 @@ export default declare((api: any, options: PluginOptions, root: string) => {
           hasImport: false,
         },
         reactImportedName: '',
+        referenceTypes: {},
       };
     },
 
@@ -213,6 +214,8 @@ export default declare((api: any, options: PluginOptions, root: string) => {
                 node,
                 state.componentTypes,
               );
+
+              state.referenceTypes[node.id.name] = node;
             },
 
             // `type FooProps = {}`
@@ -221,6 +224,8 @@ export default declare((api: any, options: PluginOptions, root: string) => {
                 node,
                 state.componentTypes,
               );
+
+              state.referenceTypes[node.id.name] = node;
             },
 
             // `const Foo: React.SFC<Props> = () => {};`

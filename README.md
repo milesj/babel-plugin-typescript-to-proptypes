@@ -4,8 +4,8 @@
 
 A Babel plugin to generate React PropTypes from TypeScript interfaces or type aliases.
 
-> Does not support converting type references (as Babel has no type information) without the
-> `typeCheck` option being enabled.
+> Does not support converting external type references (as Babel has no type information) without
+> the `typeCheck` option being enabled.
 
 ## Examples
 
@@ -142,8 +142,7 @@ module.exports = {
 // Before
 import React from 'react';
 import PropTypes from 'prop-types';
-
-const NameShape = PropTypes.string;
+import { NameShape } from './shapes';
 
 interface Props {
   name?: NameShape;
@@ -158,8 +157,7 @@ class Example extends React.Component<Props> {
 // After
 import React from 'react';
 import PropTypes from 'prop-types';
-
-const NameShape = PropTypes.string;
+import { NameShape } from './shapes';
 
 class Example extends React.Component {
   static propTypes = {

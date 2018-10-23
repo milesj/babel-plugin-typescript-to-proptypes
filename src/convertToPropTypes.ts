@@ -117,7 +117,7 @@ function convert(type: any, state: ConvertState): PropType | null {
         propTypesImportedName,
       );
 
-      // func
+      // function
     } else if (name.endsWith('Handler')) {
       return createMember(t.identifier('func'), propTypesImportedName);
 
@@ -128,6 +128,10 @@ function convert(type: any, state: ConvertState): PropType | null {
       // native built-ins
     } else if (NATIVE_BUILT_INS.includes(name)) {
       return createCall(t.identifier('instanceOf'), [t.identifier(name)], propTypesImportedName);
+
+      // inline references
+    } else if (state.referenceTypes[name]) {
+      return convert(state.referenceTypes[name], state);
 
       // custom prop type variables (must be last)
     } else if (hasCustomPropTypeSuffix(name, state.options.customPropTypeSuffixes)) {
@@ -201,6 +205,31 @@ function convert(type: any, state: ConvertState): PropType | null {
     if (label && args.length > 0) {
       return createCall(label, [t.arrayExpression(args)], propTypesImportedName);
     }
+
+    // interface Foo {}
+  } else if (t.isTSInterfaceDeclaration(type)) {
+    if (type.body.body.length === 0) {
+      return createMember(t.identifier('object'), propTypesImportedName);
+    }
+
+    return createCall(
+      t.identifier('shape'),
+      [
+        t.objectExpression(
+          convertListToProps(
+            type.body.body.filter(property =>
+              t.isTSPropertySignature(property),
+            ) as t.TSPropertySignature[],
+            state,
+          ),
+        ),
+      ],
+      propTypesImportedName,
+    );
+
+    // type Foo = {};
+  } else if (t.isTSTypeAliasDeclaration(type)) {
+    return convert(type.typeAnnotation, state);
   }
 
   state.propTypes.count -= 1;

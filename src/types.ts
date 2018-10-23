@@ -23,6 +23,7 @@ export type ConvertState = {
     hasImport: boolean;
   };
   reactImportedName: string;
+  referenceTypes: { [key: string]: t.TSInterfaceDeclaration | t.TSTypeAliasDeclaration };
   typeChecker?: ts.TypeChecker;
 };
 
