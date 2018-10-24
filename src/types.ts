@@ -31,5 +31,6 @@ export type ConvertState = {
 export type PluginOptions = {
   customPropTypeSuffixes?: string[];
   forbidExtraProps?: boolean;
+  maxDepth?: number;
   typeCheck?: boolean | string;
 };

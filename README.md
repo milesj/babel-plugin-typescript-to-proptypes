@@ -141,7 +141,6 @@ module.exports = {
 ```js
 // Before
 import React from 'react';
-import PropTypes from 'prop-types';
 import { NameShape } from './shapes';
 
 interface Props {
@@ -156,7 +155,6 @@ class Example extends React.Component<Props> {
 
 // After
 import React from 'react';
-import PropTypes from 'prop-types';
 import { NameShape } from './shapes';
 
 class Example extends React.Component {
@@ -210,6 +208,58 @@ class Example extends React.Component {
 }
 ```
 
+- `maxDepth` (number) - Maximum depth to convert while handling recursive or deeply nested shapes.
+  Defaults to `3`.
+
+```js
+module.exports = {
+  plugins: [['babel-plugin-typescript-to-proptypes', { maxDepth: 3 }]],
+};
+```
+
+```js
+// Before
+import React from 'react';
+
+interface Props {
+  one: {
+    two: {
+      three: {
+        four: {
+          five: {
+            super: 'deep',
+          },
+        },
+      },
+    },
+  };
+}
+
+class Example extends React.Component<Props> {
+  render() {
+    return <div />;
+  }
+}
+
+// After
+import React from 'react';
+import PropTypes from 'prop-types';
+
+class Example extends React.Component {
+  static propTypes = {
+    one: PropTypes.shape({
+      two: PropTypes.shape({
+        three: PropTypes.object,
+      }),
+    }),
+  };
+
+  render() {
+    return <div />;
+  }
+}
+```
+
 - `typeCheck` (boolean|string) - Resolve full type information for aliases and references using
   TypeScript's built-in type checker. When enabled with `true`, will glob for files using
   `./src/**/*.ts`. Glob can be customized by passing a string. Defaults to `false`.
@@ -225,7 +275,6 @@ module.exports = {
 ```js
 // Before
 import React from 'react';
-import PropTypes from 'prop-types';
 import { Location } from './types';
 
 interface Props {

@@ -143,6 +143,16 @@ describe('babel-plugin-typescript-to-proptypes', () => {
     ).toMatchSnapshot();
   });
 
+  it('stops converting once max depth is met', () => {
+    expect(transform(path.join(__dirname, './fixtures/special/max-depth.ts'))).toMatchSnapshot();
+  });
+
+  it('handles self referencing types', () => {
+    expect(
+      transform(path.join(__dirname, './fixtures/special/recursive-type.ts')),
+    ).toMatchSnapshot();
+  });
+
   describe('customPropTypeSuffixes', () => {
     it('supports custom prop type suffixes', () => {
       expect(

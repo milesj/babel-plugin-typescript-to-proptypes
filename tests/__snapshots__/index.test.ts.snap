@@ -69,6 +69,70 @@ export default class MergeForbidExtraProps extends React.Component<Props> {
 }"
 `;
 
+exports[`babel-plugin-typescript-to-proptypes handles self referencing types 1`] = `
+"import _pt from 'prop-types';
+import React from 'react';
+interface Shape {
+  nested: Shape;
+}
+interface Props {
+  shape: Shape;
+}
+export default class RecursiveType extends React.Component<Props> {
+  static propTypes = {
+    shape: _pt.shape({
+      nested: _pt.shape({
+        nested: _pt.shape({
+          nested: _pt.object.isRequired
+        }).isRequired
+      }).isRequired
+    }).isRequired
+  };
+
+  render() {
+    return null;
+  }
+
+}"
+`;
+
+exports[`babel-plugin-typescript-to-proptypes stops converting once max depth is met 1`] = `
+"import _pt from 'prop-types';
+import React from 'react';
+interface Root {
+  one: {
+    two: {
+      three: {
+        four: {
+          five: {
+            key: 'value';
+          };
+        };
+      };
+    };
+  };
+}
+interface Props {
+  root: Root;
+}
+export default class MaxDepth extends React.Component<Props> {
+  static propTypes = {
+    root: _pt.shape({
+      one: _pt.shape({
+        two: _pt.shape({
+          three: _pt.object.isRequired
+        }).isRequired
+      }).isRequired
+    }).isRequired
+  };
+
+  render() {
+    return null;
+  }
+
+}"
+`;
+
 exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/avoids-state.ts 1`] = `
 "import _pt from 'prop-types';
 import React from 'react';
