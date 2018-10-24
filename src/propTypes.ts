@@ -1,6 +1,18 @@
 import { types as t } from '@babel/core';
 import { ConvertState, PropType } from './types';
 
+export function hasCustomPropTypeSuffix(name: string, suffixes?: string[]): boolean {
+  return !!suffixes && suffixes.some(suffix => name.endsWith(suffix));
+}
+
+export function isReactTypeMatch(name: string, type: string, reactImportedName: string): boolean {
+  return name === type || name === `React.${type}` || name === `${reactImportedName}.${type}`;
+}
+
+export function wrapIsRequired(propType: PropType, optional?: boolean | null): PropType {
+  return optional ? propType : t.memberExpression(propType, t.identifier('isRequired'));
+}
+
 export function createMember(
   value: t.Identifier,
   propTypesImportedName: string,

@@ -1,22 +1,16 @@
 import { types as t } from '@babel/core';
 import { convertSymbolFromSource } from './convertTSToPropTypes';
 import getTypeName from './getTypeName';
-import { createCall, createMember } from './propTypes';
+import {
+  createCall,
+  createMember,
+  hasCustomPropTypeSuffix,
+  isReactTypeMatch,
+  wrapIsRequired,
+} from './propTypes';
 import { PropType, TypePropertyMap, ConvertState } from './types';
 
 const NATIVE_BUILT_INS = ['Date', 'Error', 'RegExp', 'Map', 'WeakMap', 'Set', 'WeakSet', 'Promise'];
-
-function hasCustomPropTypeSuffix(name: string, suffixes?: string[]): boolean {
-  return !!suffixes && suffixes.some(suffix => name.endsWith(suffix));
-}
-
-function isReactTypeMatch(name: string, type: string, reactImportedName: string): boolean {
-  return name === type || name === `React.${type}` || name === `${reactImportedName}.${type}`;
-}
-
-function wrapIsRequired(propType: PropType, optional?: boolean | null): PropType {
-  return optional ? propType : t.memberExpression(propType, t.identifier('isRequired'));
-}
 
 function convert(type: any, state: ConvertState, depth: number): PropType | null {
   const { reactImportedName, propTypes } = state;
