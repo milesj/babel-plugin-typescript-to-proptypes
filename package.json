@@ -30,10 +30,6 @@
     "@babel/plugin-syntax-typescript": "^7.0.0",
     "fast-glob": "^2.2.3"
   },
-  "peerDependencies": {
-    "@babel/core": "^7.0.0",
-    "typescript": "^2.0.0 || ^3.0.0"
-  },
   "devDependencies": {
     "@babel/core": "^7.1.2",
     "@babel/plugin-proposal-class-properties": "^7.1.0",
@@ -45,7 +41,7 @@
     "@types/babel-core": "^6.25.5",
     "@types/babel-types": "^7.0.4",
     "babel-core": "7.0.0-bridge.0",
-    "typescript": "^3.1.3"
+    "typescript": "^3.1.4"
   },
   "beemo": {
     "module": "@milesj/build-tools",
@@ -71,7 +67,8 @@
         "no-param-reassign": "off",
         "no-use-before-define": "off",
         "react/forbid-foreign-prop-types": "off",
-        "typescript/no-use-before-define": "off"
+        "typescript/no-use-before-define": "off",
+        "import/no-extraneous-dependencies": "off"
       },
       "ignore": [
         "tests/fixtures/"
