@@ -25,12 +25,12 @@
     "posttest": "yarn run eslint"
   },
   "dependencies": {
+    "@babel/core": "^7.1.2",
     "@babel/helper-module-imports": "^7.0.0",
     "@babel/helper-plugin-utils": "^7.0.0",
     "@babel/plugin-syntax-typescript": "^7.0.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.1.2",
     "@babel/plugin-proposal-class-properties": "^7.1.0",
     "@babel/plugin-transform-runtime": "^7.1.0",
     "@babel/preset-env": "^7.1.0",
@@ -41,7 +41,7 @@
     "@types/babel-types": "^7.0.4",
     "babel-core": "7.0.0-bridge.0",
     "fast-glob": "^2.2.3",
-    "typescript": "^3.1.4"
+    "typescript": "^3.1.5"
   },
   "beemo": {
     "module": "@milesj/build-tools",
@@ -64,6 +64,7 @@
     "eslint": {
       "rules": {
         "complexity": "off",
+        "no-shadow": "off",
         "no-param-reassign": "off",
         "no-use-before-define": "off",
         "react/forbid-foreign-prop-types": "off",
