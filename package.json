@@ -1,6 +1,6 @@
 {
   "name": "babel-plugin-typescript-to-proptypes",
-  "version": "0.10.1",
+  "version": "0.11.0",
   "description": "Generate React PropTypes from TypeScript prop interfaces.",
   "repository": "https://github.com/milesj/babel-plugin-typescript-to-proptypes",
   "license": "MIT",
