@@ -223,11 +223,34 @@ function convert(type: any, state: ConvertState, depth: number): PropType | null
     // type Foo = {};
   } else if (t.isTSTypeAliasDeclaration(type)) {
     return convert(type.typeAnnotation, state, depth);
+
+    // Type['prop']
+  } else if (t.isTSIndexedAccessType(type)) {
+    const { objectType, indexType } = type;
+
+    if (t.isTSTypeReference(objectType) && t.isTSLiteralType(indexType)) {
+      const ref = state.referenceTypes[(objectType.typeName as any).name];
+      let properties;
+
+      if (t.isTSInterfaceDeclaration(ref)) {
+        properties = ref.body.body;
+      } else if (t.isTSTypeAliasDeclaration(ref) && t.isTSTypeLiteral(ref.typeAnnotation)) {
+        properties = ref.typeAnnotation.members;
+      } else {
+        return createMember(t.identifier('any'), propTypesImportedName);
+      }
+
+      const property = properties.find(
+        prop => t.isTSPropertySignature(prop) && (prop.key as any).name === indexType.literal.value,
+      );
+
+      return property ? convert(property.typeAnnotation!.typeAnnotation, state, depth) : null;
+    }
   }
 
   state.propTypes.count -= 1;
 
-  return null;
+  return createMember(t.identifier('any'), propTypesImportedName);
 }
 
 function convertArray(types: any[], state: ConvertState, depth: number): PropType[] {
