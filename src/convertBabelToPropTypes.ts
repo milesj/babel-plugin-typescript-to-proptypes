@@ -237,7 +237,7 @@ function convert(type: any, state: ConvertState, depth: number): PropType | null
       } else if (t.isTSTypeAliasDeclaration(ref) && t.isTSTypeLiteral(ref.typeAnnotation)) {
         properties = ref.typeAnnotation.members;
       } else {
-        return createMember(t.identifier('any'), propTypesImportedName);
+        return null;
       }
 
       const property = properties.find(
@@ -250,7 +250,7 @@ function convert(type: any, state: ConvertState, depth: number): PropType | null
 
   state.propTypes.count -= 1;
 
-  return createMember(t.identifier('any'), propTypesImportedName);
+  return null;
 }
 
 function convertArray(types: any[], state: ConvertState, depth: number): PropType[] {
