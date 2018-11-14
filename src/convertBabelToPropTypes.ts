@@ -1,36 +1,21 @@
 import { types as t } from '@babel/core';
+import { convertSymbolFromSource } from './convertTSToPropTypes';
 import getTypeName from './getTypeName';
+import {
+  createCall,
+  createMember,
+  hasCustomPropTypeSuffix,
+  isReactTypeMatch,
+  wrapIsRequired,
+} from './propTypes';
 import { PropType, TypePropertyMap, ConvertState } from './types';
 
 const NATIVE_BUILT_INS = ['Date', 'Error', 'RegExp', 'Map', 'WeakMap', 'Set', 'WeakSet', 'Promise'];
 
-function hasCustomPropTypeSuffix(name: string, suffixes?: string[]): boolean {
-  return !!suffixes && suffixes.some(suffix => name.endsWith(suffix));
-}
-
-function isReactTypeMatch(name: string, type: string, reactImportedName: string): boolean {
-  return name === type || name === `React.${type}` || name === `${reactImportedName}.${type}`;
-}
-
-function wrapIsRequired(propType: PropType, optional?: boolean | null): PropType {
-  return optional ? propType : t.memberExpression(propType, t.identifier('isRequired'));
-}
-
-function createMember(value: t.Identifier, propTypesImportedName: string): t.MemberExpression {
-  return t.memberExpression(t.identifier(propTypesImportedName), value);
-}
-
-function createCall(
-  value: t.Identifier,
-  args: (PropType | t.ArrayExpression | t.ObjectExpression)[],
-  propTypesImportedName: string,
-): t.CallExpression {
-  return t.callExpression(createMember(value, propTypesImportedName), args);
-}
-
-function convert(type: any, state: ConvertState): PropType | null {
+function convert(type: any, state: ConvertState, depth: number): PropType | null {
   const { reactImportedName, propTypes } = state;
   const propTypesImportedName = propTypes.defaultImport;
+  const isMaxDepth = depth >= (state.options.maxDepth || 3);
 
   // Remove wrapping parens
   if (t.isTSParenthesizedType(type)) {
@@ -117,7 +102,7 @@ function convert(type: any, state: ConvertState): PropType | null {
         propTypesImportedName,
       );
 
-      // func
+      // function
     } else if (name.endsWith('Handler')) {
       return createMember(t.identifier('func'), propTypesImportedName);
 
@@ -129,9 +114,17 @@ function convert(type: any, state: ConvertState): PropType | null {
     } else if (NATIVE_BUILT_INS.includes(name)) {
       return createCall(t.identifier('instanceOf'), [t.identifier(name)], propTypesImportedName);
 
-      // custom prop type variables (must be last)
+      // inline references
+    } else if (state.referenceTypes[name]) {
+      return convert(state.referenceTypes[name], state, depth);
+
+      // custom prop type variables
     } else if (hasCustomPropTypeSuffix(name, state.options.customPropTypeSuffixes)) {
       return t.identifier(name);
+
+      // external references (uses type checker)
+    } else if (state.typeChecker) {
+      return convertSymbolFromSource(state.filePath, name, state);
     }
 
     // any (we need to support all these in case of unions)
@@ -139,7 +132,7 @@ function convert(type: any, state: ConvertState): PropType | null {
 
     // [] -> PropTypes.arrayOf(), PropTypes.array
   } else if (t.isTSArrayType(type)) {
-    const args = convertArray([type.elementType], state);
+    const args = convertArray([type.elementType], state, depth);
 
     return args.length > 0
       ? createCall(t.identifier('arrayOf'), args, propTypesImportedName)
@@ -150,7 +143,7 @@ function convert(type: any, state: ConvertState): PropType | null {
     // { foo: string } -> PropTypes.shape({ foo: PropTypes.string })
   } else if (t.isTSTypeLiteral(type)) {
     // object
-    if (type.members.length === 0) {
+    if (type.members.length === 0 || isMaxDepth) {
       return createMember(t.identifier('object'), propTypesImportedName);
 
       // objectOf
@@ -158,7 +151,7 @@ function convert(type: any, state: ConvertState): PropType | null {
       const index = type.members[0] as t.TSIndexSignature;
 
       if (index.typeAnnotation && index.typeAnnotation.typeAnnotation) {
-        const result = convert(index.typeAnnotation.typeAnnotation, state);
+        const result = convert(index.typeAnnotation.typeAnnotation, state, depth);
 
         if (result) {
           return createCall(t.identifier('objectOf'), [result], propTypesImportedName);
@@ -176,6 +169,8 @@ function convert(type: any, state: ConvertState): PropType | null {
                 t.isTSPropertySignature(member),
               ) as t.TSPropertySignature[],
               state,
+              [],
+              depth + 1,
             ),
           ),
         ],
@@ -194,13 +189,40 @@ function convert(type: any, state: ConvertState): PropType | null {
       args = type.types.map(param => (param as t.TSLiteralType).literal);
       label = t.identifier('oneOf');
     } else {
-      args = convertArray(type.types, state);
+      args = convertArray(type.types, state, depth);
       label = t.identifier('oneOfType');
     }
 
     if (label && args.length > 0) {
       return createCall(label, [t.arrayExpression(args)], propTypesImportedName);
     }
+
+    // interface Foo {}
+  } else if (t.isTSInterfaceDeclaration(type)) {
+    if (type.body.body.length === 0 || isMaxDepth) {
+      return createMember(t.identifier('object'), propTypesImportedName);
+    }
+
+    return createCall(
+      t.identifier('shape'),
+      [
+        t.objectExpression(
+          convertListToProps(
+            type.body.body.filter(property =>
+              t.isTSPropertySignature(property),
+            ) as t.TSPropertySignature[],
+            state,
+            [],
+            depth + 1,
+          ),
+        ),
+      ],
+      propTypesImportedName,
+    );
+
+    // type Foo = {};
+  } else if (t.isTSTypeAliasDeclaration(type)) {
+    return convert(type.typeAnnotation, state, depth);
   }
 
   state.propTypes.count -= 1;
@@ -208,11 +230,11 @@ function convert(type: any, state: ConvertState): PropType | null {
   return null;
 }
 
-function convertArray(types: any[], state: ConvertState): PropType[] {
+function convertArray(types: any[], state: ConvertState, depth: number): PropType[] {
   const propTypes: PropType[] = [];
 
   types.forEach(type => {
-    const prop = convert(type, state);
+    const prop = convert(type, state, depth);
 
     if (prop) {
       propTypes.push(prop);
@@ -225,7 +247,8 @@ function convertArray(types: any[], state: ConvertState): PropType[] {
 function convertListToProps(
   properties: t.TSPropertySignature[],
   state: ConvertState,
-  defaultProps: string[] = [],
+  defaultProps: string[],
+  depth: number,
 ): t.ObjectProperty[] {
   const propTypes: t.ObjectProperty[] = [];
 
@@ -234,7 +257,7 @@ function convertListToProps(
       return;
     }
 
-    const propType = convert(property.typeAnnotation.typeAnnotation, state);
+    const propType = convert(property.typeAnnotation.typeAnnotation, state, depth);
 
     if (propType) {
       propTypes.push(
@@ -262,7 +285,7 @@ export default function convertToPropTypes(
 
   typeNames.forEach(typeName => {
     if (types[typeName]) {
-      properties.push(...convertListToProps(types[typeName], state, defaultProps));
+      properties.push(...convertListToProps(types[typeName], state, defaultProps, 0));
     }
   });
 

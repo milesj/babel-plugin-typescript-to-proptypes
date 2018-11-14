@@ -1,4 +1,5 @@
 import { types as t, traverse } from '@babel/core';
+import ts from 'typescript';
 
 export type Path<N> = traverse.NodePath<N>;
 
@@ -22,9 +23,14 @@ export type ConvertState = {
     hasImport: boolean;
   };
   reactImportedName: string;
+  referenceTypes: { [key: string]: t.TSInterfaceDeclaration | t.TSTypeAliasDeclaration };
+  typeChecker?: ts.TypeChecker;
+  typeProgram?: ts.Program;
 };
 
 export type PluginOptions = {
   customPropTypeSuffixes?: string[];
   forbidExtraProps?: boolean;
+  maxDepth?: number;
+  typeCheck?: boolean | string;
 };

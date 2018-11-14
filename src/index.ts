@@ -2,10 +2,10 @@ import { declare } from '@babel/helper-plugin-utils';
 import { addDefault, addNamed } from '@babel/helper-module-imports';
 import syntaxTypeScript from '@babel/plugin-syntax-typescript';
 import { types as t } from '@babel/core';
-// import ts from 'typescript';
 import addToClass from './addToClass';
 import addToFunctionOrVar from './addToFunctionOrVar';
 import extractTypeProperties from './extractTypeProperties';
+// import { loadProgram } from './typeChecker';
 import upsertImport from './upsertImport';
 import { Path, PluginOptions, ConvertState } from './types';
 
@@ -15,14 +15,15 @@ function isNotTS(name: string): boolean {
   return name.endsWith('.js') || name.endsWith('.jsx');
 }
 
-export default declare((api: any, options: PluginOptions) => {
+export default declare((api: any, options: PluginOptions, root: string) => {
   api.assertVersion(BABEL_VERSION);
 
   return {
     inherits: syntaxTypeScript,
 
     manipulateOptions(opts: any, parserOptions: any) {
-      // Inheriting the syntax doesn't seem to define these
+      // Some codebases are only partially TypeScript, so we need to support
+      // regular JS and JSX files, otherwise the Babel parser blows up.
       parserOptions.plugins.push('jsx');
     },
 
@@ -49,6 +50,7 @@ export default declare((api: any, options: PluginOptions) => {
           hasImport: false,
         },
         reactImportedName: '',
+        referenceTypes: {},
       };
     },
 
@@ -62,6 +64,11 @@ export default declare((api: any, options: PluginOptions) => {
           if (isNotTS(filename)) {
             return;
           }
+
+          // if (options.typeCheck) {
+          //   state.typeProgram = loadProgram(options.typeCheck, root);
+          //   state.typeChecker = state.typeProgram.getTypeChecker();
+          // }
 
           // Find existing `react` and `prop-types` imports
           programPath.node.body.forEach(node => {
@@ -207,6 +214,8 @@ export default declare((api: any, options: PluginOptions) => {
                 node,
                 state.componentTypes,
               );
+
+              state.referenceTypes[node.id.name] = node;
             },
 
             // `type FooProps = {}`
@@ -215,6 +224,8 @@ export default declare((api: any, options: PluginOptions) => {
                 node,
                 state.componentTypes,
               );
+
+              state.referenceTypes[node.id.name] = node;
             },
 
             // `const Foo: React.SFC<Props> = () => {};`

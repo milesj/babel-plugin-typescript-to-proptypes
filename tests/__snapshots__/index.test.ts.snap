@@ -1,13 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`babel-plugin-typescript-to-proptypes supports custom prop type suffixes 1`] = `
-"import React from 'react';
-import PropTypes from 'prop-types';
-const NameShape = PropTypes.string;
-const AgePropType = PropTypes.number;
-type NameShape = string;
-type AgePropType = number;
-type HeightUnsupported = number;
+exports[`babel-plugin-typescript-to-proptypes customPropTypeSuffixes supports custom prop type suffixes 1`] = `
+"import _pt from 'prop-types';
+import React from 'react';
+import { NameShape, AgePropType, HeightUnsupported } from './shapes';
 export interface Props {
   name: NameShape;
   nameOpt?: NameShape;
@@ -22,8 +18,8 @@ export default class CustomSuffix extends React.Component<Props> {
     nameOpt: NameShape,
     age: AgePropType.isRequired,
     ageOpt: AgePropType,
-    both: PropTypes.oneOfType([NameShape, AgePropType, PropTypes.bool]).isRequired,
-    height: PropTypes.any.isRequired
+    both: _pt.oneOfType([NameShape, AgePropType, _pt.bool]).isRequired,
+    height: _pt.any.isRequired
   };
 
   render() {
@@ -33,7 +29,7 @@ export default class CustomSuffix extends React.Component<Props> {
 }"
 `;
 
-exports[`babel-plugin-typescript-to-proptypes supports forbid extra props 1`] = `
+exports[`babel-plugin-typescript-to-proptypes forbidExtraProps supports forbid extra props 1`] = `
 "import { forbidExtraProps as _forbidExtraProps } from 'airbnb-prop-types';
 import _pt from 'prop-types';
 import React from 'react';
@@ -52,7 +48,7 @@ export default class ForbidExtraProps extends React.Component<Props> {
 }"
 `;
 
-exports[`babel-plugin-typescript-to-proptypes supports merging with forbid extra props 1`] = `
+exports[`babel-plugin-typescript-to-proptypes forbidExtraProps supports merging with forbid extra props 1`] = `
 "import _pt from 'prop-types';
 import React from 'react';
 import { forbidExtraProps, integer as int } from 'airbnb-prop-types';
@@ -65,6 +61,70 @@ export default class MergeForbidExtraProps extends React.Component<Props> {
     name: _pt.string.isRequired,
     age: int()
   });
+
+  render() {
+    return null;
+  }
+
+}"
+`;
+
+exports[`babel-plugin-typescript-to-proptypes handles self referencing types 1`] = `
+"import _pt from 'prop-types';
+import React from 'react';
+interface Shape {
+  nested: Shape;
+}
+interface Props {
+  shape: Shape;
+}
+export default class RecursiveType extends React.Component<Props> {
+  static propTypes = {
+    shape: _pt.shape({
+      nested: _pt.shape({
+        nested: _pt.shape({
+          nested: _pt.object.isRequired
+        }).isRequired
+      }).isRequired
+    }).isRequired
+  };
+
+  render() {
+    return null;
+  }
+
+}"
+`;
+
+exports[`babel-plugin-typescript-to-proptypes stops converting once max depth is met 1`] = `
+"import _pt from 'prop-types';
+import React from 'react';
+interface Root {
+  one: {
+    two: {
+      three: {
+        four: {
+          five: {
+            key: 'value';
+          };
+        };
+      };
+    };
+  };
+}
+interface Props {
+  root: Root;
+}
+export default class MaxDepth extends React.Component<Props> {
+  static propTypes = {
+    root: _pt.shape({
+      one: _pt.shape({
+        two: _pt.shape({
+          three: _pt.object.isRequired
+        }).isRequired
+      }).isRequired
+    }).isRequired
+  };
 
   render() {
     return null;

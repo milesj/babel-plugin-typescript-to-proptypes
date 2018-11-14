@@ -143,39 +143,81 @@ describe('babel-plugin-typescript-to-proptypes', () => {
     ).toMatchSnapshot();
   });
 
-  it('supports custom prop type suffixes', () => {
+  it('stops converting once max depth is met', () => {
+    expect(transform(path.join(__dirname, './fixtures/special/max-depth.ts'))).toMatchSnapshot();
+  });
+
+  it('handles self referencing types', () => {
     expect(
-      transform(
-        path.join(__dirname, './fixtures/special/custom-suffix.ts'),
-        {},
-        {
-          customPropTypeSuffixes: ['Shape', 'PropType'],
-        },
-      ),
+      transform(path.join(__dirname, './fixtures/special/recursive-type.ts')),
     ).toMatchSnapshot();
   });
 
-  it('supports forbid extra props', () => {
-    expect(
-      transform(
-        path.join(__dirname, './fixtures/special/forbid-extra-props.ts'),
-        {},
-        {
-          forbidExtraProps: true,
-        },
-      ),
-    ).toMatchSnapshot();
+  describe('customPropTypeSuffixes', () => {
+    it('supports custom prop type suffixes', () => {
+      expect(
+        transform(
+          path.join(__dirname, './fixtures/special/custom-suffix.ts'),
+          {},
+          {
+            customPropTypeSuffixes: ['Shape', 'PropType'],
+          },
+        ),
+      ).toMatchSnapshot();
+    });
   });
 
-  it('supports merging with forbid extra props', () => {
-    expect(
-      transform(
-        path.join(__dirname, './fixtures/special/merge-forbid-extra-props.ts'),
-        {},
-        {
-          forbidExtraProps: true,
-        },
-      ),
-    ).toMatchSnapshot();
+  describe('forbidExtraProps', () => {
+    it('supports forbid extra props', () => {
+      expect(
+        transform(
+          path.join(__dirname, './fixtures/special/forbid-extra-props.ts'),
+          {},
+          {
+            forbidExtraProps: true,
+          },
+        ),
+      ).toMatchSnapshot();
+    });
+
+    it('supports merging with forbid extra props', () => {
+      expect(
+        transform(
+          path.join(__dirname, './fixtures/special/merge-forbid-extra-props.ts'),
+          {},
+          {
+            forbidExtraProps: true,
+          },
+        ),
+      ).toMatchSnapshot();
+    });
   });
+
+  // describe('typeCheck', () => {
+  //   glob
+  //     .sync('./fixtures/special/checker/*.ts', { cwd: __dirname, dot: false })
+  //     .forEach(basePath => {
+  //       const filePath = String(basePath);
+
+  //       if (path.basename(filePath) !== 'ref-shape-interface.ts') {
+  //         return;
+  //       }
+
+  //       if (path.basename(filePath) === 'types.ts') {
+  //         return;
+  //       }
+
+  //       it(`transforms ${filePath}`, () => {
+  //         expect(
+  //           transform(
+  //             path.join(__dirname, filePath),
+  //             {},
+  //             {
+  //               typeCheck: './tests/fixtures/special/checker/*.ts',
+  //             },
+  //           ),
+  //         ).toMatchSnapshot();
+  //       });
+  //     });
+  // });
 });

@@ -4,6 +4,9 @@
 
 A Babel plugin to generate React PropTypes from TypeScript interfaces or type aliases.
 
+> Does not support converting external type references (as Babel has no type information) without
+> the `typeCheck` option being enabled.
+
 ## Examples
 
 Supports class components that define generic props.
@@ -138,9 +141,7 @@ module.exports = {
 ```js
 // Before
 import React from 'react';
-import PropTypes from 'prop-types';
-
-const NameShape = PropTypes.string;
+import { NameShape } from './shapes';
 
 interface Props {
   name?: NameShape;
@@ -154,9 +155,7 @@ class Example extends React.Component<Props> {
 
 // After
 import React from 'react';
-import PropTypes from 'prop-types';
-
-const NameShape = PropTypes.string;
+import { NameShape } from './shapes';
 
 class Example extends React.Component {
   static propTypes = {
@@ -202,6 +201,103 @@ class Example extends React.Component {
   static propTypes = forbidExtraProps({
     name: PropTypes.string,
   });
+
+  render() {
+    return <div />;
+  }
+}
+```
+
+- `maxDepth` (number) - Maximum depth to convert while handling recursive or deeply nested shapes.
+  Defaults to `3`.
+
+```js
+module.exports = {
+  plugins: [['babel-plugin-typescript-to-proptypes', { maxDepth: 3 }]],
+};
+```
+
+```js
+// Before
+import React from 'react';
+
+interface Props {
+  one: {
+    two: {
+      three: {
+        four: {
+          five: {
+            super: 'deep',
+          },
+        },
+      },
+    },
+  };
+}
+
+class Example extends React.Component<Props> {
+  render() {
+    return <div />;
+  }
+}
+
+// After
+import React from 'react';
+import PropTypes from 'prop-types';
+
+class Example extends React.Component {
+  static propTypes = {
+    one: PropTypes.shape({
+      two: PropTypes.shape({
+        three: PropTypes.object,
+      }),
+    }),
+  };
+
+  render() {
+    return <div />;
+  }
+}
+```
+
+- `typeCheck` (boolean|string) - _NOT FINISHED_ Resolve full type information for aliases and
+  references using TypeScript's built-in type checker. When enabled with `true`, will glob for files
+  using `./src/**/*.ts`. Glob can be customized by passing a string. Defaults to `false`.
+
+> Note: This process is heavy and may increase compilation times.
+
+```js
+module.exports = {
+  plugins: [['babel-plugin-typescript-to-proptypes', { typeCheck: true }]],
+};
+```
+
+```js
+// Before
+import React from 'react';
+import { Location } from './types';
+
+interface Props {
+  location?: Location;
+}
+
+class Example extends React.Component<Props> {
+  render() {
+    return <div />;
+  }
+}
+
+// After
+import React from 'react';
+import PropTypes from 'prop-types';
+
+class Example extends React.Component {
+  static propTypes = {
+    location: PropTypes.shape({
+      lat: PropTypes.number,
+      long: PropTypes.number,
+    }),
+  };
 
   render() {
     return <div />;

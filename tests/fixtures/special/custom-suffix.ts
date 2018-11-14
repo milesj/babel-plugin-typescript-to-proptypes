@@ -1,12 +1,6 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-
-const NameShape = PropTypes.string;
-const AgePropType = PropTypes.number;
-
-type NameShape = string;
-type AgePropType = number;
-type HeightUnsupported = number;
+// @ts-ignore
+import { NameShape, AgePropType, HeightUnsupported } from './shapes';
 
 export interface Props {
   name: NameShape;
