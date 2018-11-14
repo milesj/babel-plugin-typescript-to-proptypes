@@ -193,31 +193,31 @@ describe('babel-plugin-typescript-to-proptypes', () => {
     });
   });
 
-  describe.only('typeCheck', () => {
-    glob
-      .sync('./fixtures/special/checker/*.ts', { cwd: __dirname, dot: false })
-      .forEach(basePath => {
-        const filePath = String(basePath);
+  // describe('typeCheck', () => {
+  //   glob
+  //     .sync('./fixtures/special/checker/*.ts', { cwd: __dirname, dot: false })
+  //     .forEach(basePath => {
+  //       const filePath = String(basePath);
 
-        if (path.basename(filePath) !== 'ref-shape-interface.ts') {
-          return;
-        }
+  //       if (path.basename(filePath) !== 'ref-shape-interface.ts') {
+  //         return;
+  //       }
 
-        if (path.basename(filePath) === 'types.ts') {
-          return;
-        }
+  //       if (path.basename(filePath) === 'types.ts') {
+  //         return;
+  //       }
 
-        it(`transforms ${filePath}`, () => {
-          expect(
-            transform(
-              path.join(__dirname, filePath),
-              {},
-              {
-                typeCheck: './tests/fixtures/special/checker/*.ts',
-              },
-            ),
-          ).toMatchSnapshot();
-        });
-      });
-  });
+  //       it(`transforms ${filePath}`, () => {
+  //         expect(
+  //           transform(
+  //             path.join(__dirname, filePath),
+  //             {},
+  //             {
+  //               typeCheck: './tests/fixtures/special/checker/*.ts',
+  //             },
+  //           ),
+  //         ).toMatchSnapshot();
+  //       });
+  //     });
+  // });
 });

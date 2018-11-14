@@ -5,7 +5,7 @@ import { types as t } from '@babel/core';
 import addToClass from './addToClass';
 import addToFunctionOrVar from './addToFunctionOrVar';
 import extractTypeProperties from './extractTypeProperties';
-import { loadProgram } from './typeChecker';
+// import { loadProgram } from './typeChecker';
 import upsertImport from './upsertImport';
 import { Path, PluginOptions, ConvertState } from './types';
 
@@ -65,10 +65,10 @@ export default declare((api: any, options: PluginOptions, root: string) => {
             return;
           }
 
-          if (options.typeCheck) {
-            state.typeProgram = loadProgram(options.typeCheck, root);
-            state.typeChecker = state.typeProgram.getTypeChecker();
-          }
+          // if (options.typeCheck) {
+          //   state.typeProgram = loadProgram(options.typeCheck, root);
+          //   state.typeChecker = state.typeProgram.getTypeChecker();
+          // }
 
           // Find existing `react` and `prop-types` imports
           programPath.node.body.forEach(node => {

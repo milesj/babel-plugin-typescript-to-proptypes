@@ -260,9 +260,9 @@ class Example extends React.Component {
 }
 ```
 
-- `typeCheck` (boolean|string) - Resolve full type information for aliases and references using
-  TypeScript's built-in type checker. When enabled with `true`, will glob for files using
-  `./src/**/*.ts`. Glob can be customized by passing a string. Defaults to `false`.
+- `typeCheck` (boolean|string) - _NOT FINISHED_ Resolve full type information for aliases and
+  references using TypeScript's built-in type checker. When enabled with `true`, will glob for files
+  using `./src/**/*.ts`. Glob can be customized by passing a string. Defaults to `false`.
 
 > Note: This process is heavy and may increase compilation times.
 

@@ -7,7 +7,7 @@ import {
   createMember,
   hasCustomPropTypeSuffix,
   isReactTypeMatch,
-  wrapIsRequired,
+  // wrapIsRequired,
 } from './propTypes';
 import { ConvertState, PropType } from './types';
 
@@ -64,7 +64,8 @@ export function convert(type: ts.Type, state: ConvertState, depth: number): Prop
     return createMember(t.identifier('object'), propTypesImportedName);
 
     // (() => void) -> PropTypes.func
-  } else if (type.flags & ts.TypeFlags) {
+    // TODO
+  } else if (type.flags & ts.TypeFlags.Any) {
     return createMember(t.identifier('func'), propTypesImportedName);
 
     // React.ReactNode -> PropTypes.node
@@ -77,7 +78,7 @@ export function convert(type: ts.Type, state: ConvertState, depth: number): Prop
     // Date, Error, RegExp -> Date, Error, RegExp
     // CustomType -> PropTypes.any
   } else if (t.isTSTypeReference(type)) {
-    const name = getTypeName(type.typeName);
+    const name = ''; // getTypeName(type.typeName);
 
     // node
     if (
@@ -126,12 +127,12 @@ export function convert(type: ts.Type, state: ConvertState, depth: number): Prop
       return createMember(t.identifier('object'), propTypesImportedName);
 
       // native built-ins
-    } else if (NATIVE_BUILT_INS.includes(name)) {
-      return createCall(t.identifier('instanceOf'), [t.identifier(name)], propTypesImportedName);
+      // } else if (NATIVE_BUILT_INS.includes(name)) {
+      //   return createCall(t.identifier('instanceOf'), [t.identifier(name)], propTypesImportedName);
 
       // inline references
-    } else if (state.referenceTypes[name]) {
-      return convert(state.referenceTypes[name], state, depth);
+      // } else if (state.referenceTypes[name]) {
+      //   return convert(state.referenceTypes[name], state, depth);
 
       // custom prop type variables
     } else if (hasCustomPropTypeSuffix(name, state.options.customPropTypeSuffixes)) {
@@ -147,12 +148,10 @@ export function convert(type: ts.Type, state: ConvertState, depth: number): Prop
 
     // [] -> PropTypes.arrayOf(), PropTypes.array
   } else if (t.isTSArrayType(type)) {
-    const args = convertArray([type.elementType], state, depth);
-
-    return args.length > 0
-      ? createCall(t.identifier('arrayOf'), args, propTypesImportedName)
-      : createMember(t.identifier('array'), propTypesImportedName);
-
+    // const args = convertArray([type.elementType], state, depth);
+    // return args.length > 0
+    //   ? createCall(t.identifier('arrayOf'), args, propTypesImportedName)
+    //   : createMember(t.identifier('array'), propTypesImportedName);
     // {} -> PropTypes.object
     // { [key: string]: string } -> PropTypes.objectOf(PropTypes.string)
     // { foo: string } -> PropTypes.shape({ foo: PropTypes.string })
@@ -163,81 +162,73 @@ export function convert(type: ts.Type, state: ConvertState, depth: number): Prop
 
       // objectOf
     } else if (type.members.length === 1 && t.isTSIndexSignature(type.members[0])) {
-      const index = type.members[0] as t.TSIndexSignature;
-
-      if (index.typeAnnotation && index.typeAnnotation.typeAnnotation) {
-        const result = convert(index.typeAnnotation.typeAnnotation, state, depth);
-
-        if (result) {
-          return createCall(t.identifier('objectOf'), [result], propTypesImportedName);
-        }
-      }
-
+      // const index = type.members[0] as t.TSIndexSignature;
+      // if (index.typeAnnotation && index.typeAnnotation.typeAnnotation) {
+      //   const result = convert(index.typeAnnotation.typeAnnotation, state, depth);
+      //   if (result) {
+      //     return createCall(t.identifier('objectOf'), [result], propTypesImportedName);
+      //   }
+      // }
       // shape
     } else {
-      return createCall(
-        t.identifier('shape'),
-        [
-          t.objectExpression(
-            convertListToProps(
-              type.members.filter(member =>
-                t.isTSPropertySignature(member),
-              ) as t.TSPropertySignature[],
-              state,
-              [],
-              depth + 1,
-            ),
-          ),
-        ],
-        propTypesImportedName,
-      );
+      // return createCall(
+      //   t.identifier('shape'),
+      //   [
+      //     t.objectExpression(
+      //       convertListToProps(
+      //         type.members.filter(member =>
+      //           t.isTSPropertySignature(member),
+      //         ) as t.TSPropertySignature[],
+      //         state,
+      //         [],
+      //         depth + 1,
+      //       ),
+      //     ),
+      //   ],
+      //   propTypesImportedName,
+      // );
     }
 
     // string | number -> PropTypes.oneOfType([PropTypes.string, PropTypes.number])
     // 'foo' | 'bar' -> PropTypes.oneOf(['foo', 'bar'])
   } else if (t.isTSUnionType(type) || t.isTSIntersectionType(type)) {
-    const isAllLiterals = type.types.every(param => t.isTSLiteralType(param));
-    let label;
-    let args;
-
-    if (isAllLiterals) {
-      args = type.types.map(param => (param as t.TSLiteralType).literal);
-      label = t.identifier('oneOf');
-    } else {
-      args = convertArray(type.types, state, depth);
-      label = t.identifier('oneOfType');
-    }
-
-    if (label && args.length > 0) {
-      return createCall(label, [t.arrayExpression(args)], propTypesImportedName);
-    }
-
+    // const isAllLiterals = type.types.every(param => t.isTSLiteralType(param));
+    // let label;
+    // let args;
+    // if (isAllLiterals) {
+    //   args = type.types.map(param => (param as t.TSLiteralType).literal);
+    //   label = t.identifier('oneOf');
+    // } else {
+    //   args = convertArray(type.types, state, depth);
+    //   label = t.identifier('oneOfType');
+    // }
+    // if (label && args.length > 0) {
+    //   return createCall(label, [t.arrayExpression(args)], propTypesImportedName);
+    // }
     // interface Foo {}
   } else if (t.isTSInterfaceDeclaration(type)) {
-    if (type.body.body.length === 0 || isMaxDepth) {
-      return createMember(t.identifier('object'), propTypesImportedName);
-    }
-
-    return createCall(
-      t.identifier('shape'),
-      [
-        t.objectExpression(
-          convertListToProps(
-            type.body.body.filter(property =>
-              t.isTSPropertySignature(property),
-            ) as t.TSPropertySignature[],
-            state,
-            [],
-            depth + 1,
-          ),
-        ),
-      ],
-      propTypesImportedName,
-    );
-
+    // if (type.body.body.length === 0 || isMaxDepth) {
+    //   return createMember(t.identifier('object'), propTypesImportedName);
+    // }
+    // return createCall(
+    //   t.identifier('shape'),
+    //   [
+    //     t.objectExpression(
+    //       convertListToProps(
+    //         type.body.body.filter(property =>
+    //           t.isTSPropertySignature(property),
+    //         ) as t.TSPropertySignature[],
+    //         state,
+    //         [],
+    //         depth + 1,
+    //       ),
+    //     ),
+    //   ],
+    //   propTypesImportedName,
+    // );
     // type Foo = {};
   } else if (t.isTSTypeAliasDeclaration(type)) {
-    return convert(type.typeAnnotation, state, depth);
+    // return convert(type.typeAnnotation, state, depth);
   }
 
   state.propTypes.count -= 1;
@@ -297,9 +288,9 @@ export function convertSymbolFromSource(
     return null;
   }
 
-  const type = checker.getTypeOfSymbolAtLocation(symbol, symbol.valueDeclaration!);
+  // const type = checker.getTypeOfSymbolAtLocation(symbol, symbol.valueDeclaration!);
 
-  console.log(symbol, source.locals.get(symbolName));
+  // console.log(symbol, source.locals.get(symbolName));
 
   // // This is a map of all symbols in the file.
   // // @ts-ignore
