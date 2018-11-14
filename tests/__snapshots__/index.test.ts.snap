@@ -96,6 +96,28 @@ export default class RecursiveType extends React.Component<Props> {
 }"
 `;
 
+exports[`babel-plugin-typescript-to-proptypes handles type index access operator 1`] = `
+"import _pt from 'prop-types';
+import React from 'react';
+interface Base {
+  union: 1 | 2 | 3 | 4 | 5;
+}
+interface Props {
+  name: Base['unknown'];
+  list: Base['union'];
+}
+export default class IndexAccess extends React.Component<Props> {
+  static propTypes = {
+    list: _pt.oneOf([1, 2, 3, 4, 5]).isRequired
+  };
+
+  render() {
+    return null;
+  }
+
+}"
+`;
+
 exports[`babel-plugin-typescript-to-proptypes stops converting once max depth is met 1`] = `
 "import _pt from 'prop-types';
 import React from 'react';

@@ -153,6 +153,10 @@ describe('babel-plugin-typescript-to-proptypes', () => {
     ).toMatchSnapshot();
   });
 
+  it('handles type index access operator', () => {
+    expect(transform(path.join(__dirname, './fixtures/special/index-access.ts'))).toMatchSnapshot();
+  });
+
   describe('customPropTypeSuffixes', () => {
     it('supports custom prop type suffixes', () => {
       expect(
