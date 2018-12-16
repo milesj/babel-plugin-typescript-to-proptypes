@@ -11,7 +11,7 @@ A Babel plugin to generate React PropTypes from TypeScript interfaces or type al
 
 Supports class components that define generic props.
 
-```js
+```tsx
 // Before
 import React from 'react';
 
@@ -42,7 +42,7 @@ class Example extends React.Component {
 
 Stateless function components that annotate the props argument.
 
-```js
+```tsx
 // Before
 import React from 'react';
 
@@ -69,12 +69,12 @@ Example.propTypes = {
 
 And anonymous functions that are annotated as a `React.SFC`.
 
-```js
+```tsx
 // Before
 import React from 'react';
 
 type Props = {
-  name?: string,
+  name?: string;
 };
 
 const Example: React.SFC<Props> = props => <div />;
@@ -97,7 +97,7 @@ Example.propTypes = {
 
 ## Installation
 
-```js
+```tsx
 yarn add --dev babel-plugin-typescript-to-proptypes
 // Or
 npm install --save-dev babel-plugin-typescript-to-proptypes
@@ -108,7 +108,7 @@ npm install --save-dev babel-plugin-typescript-to-proptypes
 Add the plugin to your Babel config. It's preferred to enable this plugin for development only, or
 when building a library.
 
-```js
+```tsx
 // babel.config.js
 const plugins = [];
 
@@ -132,13 +132,13 @@ required.
   provided suffixes. This option requires the type to be within the file itself, as imported types
   would be automatically removed by Babel. Defaults to `[]`.
 
-```js
+```tsx
 module.exports = {
   plugins: [['babel-plugin-typescript-to-proptypes', { customPropTypeSuffixes: ['Shape'] }]],
 };
 ```
 
-```js
+```tsx
 // Before
 import React from 'react';
 import { NameShape } from './shapes';
@@ -172,13 +172,13 @@ class Example extends React.Component {
   [airbnb-prop-types](https://github.com/airbnb/prop-types) `forbidExtraProps`, which will error for
   any unknown and unspecified prop. Defaults to `false`.
 
-```js
+```tsx
 module.exports = {
   plugins: [['babel-plugin-typescript-to-proptypes', { forbidExtraProps: true }]],
 };
 ```
 
-```js
+```tsx
 // Before
 import React from 'react';
 
@@ -211,13 +211,13 @@ class Example extends React.Component {
 - `maxDepth` (number) - Maximum depth to convert while handling recursive or deeply nested shapes.
   Defaults to `3`.
 
-```js
+```tsx
 module.exports = {
   plugins: [['babel-plugin-typescript-to-proptypes', { maxDepth: 3 }]],
 };
 ```
 
-```js
+```tsx
 // Before
 import React from 'react';
 
@@ -227,11 +227,11 @@ interface Props {
       three: {
         four: {
           five: {
-            super: 'deep',
-          },
-        },
-      },
-    },
+            super: 'deep';
+          };
+        };
+      };
+    };
   };
 }
 
@@ -260,19 +260,67 @@ class Example extends React.Component {
 }
 ```
 
+- `maxSize` (number) - Maximum number of prop types in a component, values in `oneOf` prop types
+  (literal union), and properties in `shape` prop types (interface / type alias). Defaults to `25`.
+
+```tsx
+module.exports = {
+  plugins: [['babel-plugin-typescript-to-proptypes', { maxSize: 2 }]],
+};
+```
+
+```tsx
+// Before
+import React from 'react';
+
+interface Props {
+  one: 'foo' | 'bar' | 'baz';
+  two: {
+    foo: number;
+    bar: string;
+    baz: boolean;
+  };
+  three: null;
+}
+
+class Example extends React.Component<Props> {
+  render() {
+    return <div />;
+  }
+}
+
+// After
+import React from 'react';
+import PropTypes from 'prop-types';
+
+class Example extends React.Component {
+  static propTypes = {
+    one: PropTypes.oneOf(['foo', 'bar']),
+    two: PropTypes.shape({
+      foo: PropTypes.number,
+      bar: PropTypes.string,
+    }),
+  };
+
+  render() {
+    return <div />;
+  }
+}
+```
+
 - `typeCheck` (boolean|string) - _NOT FINISHED_ Resolve full type information for aliases and
   references using TypeScript's built-in type checker. When enabled with `true`, will glob for files
   using `./src/**/*.ts`. Glob can be customized by passing a string. Defaults to `false`.
 
 > Note: This process is heavy and may increase compilation times.
 
-```js
+```tsx
 module.exports = {
   plugins: [['babel-plugin-typescript-to-proptypes', { typeCheck: true }]],
 };
 ```
 
-```js
+```tsx
 // Before
 import React from 'react';
 import { Location } from './types';

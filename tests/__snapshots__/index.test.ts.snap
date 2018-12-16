@@ -118,6 +118,34 @@ export default class IndexAccess extends React.Component<Props> {
 }"
 `;
 
+exports[`babel-plugin-typescript-to-proptypes stops at max size for shapes and literal arrays 1`] = `
+"import _pt from 'prop-types';
+import React from 'react';
+interface Props {
+  shape: {
+    foo: string;
+    bar: number;
+    baz: boolean;
+    qux: null;
+  };
+  union: 'foo' | 'bar' | 'baz' | 'qux';
+}
+export default class MaxDepth extends React.Component<Props> {
+  static propTypes = {
+    shape: _pt.shape({
+      foo: _pt.string.isRequired,
+      bar: _pt.number.isRequired
+    }).isRequired,
+    union: _pt.oneOf(['foo', 'bar']).isRequired
+  };
+
+  render() {
+    return null;
+  }
+
+}"
+`;
+
 exports[`babel-plugin-typescript-to-proptypes stops converting once max depth is met 1`] = `
 "import _pt from 'prop-types';
 import React from 'react';

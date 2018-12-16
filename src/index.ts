@@ -10,6 +10,8 @@ import upsertImport from './upsertImport';
 import { Path, PluginOptions, ConvertState } from './types';
 
 const BABEL_VERSION = 7;
+const MAX_DEPTH = 3;
+const MAX_SIZE = 25;
 
 function isNotTS(name: string): boolean {
   return name.endsWith('.js') || name.endsWith('.jsx');
@@ -43,7 +45,14 @@ export default declare((api: any, options: PluginOptions, root: string) => {
         },
         componentTypes: {},
         filePath: '',
-        options,
+        options: {
+          customPropTypeSuffixes: [],
+          forbidExtraProps: false,
+          maxDepth: MAX_DEPTH,
+          maxSize: MAX_SIZE,
+          typeCheck: false,
+          ...options,
+        },
         propTypes: {
           count: 0,
           defaultImport: '',

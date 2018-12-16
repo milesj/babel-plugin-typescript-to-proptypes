@@ -15,7 +15,7 @@ const NATIVE_BUILT_INS = ['Date', 'Error', 'RegExp', 'Map', 'WeakMap', 'Set', 'W
 function convert(type: any, state: ConvertState, depth: number): PropType | null {
   const { reactImportedName, propTypes } = state;
   const propTypesImportedName = propTypes.defaultImport;
-  const isMaxDepth = depth >= (state.options.maxDepth || 3);
+  const isMaxDepth = depth >= state.options.maxDepth;
 
   // Remove wrapping parens
   if (t.isTSParenthesizedType(type)) {
@@ -188,6 +188,10 @@ function convert(type: any, state: ConvertState, depth: number): PropType | null
     if (isAllLiterals) {
       args = type.types.map(param => (param as t.TSLiteralType).literal);
       label = t.identifier('oneOf');
+
+      if (state.options.maxSize) {
+        args = args.slice(0, state.options.maxSize);
+      }
     } else {
       args = convertArray(type.types, state, depth);
       label = t.identifier('oneOfType');
@@ -274,10 +278,15 @@ function convertListToProps(
   depth: number,
 ): t.ObjectProperty[] {
   const propTypes: t.ObjectProperty[] = [];
+  let size: number = 0;
 
-  properties.forEach(property => {
+  properties.some(property => {
+    if (state.options.maxSize && size === state.options.maxSize) {
+      return true;
+    }
+
     if (!property.typeAnnotation) {
-      return;
+      return false;
     }
 
     const propType = convert(property.typeAnnotation.typeAnnotation, state, depth);
@@ -292,7 +301,11 @@ function convertListToProps(
           ),
         ),
       );
+
+      size += 1;
     }
+
+    return false;
   });
 
   return propTypes;

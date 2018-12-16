@@ -147,6 +147,18 @@ describe('babel-plugin-typescript-to-proptypes', () => {
     expect(transform(path.join(__dirname, './fixtures/special/max-depth.ts'))).toMatchSnapshot();
   });
 
+  it('stops at max size for shapes and literal arrays', () => {
+    expect(
+      transform(
+        path.join(__dirname, './fixtures/special/max-size.ts'),
+        {},
+        {
+          maxSize: 2,
+        },
+      ),
+    ).toMatchSnapshot();
+  });
+
   it('handles self referencing types', () => {
     expect(
       transform(path.join(__dirname, './fixtures/special/recursive-type.ts')),
