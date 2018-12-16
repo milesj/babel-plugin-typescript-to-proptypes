@@ -250,6 +250,14 @@ function convert(type: any, state: ConvertState, depth: number): PropType | null
 
       return property ? convert(property.typeAnnotation!.typeAnnotation, state, depth) : null;
     }
+
+    // typeof foo
+  } else if (t.isTSTypeQuery(type)) {
+    return createMember(t.identifier('any'), propTypesImportedName);
+
+    // keyof foo
+  } else if (t.isTSTypeOperator(type) && type.operator === 'keyof') {
+    return createMember(t.identifier('any'), propTypesImportedName);
   }
 
   state.propTypes.count -= 1;

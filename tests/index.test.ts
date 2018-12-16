@@ -143,22 +143,6 @@ describe('babel-plugin-typescript-to-proptypes', () => {
     ).toMatchSnapshot();
   });
 
-  it('stops converting once max depth is met', () => {
-    expect(transform(path.join(__dirname, './fixtures/special/max-depth.ts'))).toMatchSnapshot();
-  });
-
-  it('stops at max size for shapes and literal arrays', () => {
-    expect(
-      transform(
-        path.join(__dirname, './fixtures/special/max-size.ts'),
-        {},
-        {
-          maxSize: 2,
-        },
-      ),
-    ).toMatchSnapshot();
-  });
-
   it('handles self referencing types', () => {
     expect(
       transform(path.join(__dirname, './fixtures/special/recursive-type.ts')),
@@ -167,6 +151,14 @@ describe('babel-plugin-typescript-to-proptypes', () => {
 
   it('handles type index access operator', () => {
     expect(transform(path.join(__dirname, './fixtures/special/index-access.ts'))).toMatchSnapshot();
+  });
+
+  it('handles typeof operator', () => {
+    expect(transform(path.join(__dirname, './fixtures/special/type-of.ts'))).toMatchSnapshot();
+  });
+
+  it('handles keyof operator', () => {
+    expect(transform(path.join(__dirname, './fixtures/special/key-of.ts'))).toMatchSnapshot();
   });
 
   describe('customPropTypeSuffixes', () => {
@@ -203,6 +195,28 @@ describe('babel-plugin-typescript-to-proptypes', () => {
           {},
           {
             forbidExtraProps: true,
+          },
+        ),
+      ).toMatchSnapshot();
+    });
+  });
+
+  describe('maxDepth', () => {
+    it('stops converting once max depth is met', () => {
+      expect(
+        transform(path.join(__dirname, './fixtures/special/max-depth.ts'), {}, { maxDepth: 3 }),
+      ).toMatchSnapshot();
+    });
+  });
+
+  describe('maxSize', () => {
+    it('stops at max size for shapes and literal arrays', () => {
+      expect(
+        transform(
+          path.join(__dirname, './fixtures/special/max-size.ts'),
+          {},
+          {
+            maxSize: 2,
           },
         ),
       ).toMatchSnapshot();

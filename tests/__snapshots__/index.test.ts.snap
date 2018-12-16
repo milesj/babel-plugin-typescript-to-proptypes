@@ -69,6 +69,24 @@ export default class MergeForbidExtraProps extends React.Component<Props> {
 }"
 `;
 
+exports[`babel-plugin-typescript-to-proptypes handles keyof operator 1`] = `
+"import _pt from 'prop-types';
+import React from 'react';
+interface Props {
+  name: keyof JSX.IntrinsicAttributes;
+}
+export default class KeyOf extends React.Component<Props> {
+  static propTypes = {
+    name: _pt.any.isRequired
+  };
+
+  render() {
+    return null;
+  }
+
+}"
+`;
+
 exports[`babel-plugin-typescript-to-proptypes handles self referencing types 1`] = `
 "import _pt from 'prop-types';
 import React from 'react';
@@ -118,25 +136,16 @@ export default class IndexAccess extends React.Component<Props> {
 }"
 `;
 
-exports[`babel-plugin-typescript-to-proptypes stops at max size for shapes and literal arrays 1`] = `
+exports[`babel-plugin-typescript-to-proptypes handles typeof operator 1`] = `
 "import _pt from 'prop-types';
 import React from 'react';
+const list = [1, 2, 3];
 interface Props {
-  shape: {
-    foo: string;
-    bar: number;
-    baz: boolean;
-    qux: null;
-  };
-  union: 'foo' | 'bar' | 'baz' | 'qux';
+  name: typeof list;
 }
-export default class MaxDepth extends React.Component<Props> {
+export default class KeyOf extends React.Component<Props> {
   static propTypes = {
-    shape: _pt.shape({
-      foo: _pt.string.isRequired,
-      bar: _pt.number.isRequired
-    }).isRequired,
-    union: _pt.oneOf(['foo', 'bar']).isRequired
+    name: _pt.any.isRequired
   };
 
   render() {
@@ -146,7 +155,7 @@ export default class MaxDepth extends React.Component<Props> {
 }"
 `;
 
-exports[`babel-plugin-typescript-to-proptypes stops converting once max depth is met 1`] = `
+exports[`babel-plugin-typescript-to-proptypes maxDepth stops converting once max depth is met 1`] = `
 "import _pt from 'prop-types';
 import React from 'react';
 interface Root {
@@ -174,6 +183,34 @@ export default class MaxDepth extends React.Component<Props> {
         }).isRequired
       }).isRequired
     }).isRequired
+  };
+
+  render() {
+    return null;
+  }
+
+}"
+`;
+
+exports[`babel-plugin-typescript-to-proptypes maxSize stops at max size for shapes and literal arrays 1`] = `
+"import _pt from 'prop-types';
+import React from 'react';
+interface Props {
+  shape: {
+    foo: string;
+    bar: number;
+    baz: boolean;
+    qux: null;
+  };
+  union: 'foo' | 'bar' | 'baz' | 'qux';
+}
+export default class MaxSize extends React.Component<Props> {
+  static propTypes = {
+    shape: _pt.shape({
+      foo: _pt.string.isRequired,
+      bar: _pt.number.isRequired
+    }).isRequired,
+    union: _pt.oneOf(['foo', 'bar']).isRequired
   };
 
   render() {
