@@ -281,6 +281,17 @@ function convert(type: any, state: ConvertState, depth: number): PropType | null
   return null;
 }
 
+function mustBeOptional(type: t.Node): boolean {
+  // Unions that contain undefined or null cannot be required by design
+  if (t.isTSUnionType(type)) {
+    return type.types.some(
+      value => t.isTSAnyKeyword(value) || t.isTSNullKeyword(value) || t.isTSUndefinedKeyword(value),
+    );
+  }
+
+  return false;
+}
+
 function convertArray(types: any[], state: ConvertState, depth: number): PropType[] {
   const propTypes: PropType[] = [];
 
@@ -314,14 +325,18 @@ function convertListToProps(
       return false;
     }
 
-    const propType = convert(property.typeAnnotation.typeAnnotation, state, depth);
+    const type = property.typeAnnotation.typeAnnotation;
+    const propType = convert(type, state, depth);
     const { name } = property.key as t.Identifier;
 
     if (propType) {
       propTypes.push(
         t.objectProperty(
           property.key,
-          wrapIsRequired(propType, property.optional || defaultProps.includes(name)),
+          wrapIsRequired(
+            propType,
+            property.optional || defaultProps.includes(name) || mustBeOptional(type),
+          ),
         ),
       );
 

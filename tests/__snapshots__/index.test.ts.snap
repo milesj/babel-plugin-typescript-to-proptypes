@@ -1116,7 +1116,7 @@ export default class TypeBuiltins extends React.Component<Props> {
     setOpt: _pt.instanceOf(WeakSet),
     promise: _pt.instanceOf(Promise).isRequired,
     promiseOpt: _pt.instanceOf(Promise),
-    union: _pt.oneOfType([_pt.instanceOf(Error), _pt.instanceOf(Date), _pt.instanceOf(RegExp), _pt.oneOf([null])]).isRequired
+    union: _pt.oneOfType([_pt.instanceOf(Error), _pt.instanceOf(Date), _pt.instanceOf(RegExp), _pt.oneOf([null])])
   };
 
   render() {
@@ -1227,6 +1227,46 @@ export default class TypeFunction extends React.Component<Props> {
     args: _pt.func.isRequired,
     parens: _pt.func,
     handler: _pt.func.isRequired
+  };
+
+  render() {
+    return null;
+  }
+
+}"
+`;
+
+exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/type-null-undef.ts 1`] = `
+"import _pt from 'prop-types';
+import React from 'react';
+export interface Props {
+  nullable: string | null;
+  undefined: string | undefined;
+  optional?: string;
+  optionalUndefined?: string | undefined;
+  optionalNullable?: string | null;
+  optionalBoth?: string | null | undefined;
+  literalNullable: 'foo' | null;
+  literalUndefined: 'foo' | undefined;
+  literalOptional?: 'foo';
+  literalOptionalUndefined?: 'foo' | undefined;
+  literalOptionalNullable?: 'foo' | null;
+  literalOptionalBoth?: 'foo' | null | undefined;
+}
+export default class NullUndefined extends React.Component<Props> {
+  static propTypes = {
+    nullable: _pt.oneOfType([_pt.string, _pt.oneOf([null])]),
+    undefined: _pt.oneOfType([_pt.string]),
+    optional: _pt.string,
+    optionalUndefined: _pt.oneOfType([_pt.string]),
+    optionalNullable: _pt.oneOfType([_pt.string, _pt.oneOf([null])]),
+    optionalBoth: _pt.oneOfType([_pt.string, _pt.oneOf([null])]),
+    literalNullable: _pt.oneOfType([_pt.oneOf(['foo']), _pt.oneOf([null])]),
+    literalUndefined: _pt.oneOfType([_pt.oneOf(['foo'])]),
+    literalOptional: _pt.oneOf(['foo']),
+    literalOptionalUndefined: _pt.oneOfType([_pt.oneOf(['foo'])]),
+    literalOptionalNullable: _pt.oneOfType([_pt.oneOf(['foo']), _pt.oneOf([null])]),
+    literalOptionalBoth: _pt.oneOfType([_pt.oneOf(['foo']), _pt.oneOf([null])])
   };
 
   render() {
