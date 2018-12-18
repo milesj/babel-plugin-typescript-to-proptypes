@@ -20,3 +20,11 @@ export class ImplicitWithChildren extends React.Component<PropsB> {
     return null;
   }
 }
+
+export interface PropsC {}
+
+export class ImplicitChildrenNoProps extends React.Component<PropsC> {
+  render() {
+    return null;
+  }
+}

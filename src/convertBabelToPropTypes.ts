@@ -354,7 +354,7 @@ function convertListToProps(
   });
 
   // Only append implicit children when the root list is being created
-  if (!hasChildren && depth === 0 && state.options.implicitChildren) {
+  if (!hasChildren && depth === 0 && propTypes.length > 0 && state.options.implicitChildren) {
     propTypes.push(
       t.objectProperty(
         t.identifier('children'),
