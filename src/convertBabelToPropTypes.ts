@@ -198,6 +198,7 @@ function convert(type: any, state: ConvertState, depth: number): PropType | null
     // 'foo' | 'bar' -> PropTypes.oneOf(['foo', 'bar'])
   } else if (t.isTSUnionType(type) || t.isTSIntersectionType(type)) {
     const isAllLiterals = type.types.every(param => t.isTSLiteralType(param));
+    const containsAny = type.types.some(param => t.isTSAnyKeyword(param));
     let label;
     let args;
 
@@ -208,6 +209,8 @@ function convert(type: any, state: ConvertState, depth: number): PropType | null
       if (state.options.maxSize) {
         args = args.slice(0, state.options.maxSize);
       }
+    } else if (containsAny) {
+      return createMember(t.identifier('any'), propTypesImportedName);
     } else {
       args = convertArray(type.types, state, depth);
       label = t.identifier('oneOfType');

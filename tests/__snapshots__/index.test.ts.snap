@@ -1189,6 +1189,7 @@ export interface Props {
   strIntersection: 'foo' & 'bar' & 'baz';
   numUnion: 1 | 2 | 3;
   numIntersection?: 1 & 2 & 3;
+  anyUnion: any | number | string;
 }
 export default class TypeEnum extends React.Component<Props> {
   static propTypes = {
@@ -1198,7 +1199,8 @@ export default class TypeEnum extends React.Component<Props> {
     strUnion: _pt.oneOf(['foo', 'bar', 'baz']),
     strIntersection: _pt.oneOf(['foo', 'bar', 'baz']).isRequired,
     numUnion: _pt.oneOf([1, 2, 3]).isRequired,
-    numIntersection: _pt.oneOf([1, 2, 3])
+    numIntersection: _pt.oneOf([1, 2, 3]),
+    anyUnion: _pt.any
   };
 
   render() {

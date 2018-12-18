@@ -8,6 +8,7 @@ export interface Props {
   strIntersection: 'foo' & 'bar' & 'baz';
   numUnion: 1 | 2 | 3;
   numIntersection?: 1 & 2 & 3;
+  anyUnion: any | number | string;
 }
 
 export default class TypeEnum extends React.Component<Props> {
