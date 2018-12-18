@@ -11,6 +11,9 @@ export interface Props {
   stringOpt?: string;
   booleanOpt?: boolean;
   symbolOpt?: symbol;
+  literalNumber: 123;
+  literalString?: 'abc';
+  literalBool: true;
 }
 
 export default class TypePrimitives extends React.Component<Props> {

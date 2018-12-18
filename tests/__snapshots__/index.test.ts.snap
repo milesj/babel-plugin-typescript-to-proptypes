@@ -1033,7 +1033,7 @@ export interface Props {
 export default class TypeArray extends React.Component<Props> {
   static propTypes = {
     any: _pt.arrayOf(_pt.any).isRequired,
-    null: _pt.array.isRequired,
+    null: _pt.arrayOf(_pt.oneOf([null])).isRequired,
     numbers: _pt.arrayOf(_pt.number),
     strings: _pt.arrayOf(_pt.string).isRequired,
     booleans: _pt.arrayOf(_pt.bool).isRequired,
@@ -1082,7 +1082,7 @@ export default class TypeBuiltins extends React.Component<Props> {
     setOpt: _pt.instanceOf(WeakSet),
     promise: _pt.instanceOf(Promise).isRequired,
     promiseOpt: _pt.instanceOf(Promise),
-    union: _pt.oneOfType([_pt.instanceOf(Error), _pt.instanceOf(Date), _pt.instanceOf(RegExp)]).isRequired
+    union: _pt.oneOfType([_pt.instanceOf(Error), _pt.instanceOf(Date), _pt.instanceOf(RegExp), _pt.oneOf([null])]).isRequired
   };
 
   render() {
@@ -1130,7 +1130,7 @@ export default class TypeComplex extends React.Component<Props> {
       e2: _pt.func.isRequired,
       e3: _pt.oneOfType([_pt.shape({
         e1a: _pt.object.isRequired
-      })])
+      }), _pt.oneOf([null])])
     }).isRequired,
     f: _pt.any,
     g: _pt.oneOfType([_pt.func, _pt.func]).isRequired,
@@ -1250,6 +1250,9 @@ export interface Props {
   stringOpt?: string;
   booleanOpt?: boolean;
   symbolOpt?: symbol;
+  literalNumber: 123;
+  literalString?: 'abc';
+  literalBool: true;
 }
 export default class TypePrimitives extends React.Component<Props> {
   static propTypes = {
@@ -1262,7 +1265,10 @@ export default class TypePrimitives extends React.Component<Props> {
     numberOpt: _pt.number,
     stringOpt: _pt.string,
     booleanOpt: _pt.bool,
-    symbolOpt: _pt.symbol
+    symbolOpt: _pt.symbol,
+    literalNumber: _pt.oneOf([123]).isRequired,
+    literalString: _pt.oneOf(['abc']),
+    literalBool: _pt.oneOf([true]).isRequired
   };
 
   render() {
