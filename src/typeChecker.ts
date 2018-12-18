@@ -1,3 +1,8 @@
+/**
+ * @copyright   2018-2019, Miles Johnson
+ * @license     https://opensource.org/licenses/MIT
+ */
+
 import fs from 'fs';
 import path from 'path';
 import glob from 'fast-glob';

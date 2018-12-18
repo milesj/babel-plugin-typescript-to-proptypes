@@ -1,3 +1,8 @@
+/**
+ * @copyright   2018-2019, Miles Johnson
+ * @license     https://opensource.org/licenses/MIT
+ */
+
 import { declare } from '@babel/helper-plugin-utils';
 import { addDefault, addNamed } from '@babel/helper-module-imports';
 import syntaxTypeScript from '@babel/plugin-syntax-typescript';
