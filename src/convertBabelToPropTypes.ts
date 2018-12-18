@@ -302,6 +302,7 @@ function convertListToProps(
   depth: number,
 ): t.ObjectProperty[] {
   const propTypes: t.ObjectProperty[] = [];
+  let hasChildren: boolean = false;
   let size: number = 0;
 
   properties.some(property => {
@@ -314,23 +315,35 @@ function convertListToProps(
     }
 
     const propType = convert(property.typeAnnotation.typeAnnotation, state, depth);
+    const { name } = property.key as t.Identifier;
 
     if (propType) {
       propTypes.push(
         t.objectProperty(
           property.key,
-          wrapIsRequired(
-            propType,
-            property.optional || defaultProps.includes((property.key as t.Identifier).name),
-          ),
+          wrapIsRequired(propType, property.optional || defaultProps.includes(name)),
         ),
       );
+
+      if (name === 'children') {
+        hasChildren = true;
+      }
 
       size += 1;
     }
 
     return false;
   });
+
+  // Only append implicit children when the root list is being created
+  if (!hasChildren && depth === 0 && state.options.implicitChildren) {
+    propTypes.push(
+      t.objectProperty(
+        t.identifier('children'),
+        createMember(t.identifier('node'), state.propTypes.defaultImport),
+      ),
+    );
+  }
 
   return propTypes;
 }

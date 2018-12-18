@@ -10,6 +10,7 @@ export type PropType = t.MemberExpression | t.CallExpression | t.Identifier;
 export type PluginOptions = {
   customPropTypeSuffixes?: string[];
   forbidExtraProps?: boolean;
+  implicitChildren?: boolean;
   maxDepth?: number;
   maxSize?: number;
   typeCheck?: boolean | string;

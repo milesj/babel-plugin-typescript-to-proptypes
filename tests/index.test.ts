@@ -201,6 +201,18 @@ describe('babel-plugin-typescript-to-proptypes', () => {
     });
   });
 
+  describe('implicitChildren', () => {
+    it('includes a children prop type', () => {
+      expect(
+        transform(
+          path.join(__dirname, './fixtures/special/implicit-children.ts'),
+          {},
+          { implicitChildren: true },
+        ),
+      ).toMatchSnapshot();
+    });
+  });
+
   describe('maxDepth', () => {
     it('stops converting once max depth is met', () => {
       expect(

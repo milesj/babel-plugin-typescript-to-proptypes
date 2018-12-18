@@ -128,9 +128,11 @@ required.
 
 ### Options
 
-- `customPropTypeSuffixes` (string[]) - Reference custom types directly when they match one of the
-  provided suffixes. This option requires the type to be within the file itself, as imported types
-  would be automatically removed by Babel. Defaults to `[]`.
+#### `customPropTypeSuffixes` (string[])
+
+Reference custom types directly when they match one of the provided suffixes. This option requires
+the type to be within the file itself, as imported types would be automatically removed by Babel.
+Defaults to `[]`.
 
 ```tsx
 module.exports = {
@@ -168,9 +170,11 @@ class Example extends React.Component {
 }
 ```
 
-- `forbidExtraProps` (boolean) - Automatically wrap all `propTypes` expressions with
-  [airbnb-prop-types](https://github.com/airbnb/prop-types) `forbidExtraProps`, which will error for
-  any unknown and unspecified prop. Defaults to `false`.
+#### `forbidExtraProps` (boolean)
+
+Automatically wrap all `propTypes` expressions with
+[airbnb-prop-types](https://github.com/airbnb/prop-types) `forbidExtraProps`, which will error for
+any unknown and unspecified prop. Defaults to `false`.
 
 ```tsx
 module.exports = {
@@ -208,8 +212,50 @@ class Example extends React.Component {
 }
 ```
 
-- `maxDepth` (number) - Maximum depth to convert while handling recursive or deeply nested shapes.
-  Defaults to `3`.
+#### `implicitChildren` (bool)
+
+Automatically include a `children` prop type to mimic the implicit nature of TypeScript and
+`React.ReactNode`. Defaults to `false`.
+
+```tsx
+module.exports = {
+  plugins: [['babel-plugin-typescript-to-proptypes', { implicitChildren: true }]],
+};
+```
+
+```tsx
+// Before
+import React from 'react';
+
+interface Props {
+  foo: string;
+}
+
+class Example extends React.Component<Props> {
+  render() {
+    return <div />;
+  }
+}
+
+// After
+import React from 'react';
+import PropTypes from 'prop-types';
+
+class Example extends React.Component {
+  static propTypes = {
+    foo: PropTypes.string.isRequired,
+    children: PropTypes.node,
+  };
+
+  render() {
+    return <div />;
+  }
+}
+```
+
+#### `maxDepth` (number)
+
+Maximum depth to convert while handling recursive or deeply nested shapes. Defaults to `3`.
 
 ```tsx
 module.exports = {
@@ -260,8 +306,11 @@ class Example extends React.Component {
 }
 ```
 
-- `maxSize` (number) - Maximum number of prop types in a component, values in `oneOf` prop types
-  (literal union), and properties in `shape` prop types (interface / type alias). Defaults to `25`.
+#### `maxSize` (number)
+
+Maximum number of prop types in a component, values in `oneOf` prop types (literal union), and
+properties in `shape` prop types (interface / type alias). Defaults to `25`. Pass `0` to disable
+max.
 
 ```tsx
 module.exports = {
@@ -308,9 +357,11 @@ class Example extends React.Component {
 }
 ```
 
-- `typeCheck` (boolean|string) - _NOT FINISHED_ Resolve full type information for aliases and
-  references using TypeScript's built-in type checker. When enabled with `true`, will glob for files
-  using `./src/**/*.ts`. Glob can be customized by passing a string. Defaults to `false`.
+#### `typeCheck` (boolean|string)
+
+_NOT FINISHED_ Resolve full type information for aliases and references using TypeScript's built-in
+type checker. When enabled with `true`, will glob for files using `./src/**/*.ts`. Glob can be
+customized by passing a string. Defaults to `false`.
 
 > Note: This process is heavy and may increase compilation times.
 

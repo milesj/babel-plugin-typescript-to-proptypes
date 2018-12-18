@@ -155,6 +155,40 @@ export default class KeyOf extends React.Component<Props> {
 }"
 `;
 
+exports[`babel-plugin-typescript-to-proptypes implicitChildren includes a children prop type 1`] = `
+"import _pt from 'prop-types';
+import React from 'react';
+export interface PropsA {
+  name: string;
+}
+export class ImplicitNoChildren extends React.Component<PropsA> {
+  static propTypes = {
+    name: _pt.string.isRequired,
+    children: _pt.node
+  };
+
+  render() {
+    return null;
+  }
+
+}
+export interface PropsB {
+  children: string;
+  name: string;
+}
+export class ImplicitWithChildren extends React.Component<PropsB> {
+  static propTypes = {
+    children: _pt.string.isRequired,
+    name: _pt.string.isRequired
+  };
+
+  render() {
+    return null;
+  }
+
+}"
+`;
+
 exports[`babel-plugin-typescript-to-proptypes maxDepth stops converting once max depth is met 1`] = `
 "import _pt from 'prop-types';
 import React from 'react';
