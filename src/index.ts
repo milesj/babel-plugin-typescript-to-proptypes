@@ -17,6 +17,7 @@ import { Path, PluginOptions, ConvertState } from './types';
 const BABEL_VERSION = 7;
 const MAX_DEPTH = 3;
 const MAX_SIZE = 25;
+const REACT_FC_NAMES = ['SFC', 'StatelessComponent', 'FC', 'FunctionComponent'];
 
 function isNotTS(name: string): boolean {
   return name.endsWith('.js') || name.endsWith('.jsx');
@@ -242,7 +243,7 @@ export default declare((api: any, options: PluginOptions, root: string) => {
               state.referenceTypes[node.id.name] = node;
             },
 
-            // `const Foo: React.SFC<Props> = () => {};`
+            // `const Foo: React.FC<Props> = () => {};`
             VariableDeclaration(path: Path<t.VariableDeclaration>) {
               const { node } = path;
 
@@ -261,21 +262,15 @@ export default declare((api: any, options: PluginOptions, root: string) => {
               const valid = t.isTSTypeReference(type) &&
                 type.typeParameters &&
                 type.typeParameters.params.length > 0 && (
-                // React.SFC, React.StatelessComponent
+                // React.FC, React.FunctionComponent
                 (
                   t.isTSQualifiedName(type.typeName) &&
                   t.isIdentifier(type.typeName.left, { name: state.reactImportedName }) &&
-                  (
-                    t.isIdentifier(type.typeName.right, { name: 'SFC' }) ||
-                    t.isIdentifier(type.typeName.right, { name: 'StatelessComponent' })
-                  )
+                  REACT_FC_NAMES.some(name => t.isIdentifier((type.typeName as any).right, { name }))
                 ) ||
-                // SFC, StatelessComponent
+                // FunctionComponent
                 (
-                  state.reactImportedName && (
-                    t.isIdentifier(type.typeName, { name: 'SFC' }) ||
-                    t.isIdentifier(type.typeName, { name: 'StatelessComponent' })
-                  )
+                  state.reactImportedName && REACT_FC_NAMES.some(name => t.isIdentifier(type.typeName, { name }))
                 )
               );
 

@@ -907,7 +907,7 @@ export function withFunction() {
 }
 export function withVar() {
   return Component => {
-    const HOCVar: React.SFC<Props> = () => null;
+    const HOCVar: React.FC<Props> = () => null;
 
     HOCVar.propTypes = {
       name: _pt.string.isRequired
@@ -953,6 +953,12 @@ interface CProps {
 const MultipleComponentsVar: React.SFC<CProps> = () => null;
 
 MultipleComponentsVar.propTypes = {
+  bar: _pt.number.isRequired
+};
+
+const MultipleComponentsVarFC: React.FunctionComponent<CProps> = () => null;
+
+MultipleComponentsVarFC.propTypes = {
   bar: _pt.number.isRequired
 };"
 `;
@@ -1381,7 +1387,7 @@ export default class TypePrimitives extends React.Component<Props> {
 
 exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/type-react.ts 1`] = `
 "import _pt from 'prop-types';
-import React, { ReactText, ReactNode, ReactType, ComponentType, ComponentClass, StatelessComponent, MouseEvent, ReactElement, SFCElement } from 'react';
+import React, { ReactText, ReactNode, ReactType, ComponentType, ComponentClass, StatelessComponent, MouseEvent, ReactElement, SFCElement, FunctionComponentElement } from 'react';
 export interface Props {
   text: React.ReactText;
   textAlias?: ReactText;
@@ -1402,6 +1408,8 @@ export interface Props {
   elAlias?: ReactElement<any>;
   sfcEl: React.SFCElement<any>;
   sfcElAlias?: SFCElement<any>;
+  fcEl: React.FunctionComponentElement<any>;
+  fcElAlias?: FunctionComponentElement<any>;
   jsx: JSX.Element;
   event: React.MouseEvent;
   eventAlias?: MouseEvent;
@@ -1428,6 +1436,8 @@ export default class TypeReact extends React.Component<Props> {
     elAlias: _pt.element,
     sfcEl: _pt.element.isRequired,
     sfcElAlias: _pt.element,
+    fcEl: _pt.element.isRequired,
+    fcElAlias: _pt.element,
     jsx: _pt.element.isRequired,
     event: _pt.object.isRequired,
     eventAlias: _pt.object,
@@ -1439,6 +1449,38 @@ export default class TypeReact extends React.Component<Props> {
   }
 
 }"
+`;
+
+exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/var/all-variations.ts 1`] = `
+"import _pt from 'prop-types';
+import React from 'react';
+interface Props {
+  name: string;
+}
+
+const SFC: React.SFC<Props> = () => null;
+
+SFC.propTypes = {
+  name: _pt.string.isRequired
+};
+
+const StatelessComponent: React.StatelessComponent<Props> = () => null;
+
+StatelessComponent.propTypes = {
+  name: _pt.string.isRequired
+};
+
+const FC: React.FC<Props> = () => null;
+
+FC.propTypes = {
+  name: _pt.string.isRequired
+};
+
+const FunctionComponent: React.FunctionComponent<Props> = () => null;
+
+FunctionComponent.propTypes = {
+  name: _pt.string.isRequired
+};"
 `;
 
 exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/var/custom-react-import-name.ts 1`] = `

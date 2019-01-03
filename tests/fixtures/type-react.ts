@@ -8,6 +8,7 @@ import React, {
   MouseEvent,
   ReactElement,
   SFCElement,
+  FunctionComponentElement,
 } from 'react';
 
 export interface Props {
@@ -30,6 +31,8 @@ export interface Props {
   elAlias?: ReactElement<any>;
   sfcEl: React.SFCElement<any>;
   sfcElAlias?: SFCElement<any>;
+  fcEl: React.FunctionComponentElement<any>;
+  fcElAlias?: FunctionComponentElement<any>;
   jsx: JSX.Element;
   event: React.MouseEvent;
   eventAlias?: MouseEvent;

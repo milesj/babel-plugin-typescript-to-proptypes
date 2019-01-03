@@ -22,7 +22,7 @@ export function withFunction() {
 
 export function withVar() {
   return Component => {
-    const HOCVar: React.SFC<Props> = () => null;
+    const HOCVar: React.FC<Props> = () => null;
 
     return HOCVar;
   };

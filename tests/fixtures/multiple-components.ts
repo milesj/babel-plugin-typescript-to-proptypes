@@ -23,3 +23,5 @@ interface CProps {
 }
 
 const MultipleComponentsVar: React.SFC<CProps> = () => null;
+
+const MultipleComponentsVarFC: React.FunctionComponent<CProps> = () => null;

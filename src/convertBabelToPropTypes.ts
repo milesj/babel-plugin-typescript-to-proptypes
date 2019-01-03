@@ -105,6 +105,9 @@ function convert(type: any, state: ConvertState, depth: number): PropType | null
     } else if (
       isReactTypeMatch(name, 'Element', 'JSX') ||
       isReactTypeMatch(name, 'ReactElement', reactImportedName) ||
+      isReactTypeMatch(name, 'ComponentElement', reactImportedName) ||
+      isReactTypeMatch(name, 'FunctionComponentElement', reactImportedName) ||
+      isReactTypeMatch(name, 'DOMElement', reactImportedName) ||
       isReactTypeMatch(name, 'SFCElement', reactImportedName)
     ) {
       return createMember(t.identifier('element'), propTypesImportedName);

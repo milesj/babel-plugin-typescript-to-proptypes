@@ -67,7 +67,8 @@ Example.propTypes = {
 };
 ```
 
-And anonymous functions that are annotated as a `React.SFC`.
+And anonymous functions that are annotated as a `React.SFC`, `React.FC`, `React.StatelessComponent`,
+or `React.FunctionComponent`.
 
 ```tsx
 // Before
@@ -77,7 +78,7 @@ type Props = {
   name?: string;
 };
 
-const Example: React.SFC<Props> = props => <div />;
+const Example: React.FC<Props> = props => <div />;
 
 // After
 import React from 'react';
