@@ -5,14 +5,17 @@
   "repository": "https://github.com/milesj/babel-plugin-typescript-to-proptypes",
   "license": "MIT",
   "main": "./lib/index.js",
+  "module": "./esm/index.js",
+  "types": "./lib/index.d.ts",
   "keywords": [
     "babel-plugin",
     "typescript",
     "interfaces",
-    "prop-types"
+    "prop-types",
+    "react"
   ],
   "scripts": {
-    "build": "beemo typescript",
+    "build": "beemo run-script build",
     "coverage": "yarn run jest --coverage",
     "eslint": "beemo eslint",
     "jest": "beemo jest",
@@ -43,6 +46,7 @@
     "@milesj/build-tools": "^0.15.2",
     "@types/babel-core": "^6.25.5",
     "@types/babel-types": "^7.0.4",
+    "@types/prop-types": "^15.5.8",
     "@types/react": "^16.7.18",
     "fast-glob": "^2.2.4",
     "typescript": "^3.2.2"
