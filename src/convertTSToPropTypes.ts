@@ -3,7 +3,7 @@
  * @license     https://opensource.org/licenses/MIT
  */
 
-/* eslint-disable no-bitwise */
+/* eslint-disable */
 
 import { types as t } from '@babel/core';
 import ts from 'typescript';

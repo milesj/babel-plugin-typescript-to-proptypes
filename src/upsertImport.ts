@@ -5,16 +5,16 @@
 
 import { types as t } from '@babel/core';
 
-type Response = {
+interface Response {
   defaultImport: string;
   namedImport: string;
   namedImports: string[];
-};
+}
 
-type UpsertOptions = {
+interface UpsertOptions {
   checkForDefault?: string;
   checkForNamed?: string;
-};
+}
 
 export default function upsertImport(
   imp: t.ImportDeclaration,

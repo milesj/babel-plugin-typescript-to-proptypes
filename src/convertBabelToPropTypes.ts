@@ -3,6 +3,8 @@
  * @license     https://opensource.org/licenses/MIT
  */
 
+/* eslint-disable @typescript-eslint/no-use-before-define */
+
 import { types as t } from '@babel/core';
 import { convertSymbolFromSource } from './convertTSToPropTypes';
 import getTypeName from './getTypeName';
@@ -324,8 +326,8 @@ function convertListToProps(
   depth: number,
 ): t.ObjectProperty[] {
   const propTypes: t.ObjectProperty[] = [];
-  let hasChildren: boolean = false;
-  let size: number = 0;
+  let hasChildren = false;
+  let size = 0;
 
   properties.some(property => {
     if (state.options.maxSize && size === state.options.maxSize) {

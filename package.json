@@ -38,18 +38,18 @@
   },
   "devDependencies": {
     "@babel/core": "^7.2.2",
-    "@babel/plugin-proposal-class-properties": "^7.2.3",
+    "@babel/plugin-proposal-class-properties": "^7.3.0",
     "@babel/plugin-transform-runtime": "^7.2.0",
-    "@babel/preset-env": "^7.2.3",
+    "@babel/preset-env": "^7.3.1",
     "@babel/preset-react": "^7.0.0",
     "@babel/preset-typescript": "^7.1.0",
-    "@milesj/build-tools": "^0.15.2",
+    "@milesj/build-tools": "^0.21.3",
     "@types/babel-core": "^6.25.5",
     "@types/babel-types": "^7.0.4",
     "@types/prop-types": "^15.5.8",
-    "@types/react": "^16.7.18",
-    "fast-glob": "^2.2.4",
-    "typescript": "^3.2.2"
+    "@types/react": "^16.7.22",
+    "fast-glob": "^2.2.6",
+    "typescript": "^3.2.4"
   },
   "beemo": {
     "module": "@milesj/build-tools",
