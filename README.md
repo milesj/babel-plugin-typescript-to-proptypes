@@ -42,7 +42,8 @@ class Example extends React.Component {
 }
 ```
 
-Stateless function components that annotate the props argument.
+Function components that annotate the props argument. Also supports anonymous functions without
+explicit types (below).
 
 ```tsx
 // Before
@@ -96,7 +97,7 @@ Example.propTypes = {
 ## Requirements
 
 - Babel 7+
-- TypeScript 2+
+- TypeScript 3+
 
 ## Installation
 
