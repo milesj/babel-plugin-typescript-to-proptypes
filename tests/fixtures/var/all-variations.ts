@@ -4,10 +4,10 @@ interface Props {
   name: string;
 }
 
-const SFC: React.SFC<Props> = () => null;
+const SFC = (props: Props) => null;
 
-const StatelessComponent: React.StatelessComponent<Props> = () => null;
+const StatelessComponent = (props: Props) => null;
 
-const FC: React.FC<Props> = () => null;
+const FC = (props: Props) => null;
 
-const FunctionComponent: React.FunctionComponent<Props> = () => null;
+const FunctionComponent = (props: Props) => null;

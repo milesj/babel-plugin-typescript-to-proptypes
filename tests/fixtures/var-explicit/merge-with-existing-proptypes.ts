@@ -5,7 +5,7 @@ interface Props {
   name: string;
 }
 
-const VarMergeWithExistingPropTypes = (props: Props) => null;
+const VarMergeWithExistingPropTypes: React.SFC<Props> = () => null;
 
 VarMergeWithExistingPropTypes.propTypes = {
   // @ts-ignore

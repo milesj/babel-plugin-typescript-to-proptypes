@@ -23,6 +23,19 @@ function isNotTS(name: string): boolean {
   return name.endsWith('.js') || name.endsWith('.jsx');
 }
 
+function isComponentName(name: string) {
+  return !!name.match(/^[A-Z]/u);
+}
+
+function isPropsParam(param: t.Node) {
+  return (
+    // (props: Props)
+    (t.isIdentifier(param) && !!param.typeAnnotation) ||
+    // ({ ...props }: Props)
+    (t.isObjectPattern(param) && !!param.typeAnnotation)
+  );
+}
+
 export default declare((api: any, options: PluginOptions, root: string) => {
   api.assertVersion(BABEL_VERSION);
 
@@ -190,17 +203,10 @@ export default declare((api: any, options: PluginOptions, root: string) => {
             // `function Foo(props: Props) {}`
             FunctionDeclaration(path: Path<t.FunctionDeclaration>) {
               const { node } = path;
-              const param = node.params[0];
-              // prettier-ignore
               const valid =
-                param &&
-                state.reactImportedName &&
-                node.id.name.match(/^[A-Z]/u) && (
-                  // (props: Props)
-                  (t.isIdentifier(param) && param.typeAnnotation) ||
-                  // ({ ...props }: Props)
-                  (t.isObjectPattern(param) && param.typeAnnotation)
-                );
+                !!state.reactImportedName &&
+                isComponentName(node.id.name) &&
+                isPropsParam(node.params[0]);
 
               if (valid) {
                 addToFunctionOrVar(path, node.id.name, state);
@@ -243,6 +249,7 @@ export default declare((api: any, options: PluginOptions, root: string) => {
               state.referenceTypes[node.id.name] = node;
             },
 
+            // `const Foo = (props: Props) => {};`
             // `const Foo: React.FC<Props> = () => {};`
             VariableDeclaration(path: Path<t.VariableDeclaration>) {
               const { node } = path;
@@ -251,28 +258,38 @@ export default declare((api: any, options: PluginOptions, root: string) => {
                 return;
               }
 
-              const id = node.declarations[0].id as t.Identifier;
+              const decl = node.declarations[0];
+              const id = decl.id as t.Identifier;
+              let valid = false;
 
-              if (!id.typeAnnotation || !id.typeAnnotation.typeAnnotation) {
-                return;
+              // const Foo: React.FC<Props> = () => {};
+              if (id.typeAnnotation && id.typeAnnotation.typeAnnotation) {
+                const type = id.typeAnnotation.typeAnnotation;
+
+                // prettier-ignore
+                valid = t.isTSTypeReference(type) &&
+                  !!type.typeParameters &&
+                  type.typeParameters.params.length > 0 && (
+                  // React.FC, React.FunctionComponent
+                  (
+                    t.isTSQualifiedName(type.typeName) &&
+                    t.isIdentifier(type.typeName.left, { name: state.reactImportedName }) &&
+                    REACT_FC_NAMES.some(name => t.isIdentifier((type.typeName as any).right, { name }))
+                  ) ||
+                  // FC, FunctionComponent
+                  (
+                    !!state.reactImportedName &&
+                    REACT_FC_NAMES.some(name => t.isIdentifier(type.typeName, { name }))
+                  )
+                );
+
+                // const Foo = (props: Props) => {};
+              } else if (t.isArrowFunctionExpression(decl.init)) {
+                valid =
+                  !!state.reactImportedName &&
+                  isComponentName(id.name) &&
+                  isPropsParam(decl.init.params[0]);
               }
-
-              const type = id.typeAnnotation.typeAnnotation;
-              // prettier-ignore
-              const valid = t.isTSTypeReference(type) &&
-                type.typeParameters &&
-                type.typeParameters.params.length > 0 && (
-                // React.FC, React.FunctionComponent
-                (
-                  t.isTSQualifiedName(type.typeName) &&
-                  t.isIdentifier(type.typeName.left, { name: state.reactImportedName }) &&
-                  REACT_FC_NAMES.some(name => t.isIdentifier((type.typeName as any).right, { name }))
-                ) ||
-                // FunctionComponent
-                (
-                  state.reactImportedName && REACT_FC_NAMES.some(name => t.isIdentifier(type.typeName, { name }))
-                )
-              );
 
               if (valid) {
                 addToFunctionOrVar(path, id.name, state);

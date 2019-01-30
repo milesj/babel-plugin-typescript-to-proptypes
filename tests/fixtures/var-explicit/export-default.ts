@@ -4,6 +4,6 @@ interface Props {
   name: string;
 }
 
-const VarExportDefault = (props: Props) => null;
+const VarExportDefault: React.SFC<Props> = () => null;
 
 export default VarExportDefault;

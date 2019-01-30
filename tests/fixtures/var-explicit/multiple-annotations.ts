@@ -8,6 +8,6 @@ export interface BProps {
   b: boolean;
 }
 
-const VarMultipleAnnotations = (props: AProps & BProps) => null;
+const VarMultipleAnnotations: React.SFC<AProps & BProps> = () => null;
 
 export default VarMultipleAnnotations;

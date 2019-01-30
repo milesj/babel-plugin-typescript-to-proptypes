@@ -7,7 +7,7 @@ interface Props {
 
 const CustomShape = PropTypes.string;
 
-const VarMergeWithNoOverride = (props: Props) => null;
+const VarMergeWithNoOverride: React.SFC<Props> = () => null;
 
 // @ts-ignore
 VarMergeWithNoOverride.propTypes = {

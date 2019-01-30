@@ -4,4 +4,4 @@ interface Props {
   name: string;
 }
 
-export const VarExportNamed = (props: Props) => null;
+const VarNoExport: React.SFC<Props> = () => null;

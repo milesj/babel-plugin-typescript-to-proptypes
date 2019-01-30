@@ -4,6 +4,6 @@ interface Props {
   name: string;
 }
 
-const VarCustomReactImportName = (props: Props) => null;
+const VarCustomReactImportName: R.SFC<Props> = () => null;
 
 export default VarCustomReactImportName;

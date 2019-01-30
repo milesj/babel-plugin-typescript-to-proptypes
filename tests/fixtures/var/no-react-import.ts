@@ -1,5 +1,5 @@
 interface Props {}
 
-const VarNoReactImport: React.SFC<Props> = () => null;
+const VarNoReactImport = (props: Props) => null;
 
 export default VarNoReactImport;

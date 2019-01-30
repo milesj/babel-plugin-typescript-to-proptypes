@@ -4,7 +4,7 @@ interface Props {
   name: string;
 }
 
-const VarDefaultProps = (props: Props) => null;
+const VarDefaultProps: React.SFC<Props> = () => null;
 
 VarDefaultProps.defaultProps = {
   name: 'Foo',

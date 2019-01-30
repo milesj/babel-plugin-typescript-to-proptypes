@@ -12,6 +12,6 @@ export interface Props extends AProps, BProps {
   name: string;
 }
 
-const VarExtendedInterfaces = (props: Props) => null;
+const VarExtendedInterfaces: React.SFC<Props> = () => null;
 
 export default VarExtendedInterfaces;

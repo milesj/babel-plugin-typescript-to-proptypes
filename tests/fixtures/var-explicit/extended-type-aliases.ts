@@ -13,6 +13,6 @@ export type Props = AProps &
     name: string;
   };
 
-const VarExtendedTypeAliases = (props: Props) => null;
+const VarExtendedTypeAliases: React.SFC<Props> = () => null;
 
 export default VarExtendedTypeAliases;

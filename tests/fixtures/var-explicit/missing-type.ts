@@ -1,6 +1,6 @@
 import React from 'react';
 
 // @ts-ignore
-const VarMissingType = () => null;
+const VarMissingType: React.SFC<Props> = () => null;
 
 export default VarMissingType;
