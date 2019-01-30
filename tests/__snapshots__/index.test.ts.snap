@@ -1451,6 +1451,24 @@ export default class TypeReact extends React.Component<Props> {
 }"
 `;
 
+exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/types-after-component.ts 1`] = `
+"import _pt from 'prop-types';
+import React from 'react';
+export default class TypesAfterComponent extends React.Component<Props> {
+  static propTypes = {
+    name: _pt.string.isRequired
+  };
+
+  render() {
+    return null;
+  }
+
+}
+export interface Props {
+  name: string;
+}"
+`;
+
 exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/var/all-variations.ts 1`] = `
 "import _pt from 'prop-types';
 import React from 'react';

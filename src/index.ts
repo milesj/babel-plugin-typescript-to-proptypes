@@ -158,6 +158,8 @@ export default declare((api: any, options: PluginOptions, root: string) => {
             return;
           }
 
+          const transformers: (() => void)[] = [];
+
           programPath.traverse({
             // airbnbPropTypes.componentWithName()
             CallExpression({ node }: Path<t.CallExpression>) {
@@ -196,7 +198,7 @@ export default declare((api: any, options: PluginOptions, root: string) => {
               );
 
               if (valid) {
-                addToClass(node, state);
+                transformers.push(() => addToClass(node, state));
               }
             },
 
@@ -209,7 +211,7 @@ export default declare((api: any, options: PluginOptions, root: string) => {
                 isPropsParam(node.params[0]);
 
               if (valid) {
-                addToFunctionOrVar(path, node.id.name, state);
+                transformers.push(() => addToFunctionOrVar(path, node.id.name, state));
               }
             },
 
@@ -292,9 +294,14 @@ export default declare((api: any, options: PluginOptions, root: string) => {
               }
 
               if (valid) {
-                addToFunctionOrVar(path, id.name, state);
+                transformers.push(() => addToFunctionOrVar(path, id.name, state));
               }
             },
+          });
+
+          // After we have extracted all our information, run all transformers
+          transformers.forEach(transformer => {
+            transformer();
           });
         },
 
