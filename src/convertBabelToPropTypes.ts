@@ -14,10 +14,12 @@ import {
   hasCustomPropTypeSuffix,
   isReactTypeMatch,
   wrapIsRequired,
+  getInstalledPropTypesVersion,
 } from './propTypes';
 import { PropType, TypePropertyMap, ConvertState } from './types';
 
 const NATIVE_BUILT_INS = ['Date', 'Error', 'RegExp', 'Map', 'WeakMap', 'Set', 'WeakSet', 'Promise'];
+const PROP_TYPES_15_7 = 15.7;
 
 function convert(type: any, state: ConvertState, depth: number): PropType | null {
   const { reactImportedName, propTypes } = state;
@@ -101,7 +103,9 @@ function convert(type: any, state: ConvertState, depth: number): PropType | null
       isReactTypeMatch(name, 'ComponentClass', reactImportedName) ||
       isReactTypeMatch(name, 'StatelessComponent', reactImportedName)
     ) {
-      return createMember(t.identifier('func'), propTypesImportedName);
+      return getInstalledPropTypesVersion() >= PROP_TYPES_15_7
+        ? createMember(t.identifier('elementType'), propTypesImportedName)
+        : createMember(t.identifier('func'), propTypesImportedName);
 
       // element
     } else if (

@@ -89,3 +89,20 @@ export function mergePropTypes(
 
   return expr;
 }
+
+let installedVersion = 0.0;
+
+export function getInstalledPropTypesVersion(): number {
+  if (installedVersion) {
+    return installedVersion;
+  }
+
+  try {
+    // eslint-disable-next-line global-require
+    installedVersion = parseFloat(require('prop-types/package.json').version);
+  } catch {
+    // Swallow
+  }
+
+  return installedVersion;
+}
