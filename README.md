@@ -417,6 +417,7 @@ module.exports = {
   plugins: [['babel-plugin-typescript-to-proptypes', { leadingComments: true }]],
 };
 ```
+
 ```tsx
 // Before
 import React from 'react';

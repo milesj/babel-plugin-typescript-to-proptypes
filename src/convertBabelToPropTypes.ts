@@ -6,7 +6,6 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 
 import { types as t } from '@babel/core';
-import { TSPropertySignature } from 'babel-types';
 import { convertSymbolFromSource } from './convertTSToPropTypes';
 import getTypeName from './getTypeName';
 import {
