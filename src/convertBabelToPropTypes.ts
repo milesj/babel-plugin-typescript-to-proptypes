@@ -323,7 +323,7 @@ function convertArray(types: any[], state: ConvertState, depth: number): PropTyp
   return propTypes;
 }
 
-function getLeadingComments(property: TSPropertySignature): t.Comment[] {
+function getLeadingComments(property: t.TSPropertySignature): t.Comment[] {
   return Object.assign([], property.leadingComments);
 }
 
