@@ -6,6 +6,7 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 
 import { types as t } from '@babel/core';
+import { TSPropertySignature } from 'babel-types';
 import { convertSymbolFromSource } from './convertTSToPropTypes';
 import getTypeName from './getTypeName';
 import {
@@ -323,6 +324,10 @@ function convertArray(types: any[], state: ConvertState, depth: number): PropTyp
   return propTypes;
 }
 
+function getLeadingComments(property: TSPropertySignature): t.Comment[] {
+  return Object.assign([], property.leadingComments);
+}
+
 function convertListToProps(
   properties: t.TSPropertySignature[],
   state: ConvertState,
@@ -341,21 +346,21 @@ function convertListToProps(
     if (!property.typeAnnotation) {
       return false;
     }
-
+    
     const type = property.typeAnnotation.typeAnnotation;
     const propType = convert(type, state, depth);
     const { name } = property.key as t.Identifier;
 
     if (propType) {
-      propTypes.push(
-        t.objectProperty(
-          property.key,
-          wrapIsRequired(
-            propType,
-            property.optional || defaultProps.includes(name) || mustBeOptional(type),
-          ),
+      const objProperty = t.objectProperty(
+        property.key,
+        wrapIsRequired(
+          propType,
+          property.optional || defaultProps.includes(name) || mustBeOptional(type),
         ),
       );
+      objProperty.leadingComments = getLeadingComments(property);
+      propTypes.push(objProperty);
 
       if (name === 'children') {
         hasChildren = true;
