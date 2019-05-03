@@ -407,3 +407,43 @@ class Example extends React.Component {
   }
 }
 ```
+
+#### `leadingComments` (boolean)
+
+Copy comments from original source file for docgen purposes (default true).
+
+```tsx
+module.exports = {
+  plugins: [['babel-plugin-typescript-to-proptypes', { leadingComments: true }]],
+};
+```
+```tsx
+// Before
+import React from 'react';
+
+interface Props {
+  /** This name controls the fate of the whole universe */
+  name?: string;
+}
+
+class Example extends React.Component<Props> {
+  render() {
+    return <div />;
+  }
+}
+
+// After
+import React from 'react';
+import PropTypes from 'prop-types';
+
+class Example extends React.Component {
+  static propTypes = {
+    /** This name controls the fate of the whole universe */
+    name: PropTypes.string,
+  };
+
+  render() {
+    return <div />;
+  }
+}
+```

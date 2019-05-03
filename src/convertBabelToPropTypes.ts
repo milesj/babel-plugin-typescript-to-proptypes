@@ -346,7 +346,7 @@ function convertListToProps(
     if (!property.typeAnnotation) {
       return false;
     }
-    
+
     const type = property.typeAnnotation.typeAnnotation;
     const propType = convert(type, state, depth);
     const { name } = property.key as t.Identifier;
@@ -359,7 +359,9 @@ function convertListToProps(
           property.optional || defaultProps.includes(name) || mustBeOptional(type),
         ),
       );
-      objProperty.leadingComments = getLeadingComments(property);
+      if (state.options.leadingComments) {
+        objProperty.leadingComments = getLeadingComments(property);
+      }
       propTypes.push(objProperty);
 
       if (name === 'children') {
