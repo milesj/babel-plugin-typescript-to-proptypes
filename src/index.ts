@@ -230,6 +230,13 @@ export default declare((api: any, options: PluginOptions, root: string) => {
                 state.propTypes.count += 1;
               }
             },
+            // `enum FooEnum {}`
+            TSEnumDeclaration({ node }: Path<t.TSEnumDeclaration>) {
+              state.referenceTypes[node.id.name] = node;
+              node.members.forEach(m => {
+                state.referenceTypes[`${node.id.name}.${(m.id as t.Identifier).name}`] = m;
+              });
+            },
 
             // `interface FooProps {}`
             TSInterfaceDeclaration({ node }: Path<t.TSInterfaceDeclaration>) {

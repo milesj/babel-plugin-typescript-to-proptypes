@@ -39,7 +39,7 @@ export interface ConvertState {
     hasImport: boolean;
   };
   reactImportedName: string;
-  referenceTypes: { [key: string]: t.TSInterfaceDeclaration | t.TSTypeAliasDeclaration };
+  referenceTypes: { [key: string]: t.TSInterfaceDeclaration | t.TSTypeAliasDeclaration | t.TSEnumDeclaration | t.TSEnumMember };
   typeChecker?: ts.TypeChecker;
   typeProgram?: ts.Program;
 }

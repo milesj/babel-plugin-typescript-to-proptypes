@@ -1200,6 +1200,14 @@ export interface Foo {
 export type Bar = {
   bar?: number;
 };
+export enum Baz {
+  Foo,
+  Bar,
+}
+export enum Qux {
+  Foo,
+  Bar,
+}
 export interface Props {
   union: number | string | object;
   intersection?: number & string & object;
@@ -1211,6 +1219,9 @@ export interface Props {
   anyUnion: any | number | string;
   typeRefUnion: Foo | Bar;
   typeRefIntersection?: Foo & Bar;
+  typeRefEnumIntersection?: Baz.Bar & Qux.Bar;
+  typeRefEnumUnion?: Baz.Foo | Baz.Bar | Qux.Bar;
+  typeRefEnum?: Qux;
 }
 export default class TypeEnum extends React.Component<Props> {
   static propTypes = {
@@ -1231,7 +1242,10 @@ export default class TypeEnum extends React.Component<Props> {
       foo: _pt.string.isRequired
     }), _pt.shape({
       bar: _pt.number
-    })])
+    })]),
+    typeRefEnumIntersection: _pt.oneOfType([_pt.oneOf([Baz.Bar]), _pt.oneOf([Qux.Bar])]),
+    typeRefEnumUnion: _pt.oneOfType([_pt.oneOf([Baz.Foo]), _pt.oneOf([Baz.Bar]), _pt.oneOf([Qux.Bar])]),
+    typeRefEnum: _pt.oneOf([Qux.Foo, Qux.Bar])
   };
 
   render() {

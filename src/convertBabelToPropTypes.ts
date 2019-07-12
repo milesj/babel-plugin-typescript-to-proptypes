@@ -21,6 +21,8 @@ import { PropType, TypePropertyMap, ConvertState } from './types';
 const NATIVE_BUILT_INS = ['Date', 'Error', 'RegExp', 'Map', 'WeakMap', 'Set', 'WeakSet', 'Promise'];
 const PROP_TYPES_15_7 = 15.7;
 
+let referenceType: any;
+
 function convert(type: any, state: ConvertState, depth: number): PropType | null {
   const { reactImportedName, propTypes } = state;
   const propTypesImportedName = propTypes.defaultImport;
@@ -88,7 +90,7 @@ function convert(type: any, state: ConvertState, depth: number): PropType | null
     // CustomType -> PropTypes.any
   } else if (t.isTSTypeReference(type)) {
     const name = getTypeName(type.typeName);
-
+    referenceType = type;
     // node
     if (
       isReactTypeMatch(name, 'ReactText', reactImportedName) ||
@@ -233,7 +235,19 @@ function convert(type: any, state: ConvertState, depth: number): PropType | null
     if (label && args.length > 0) {
       return createCall(label, [t.arrayExpression(args)], propTypesImportedName);
     }
+    // Enum -> PropTypes.oneOf([...Enum.members]);
+  } else if (t.isTSEnumDeclaration(type)) {
+    const enumName = type.id.name;
+    const args = type.members.map(param => t.memberExpression(t.identifier(enumName), t.identifier((param.id as t.Identifier).name)));
 
+    return createCall(t.identifier('oneOf'), [t.arrayExpression(args)], propTypesImportedName);
+    // Enum.Member -> PropTypes.oneOf([Enum.Member]);
+  } else if (t.isTSEnumMember(type)) {
+    const enumName = referenceType.typeName.left.name;
+    const memberName = (type.id as t.Identifier).name;
+    const args = [t.memberExpression(t.identifier(enumName), t.identifier(memberName))];
+
+    return createCall(t.identifier('oneOf'), [t.arrayExpression(args)], propTypesImportedName);
     // interface Foo {}
   } else if (t.isTSInterfaceDeclaration(type)) {
     if (type.body.body.length === 0 || isMaxDepth) {
