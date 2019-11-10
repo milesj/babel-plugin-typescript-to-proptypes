@@ -323,6 +323,10 @@ function convertArray(types: any[], state: ConvertState, depth: number): PropTyp
   return propTypes;
 }
 
+function getLeadingComments(property: t.TSPropertySignature): t.Comment[] {
+  return Object.assign([], property.leadingComments);
+}
+
 function convertListToProps(
   properties: t.TSPropertySignature[],
   state: ConvertState,
@@ -347,15 +351,17 @@ function convertListToProps(
     const { name } = property.key as t.Identifier;
 
     if (propType) {
-      propTypes.push(
-        t.objectProperty(
-          property.key,
-          wrapIsRequired(
-            propType,
-            property.optional || defaultProps.includes(name) || mustBeOptional(type),
-          ),
+      const objProperty = t.objectProperty(
+        property.key,
+        wrapIsRequired(
+          propType,
+          property.optional || defaultProps.includes(name) || mustBeOptional(type),
         ),
       );
+      if (state.options.leadingComments) {
+        objProperty.leadingComments = getLeadingComments(property);
+      }
+      propTypes.push(objProperty);
 
       if (name === 'children') {
         hasChildren = true;

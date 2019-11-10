@@ -21,6 +21,7 @@ export interface PluginOptions {
   maxDepth?: number;
   maxSize?: number;
   typeCheck?: boolean | string;
+  leadingComments?: boolean;
 }
 
 export interface ConvertState {

@@ -70,6 +70,7 @@ export default declare((api: any, options: PluginOptions, root: string) => {
           maxDepth: MAX_DEPTH,
           maxSize: MAX_SIZE,
           typeCheck: false,
+          leadingComments: true,
           ...options,
         },
         propTypes: {

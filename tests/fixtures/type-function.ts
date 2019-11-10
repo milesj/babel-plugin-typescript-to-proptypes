@@ -5,7 +5,7 @@ export interface Props {
   objReturn: () => {};
   typeReturn?: () => string;
   args: (a: number, b: boolean) => null;
-  parens?: (() => void);
+  parens?: () => void;
   handler: React.ChangeEventHandler;
 }
 
