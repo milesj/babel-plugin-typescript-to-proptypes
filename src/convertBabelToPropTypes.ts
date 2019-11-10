@@ -210,6 +210,14 @@ function convert(type: any, state: ConvertState, depth: number): PropType | null
       );
     }
 
+    // { [K in Type]: string } -> PropTypes.objectOf(PropTypes.string)
+  } else if (t.isTSMappedType(type)) {
+    const result = convert(type.typeAnnotation, state, depth);
+
+    if (result) {
+      return createCall(t.identifier('objectOf'), [result], propTypesImportedName);
+    }
+
     // string | number -> PropTypes.oneOfType([PropTypes.string, PropTypes.number])
     // 'foo' | 'bar' -> PropTypes.oneOf(['foo', 'bar'])
   } else if (t.isTSUnionType(type) || t.isTSIntersectionType(type)) {

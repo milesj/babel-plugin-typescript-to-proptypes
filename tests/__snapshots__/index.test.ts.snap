@@ -1299,7 +1299,7 @@ export interface Props {
     name?: string;
     status: 'active' | 'pending';
   };
-  mapped: { [K in Things]: string };
+  mapped?: { [K in Things]: string | number };
 }
 export default class TypeObject extends React.Component<Props> {
   static propTypes = {
@@ -1310,7 +1310,8 @@ export default class TypeObject extends React.Component<Props> {
       id: _pt.number.isRequired,
       name: _pt.string,
       status: _pt.oneOf(['active', 'pending']).isRequired
-    }).isRequired
+    }).isRequired,
+    mapped: _pt.objectOf(_pt.oneOfType([_pt.string, _pt.number]))
   };
 
   render() {
