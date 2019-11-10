@@ -1987,18 +1987,18 @@ export default class JSX extends React.Component {
 `;
 
 exports[`babel-plugin-typescript-to-proptypes works correctly when transpiling down to ES3 1`] = `
-"'use strict';
+"\\"use strict\\";
 
 Object.defineProperty(exports, \\"__esModule\\", {
   value: true
 });
-exports.default = void 0;
+exports['default'] = void 0;
 
 var _propTypes = _interopRequireDefault(require('prop-types'));
 
 var _react = _interopRequireDefault(require('react'));
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _typeof(obj) { if (typeof Symbol === \\"function\\" && typeof Symbol.iterator === \\"symbol\\") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === \\"function\\" && obj.constructor === Symbol && obj !== Symbol.prototype ? \\"symbol\\" : typeof obj; }; } return _typeof(obj); }
 
@@ -2037,26 +2037,26 @@ var ESTarget = function (_React$Component) {
   }]);
 
   return ESTarget;
-}(_react.default.Component);
+}(_react['default'].Component);
 
-exports.default = ESTarget;
+exports['default'] = ESTarget;
 
 _defineProperty(ESTarget, 'propTypes', {
-  name: _propTypes.default.string.isRequired
+  name: _propTypes['default'].string.isRequired
 });"
 `;
 
 exports[`babel-plugin-typescript-to-proptypes works correctly when transpiling down to ES3 2`] = `
-"'use strict';
+"\\"use strict\\";
 
 exports.__esModule = true;
-exports.default = void 0;
+exports['default'] = void 0;
 
 var _propTypes = _interopRequireDefault(require('prop-types'));
 
 var _react = _interopRequireDefault(require('react'));
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _inheritsLoose(subClass, superClass) { subClass.prototype = Object.create(superClass.prototype); subClass.prototype.constructor = subClass; subClass.__proto__ = superClass; }
 
@@ -2076,17 +2076,17 @@ var ESTarget = function (_React$Component) {
   };
 
   return ESTarget;
-}(_react.default.Component);
+}(_react['default'].Component);
 
-exports.default = ESTarget;
+exports['default'] = ESTarget;
 
 _defineProperty(ESTarget, 'propTypes', {
-  name: _propTypes.default.string.isRequired
+  name: _propTypes['default'].string.isRequired
 });"
 `;
 
 exports[`babel-plugin-typescript-to-proptypes works correctly when transpiling down to ES5 1`] = `
-"'use strict';
+"\\"use strict\\";
 
 Object.defineProperty(exports, \\"__esModule\\", {
   value: true
@@ -2146,7 +2146,7 @@ _defineProperty(ESTarget, 'propTypes', {
 `;
 
 exports[`babel-plugin-typescript-to-proptypes works correctly when transpiling down to ES5 2`] = `
-"'use strict';
+"\\"use strict\\";
 
 exports.__esModule = true;
 exports.default = void 0;
@@ -2185,7 +2185,7 @@ _defineProperty(ESTarget, 'propTypes', {
 `;
 
 exports[`babel-plugin-typescript-to-proptypes works correctly when transpiling down to ES6 1`] = `
-"'use strict';
+"\\"use strict\\";
 
 Object.defineProperty(exports, \\"__esModule\\", {
   value: true
@@ -2217,7 +2217,7 @@ exports.default = ESTarget;"
 `;
 
 exports[`babel-plugin-typescript-to-proptypes works correctly when transpiling down to ES6 2`] = `
-"'use strict';
+"\\"use strict\\";
 
 exports.__esModule = true;
 exports.default = void 0;
@@ -2247,7 +2247,7 @@ exports.default = ESTarget;"
 `;
 
 exports[`babel-plugin-typescript-to-proptypes works correctly when using ALL the things 1`] = `
-"'use strict';
+"\\"use strict\\";
 
 var _interopRequireDefault = require('@babel/runtime/helpers/interopRequireDefault');
 
@@ -2275,7 +2275,7 @@ exports.default = TSPreset;"
 `;
 
 exports[`babel-plugin-typescript-to-proptypes works correctly when using ALL the things 2`] = `
-"'use strict';
+"\\"use strict\\";
 
 var _interopRequireDefault = require('@babel/runtime/helpers/interopRequireDefault');
 

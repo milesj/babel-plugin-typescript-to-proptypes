@@ -90,7 +90,7 @@ export function mergePropTypes(
   return expr;
 }
 
-let installedVersion = 0.0;
+let installedVersion = 0;
 
 export function getInstalledPropTypesVersion(): number {
   if (installedVersion) {
