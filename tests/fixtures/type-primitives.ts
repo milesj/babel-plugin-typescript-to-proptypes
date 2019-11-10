@@ -2,6 +2,8 @@ import React from 'react';
 
 export interface Props {
   any: any;
+  unknowns: unknown;
+  voids: void;
   number: number;
   string: string;
   boolean: boolean;

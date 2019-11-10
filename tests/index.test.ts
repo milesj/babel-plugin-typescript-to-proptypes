@@ -235,7 +235,7 @@ describe('babel-plugin-typescript-to-proptypes', () => {
     });
   });
 
-  describe.only('comments', () => {
+  describe('comments', () => {
     it('copies leading comments', () => {
       expect(
         transform(

@@ -35,7 +35,8 @@ function convert(type: any, state: ConvertState, depth: number): PropType | null
   state.propTypes.count += 1;
 
   // any -> PropTypes.any
-  if (t.isTSAnyKeyword(type)) {
+  // unknown -> PropTypes.any
+  if (t.isTSAnyKeyword(type) || t.isTSVoidKeyword(type) || type.type === 'TSUnknownKeyword') {
     return createMember(t.identifier('any'), propTypesImportedName);
 
     // string -> PropTypes.string

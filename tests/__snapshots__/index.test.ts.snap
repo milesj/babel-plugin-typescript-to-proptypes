@@ -1373,6 +1373,8 @@ exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/type-primiti
 import React from 'react';
 export interface Props {
   any: any;
+  unknowns: unknown;
+  voids: void;
   number: number;
   string: string;
   boolean: boolean;
@@ -1389,6 +1391,8 @@ export interface Props {
 export default class TypePrimitives extends React.Component<Props> {
   static propTypes = {
     any: _pt.any.isRequired,
+    unknowns: _pt.any.isRequired,
+    voids: _pt.any.isRequired,
     number: _pt.number.isRequired,
     string: _pt.string.isRequired,
     boolean: _pt.bool.isRequired,
