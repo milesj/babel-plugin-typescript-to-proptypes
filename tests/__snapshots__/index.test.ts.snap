@@ -1216,56 +1216,6 @@ export default class TypeComplex extends React.Component<Props> {
 }"
 `;
 
-exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/type-enum.ts 1`] = `
-"import _pt from 'prop-types';
-import React from 'react';
-export interface Foo {
-  foo: string;
-}
-export type Bar = {
-  bar?: number;
-};
-export interface Props {
-  union: number | string | object;
-  intersection?: number & string & object;
-  combined: number & (string | object);
-  strUnion?: 'foo' | 'bar' | 'baz';
-  strIntersection: 'foo' & 'bar' & 'baz';
-  numUnion: 1 | 2 | 3;
-  numIntersection?: 1 & 2 & 3;
-  anyUnion: any | number | string;
-  typeRefUnion: Foo | Bar;
-  typeRefIntersection?: Foo & Bar;
-}
-export default class TypeEnum extends React.Component<Props> {
-  static propTypes = {
-    union: _pt.oneOfType([_pt.number, _pt.string, _pt.object]).isRequired,
-    intersection: _pt.oneOfType([_pt.number, _pt.string, _pt.object]),
-    combined: _pt.oneOfType([_pt.number, _pt.oneOfType([_pt.string, _pt.object])]).isRequired,
-    strUnion: _pt.oneOf(['foo', 'bar', 'baz']),
-    strIntersection: _pt.oneOf(['foo', 'bar', 'baz']).isRequired,
-    numUnion: _pt.oneOf([1, 2, 3]).isRequired,
-    numIntersection: _pt.oneOf([1, 2, 3]),
-    anyUnion: _pt.any,
-    typeRefUnion: _pt.oneOfType([_pt.shape({
-      foo: _pt.string.isRequired
-    }), _pt.shape({
-      bar: _pt.number
-    })]).isRequired,
-    typeRefIntersection: _pt.oneOfType([_pt.shape({
-      foo: _pt.string.isRequired
-    }), _pt.shape({
-      bar: _pt.number
-    })])
-  };
-
-  render() {
-    return null;
-  }
-
-}"
-`;
-
 exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/type-function.ts 1`] = `
 "import _pt from 'prop-types';
 import React from 'react';
@@ -1337,6 +1287,7 @@ export default class NullUndefined extends React.Component<Props> {
 exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/type-object.ts 1`] = `
 "import _pt from 'prop-types';
 import React from 'react';
+type Things = 'foo' | 'bar' | 'baz';
 export interface Props {
   object: object;
   empty: {};
@@ -1348,6 +1299,7 @@ export interface Props {
     name?: string;
     status: 'active' | 'pending';
   };
+  mapped: { [K in Things]: string };
 }
 export default class TypeObject extends React.Component<Props> {
   static propTypes = {
@@ -1471,6 +1423,56 @@ export default class TypeReact extends React.Component<Props> {
     event: _pt.object.isRequired,
     eventAlias: _pt.object,
     ref: _pt.oneOfType([_pt.string, _pt.func, _pt.object]).isRequired
+  };
+
+  render() {
+    return null;
+  }
+
+}"
+`;
+
+exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/type-unions.ts 1`] = `
+"import _pt from 'prop-types';
+import React from 'react';
+export interface Foo {
+  foo: string;
+}
+export type Bar = {
+  bar?: number;
+};
+export interface Props {
+  union: number | string | object;
+  intersection?: number & string & object;
+  combined: number & (string | object);
+  strUnion?: 'foo' | 'bar' | 'baz';
+  strIntersection: 'foo' & 'bar' & 'baz';
+  numUnion: 1 | 2 | 3;
+  numIntersection?: 1 & 2 & 3;
+  anyUnion: any | number | string;
+  typeRefUnion: Foo | Bar;
+  typeRefIntersection?: Foo & Bar;
+}
+export default class TypeUnionIntersection extends React.Component<Props> {
+  static propTypes = {
+    union: _pt.oneOfType([_pt.number, _pt.string, _pt.object]).isRequired,
+    intersection: _pt.oneOfType([_pt.number, _pt.string, _pt.object]),
+    combined: _pt.oneOfType([_pt.number, _pt.oneOfType([_pt.string, _pt.object])]).isRequired,
+    strUnion: _pt.oneOf(['foo', 'bar', 'baz']),
+    strIntersection: _pt.oneOf(['foo', 'bar', 'baz']).isRequired,
+    numUnion: _pt.oneOf([1, 2, 3]).isRequired,
+    numIntersection: _pt.oneOf([1, 2, 3]),
+    anyUnion: _pt.any,
+    typeRefUnion: _pt.oneOfType([_pt.shape({
+      foo: _pt.string.isRequired
+    }), _pt.shape({
+      bar: _pt.number
+    })]).isRequired,
+    typeRefIntersection: _pt.oneOfType([_pt.shape({
+      foo: _pt.string.isRequired
+    }), _pt.shape({
+      bar: _pt.number
+    })])
   };
 
   render() {

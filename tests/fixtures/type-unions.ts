@@ -21,7 +21,7 @@ export interface Props {
   typeRefIntersection?: Foo & Bar;
 }
 
-export default class TypeEnum extends React.Component<Props> {
+export default class TypeUnionIntersection extends React.Component<Props> {
   render() {
     return null;
   }
