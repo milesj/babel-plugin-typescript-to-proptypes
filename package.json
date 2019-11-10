@@ -47,6 +47,7 @@
     "@types/babel-types": "^7.0.7",
     "@types/prop-types": "^15.7.3",
     "@types/react": "^16.9.11",
+    "conventional-changelog-beemo": "^1.5.1",
     "fast-glob": "^3.1.0",
     "prop-types": "^15.7.2",
     "typescript": "^3.7.2"
@@ -84,7 +85,9 @@
       ],
       "overrides": [
         {
-          "files": ["*.ts"],
+          "files": [
+            "*.ts"
+          ],
           "rules": {
             "@typescript-eslint/no-explicit-any": "off"
           }

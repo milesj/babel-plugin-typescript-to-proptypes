@@ -1,6 +1,6 @@
 # babel-plugin-typescript-to-proptypes
 
-[![Build Status](https://travis-ci.org/milesj/babel-plugin-typescript-to-proptypes.svg?branch=master)](https://travis-ci.org/milesj/babel-plugin-typescript-to-proptypes)
+[![Build Status](https://github.com/milesj/babel-plugin-typescript-to-proptypes/workflows/Build/badge.svg)](https://github.com/milesj/babel-plugin-typescript-to-proptypes/actions?query=branch%3Amaster)
 [![npm version](https://badge.fury.io/js/babel-plugin-typescript-to-proptypes.svg)](https://www.npmjs.com/package/babel-plugin-typescript-to-proptypes)
 [![npm deps](https://david-dm.org/milesj/babel-plugin-typescript-to-proptypes.svg)](https://www.npmjs.com/package/babel-plugin-typescript-to-proptypes)
 
