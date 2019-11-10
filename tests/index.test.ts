@@ -93,6 +93,40 @@ describe('babel-plugin-typescript-to-proptypes', () => {
     ).toMatchSnapshot();
   });
 
+  it('works correctly when transpiling to ESM modules', () => {
+    expect(
+      transform(path.join(__dirname, './fixtures/special/es-target.ts'), {
+        presets: [['@babel/preset-env', { targets: { node: 'current' }, modules: false }]],
+      }),
+    ).toMatchSnapshot();
+
+    // loose
+    expect(
+      transform(path.join(__dirname, './fixtures/special/es-target.ts'), {
+        presets: [
+          ['@babel/preset-env', { targets: { node: 'current' }, modules: false, loose: true }],
+        ],
+      }),
+    ).toMatchSnapshot();
+  });
+
+  it('works correctly when transpiling to CJS modules', () => {
+    expect(
+      transform(path.join(__dirname, './fixtures/special/es-target.ts'), {
+        presets: [['@babel/preset-env', { targets: { node: 'current' }, modules: 'commonjs' }]],
+      }),
+    ).toMatchSnapshot();
+
+    // loose
+    expect(
+      transform(path.join(__dirname, './fixtures/special/es-target.ts'), {
+        presets: [
+          ['@babel/preset-env', { targets: { node: 'current' }, modules: 'commonjs', loose: true }],
+        ],
+      }),
+    ).toMatchSnapshot();
+  });
+
   it('works correctly when using the typescript preset', () => {
     expect(
       transform(path.join(__dirname, './fixtures/special/ts-preset.ts'), {

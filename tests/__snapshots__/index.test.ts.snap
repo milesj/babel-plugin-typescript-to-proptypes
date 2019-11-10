@@ -2278,6 +2278,104 @@ class ESTarget extends _react.default.Component<Props> {
 exports.default = ESTarget;"
 `;
 
+exports[`babel-plugin-typescript-to-proptypes works correctly when transpiling to CJS modules 1`] = `
+"\\"use strict\\";
+
+Object.defineProperty(exports, \\"__esModule\\", {
+  value: true
+});
+exports.default = void 0;
+
+var _propTypes = _interopRequireDefault(require('prop-types'));
+
+var _react = _interopRequireDefault(require('react'));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+interface Props {
+  name: string;
+}
+
+class ESTarget extends _react.default.Component<Props> {
+  static propTypes = {
+    name: _propTypes.default.string.isRequired
+  };
+
+  render() {
+    return null;
+  }
+
+}
+
+exports.default = ESTarget;"
+`;
+
+exports[`babel-plugin-typescript-to-proptypes works correctly when transpiling to CJS modules 2`] = `
+"\\"use strict\\";
+
+exports.__esModule = true;
+exports.default = void 0;
+
+var _propTypes = _interopRequireDefault(require('prop-types'));
+
+var _react = _interopRequireDefault(require('react'));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+interface Props {
+  name: string;
+}
+
+class ESTarget extends _react.default.Component<Props> {
+  static propTypes = {
+    name: _propTypes.default.string.isRequired
+  };
+
+  render() {
+    return null;
+  }
+
+}
+
+exports.default = ESTarget;"
+`;
+
+exports[`babel-plugin-typescript-to-proptypes works correctly when transpiling to ESM modules 1`] = `
+"import _pt from 'prop-types';
+import React from 'react';
+interface Props {
+  name: string;
+}
+export default class ESTarget extends React.Component<Props> {
+  static propTypes = {
+    name: _pt.string.isRequired
+  };
+
+  render() {
+    return null;
+  }
+
+}"
+`;
+
+exports[`babel-plugin-typescript-to-proptypes works correctly when transpiling to ESM modules 2`] = `
+"import _pt from 'prop-types';
+import React from 'react';
+interface Props {
+  name: string;
+}
+export default class ESTarget extends React.Component<Props> {
+  static propTypes = {
+    name: _pt.string.isRequired
+  };
+
+  render() {
+    return null;
+  }
+
+}"
+`;
+
 exports[`babel-plugin-typescript-to-proptypes works correctly when using ALL the things 1`] = `
 "\\"use strict\\";
 
