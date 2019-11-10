@@ -8,11 +8,11 @@ function transform(filePath: string, options: any = {}, pluginOptions: PluginOpt
   return (
     transformFileSync(filePath, {
       babelrc: false,
+      comments: pluginOptions.comments || false,
       configFile: false,
       filename: filePath,
       plugins: [[plugin, pluginOptions]],
       generatorOpts: {
-        comments: false,
         quotes: 'single',
         jsescOption: { quotes: 'single' },
       },
@@ -229,6 +229,20 @@ describe('babel-plugin-typescript-to-proptypes', () => {
           {},
           {
             maxSize: 2,
+          },
+        ),
+      ).toMatchSnapshot();
+    });
+  });
+
+  describe.only('comments', () => {
+    it('copies leading comments', () => {
+      expect(
+        transform(
+          path.join(__dirname, './fixtures/special/comments.ts'),
+          {},
+          {
+            comments: true,
           },
         ),
       ).toMatchSnapshot();

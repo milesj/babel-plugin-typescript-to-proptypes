@@ -132,6 +132,48 @@ required.
 
 ### Options
 
+#### `comments` (boolean)
+
+Copy comments from original source file for docgen purposes. Requires the `comments` option to also
+be enabled in your Babel config. Defaults to `false`.
+
+```tsx
+module.exports = {
+  plugins: [['babel-plugin-typescript-to-proptypes', { comments: true }]],
+};
+```
+
+```tsx
+// Before
+import React from 'react';
+
+interface Props {
+  /** This name controls the fate of the whole universe */
+  name?: string;
+}
+
+class Example extends React.Component<Props> {
+  render() {
+    return <div />;
+  }
+}
+
+// After
+import React from 'react';
+import PropTypes from 'prop-types';
+
+class Example extends React.Component {
+  static propTypes = {
+    /** This name controls the fate of the whole universe */
+    name: PropTypes.string,
+  };
+
+  render() {
+    return <div />;
+  }
+}
+```
+
 #### `customPropTypeSuffixes` (string[])
 
 Reference custom types directly when they match one of the provided suffixes. This option requires
@@ -400,47 +442,6 @@ class Example extends React.Component {
       lat: PropTypes.number,
       long: PropTypes.number,
     }),
-  };
-
-  render() {
-    return <div />;
-  }
-}
-```
-
-#### `leadingComments` (boolean)
-
-Copy comments from original source file for docgen purposes (default true).
-
-```tsx
-module.exports = {
-  plugins: [['babel-plugin-typescript-to-proptypes', { leadingComments: true }]],
-};
-```
-
-```tsx
-// Before
-import React from 'react';
-
-interface Props {
-  /** This name controls the fate of the whole universe */
-  name?: string;
-}
-
-class Example extends React.Component<Props> {
-  render() {
-    return <div />;
-  }
-}
-
-// After
-import React from 'react';
-import PropTypes from 'prop-types';
-
-class Example extends React.Component {
-  static propTypes = {
-    /** This name controls the fate of the whole universe */
-    name: PropTypes.string,
   };
 
   render() {

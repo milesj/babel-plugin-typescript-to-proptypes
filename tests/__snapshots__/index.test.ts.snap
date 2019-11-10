@@ -1,5 +1,30 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`babel-plugin-typescript-to-proptypes comments copies leading comments 1`] = `
+"import _pt from 'prop-types';
+import React from 'react';
+interface Props {
+  /** This does something I swear. */
+  thing: number; // What about inline comments?
+
+  other: string;
+}
+export default class Comments extends React.Component<Props> {
+  static propTypes = {
+    /** This does something I swear. */
+    thing: _pt.number.isRequired,
+
+    /* What about inline comments?*/
+    other: _pt.string.isRequired
+  };
+
+  render() {
+    return null;
+  }
+
+}"
+`;
+
 exports[`babel-plugin-typescript-to-proptypes customPropTypeSuffixes supports custom prop type suffixes 1`] = `
 "import _pt from 'prop-types';
 import React from 'react';

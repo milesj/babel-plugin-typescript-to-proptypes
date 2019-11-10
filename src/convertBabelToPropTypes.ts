@@ -6,6 +6,7 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 
 import { types as t } from '@babel/core';
+import { addComment } from '@babel/types';
 import { convertSymbolFromSource } from './convertTSToPropTypes';
 import getTypeName from './getTypeName';
 import {
@@ -323,10 +324,6 @@ function convertArray(types: any[], state: ConvertState, depth: number): PropTyp
   return propTypes;
 }
 
-function getLeadingComments(property: t.TSPropertySignature): t.Comment[] {
-  return Object.assign([], property.leadingComments);
-}
-
 function convertListToProps(
   properties: t.TSPropertySignature[],
   state: ConvertState,
@@ -358,9 +355,13 @@ function convertListToProps(
           property.optional || defaultProps.includes(name) || mustBeOptional(type),
         ),
       );
-      if (state.options.leadingComments) {
-        objProperty.leadingComments = getLeadingComments(property);
+
+      if (state.options.comments && property.leadingComments) {
+        property.leadingComments.forEach(comment => {
+          addComment(objProperty as any, 'leading', comment.value);
+        });
       }
+
       propTypes.push(objProperty);
 
       if (name === 'children') {

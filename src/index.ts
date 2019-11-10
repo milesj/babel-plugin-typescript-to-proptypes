@@ -65,12 +65,12 @@ export default declare((api: any, options: PluginOptions, root: string) => {
         componentTypes: {},
         filePath: '',
         options: {
+          comments: false,
           customPropTypeSuffixes: [],
           forbidExtraProps: false,
           maxDepth: MAX_DEPTH,
           maxSize: MAX_SIZE,
           typeCheck: false,
-          leadingComments: true,
           ...options,
         },
         propTypes: {

@@ -15,13 +15,13 @@ export interface TypePropertyMap {
 export type PropType = t.MemberExpression | t.CallExpression | t.Identifier;
 
 export interface PluginOptions {
+  comments?: boolean;
   customPropTypeSuffixes?: string[];
   forbidExtraProps?: boolean;
   implicitChildren?: boolean;
   maxDepth?: number;
   maxSize?: number;
   typeCheck?: boolean | string;
-  leadingComments?: boolean;
 }
 
 export interface ConvertState {
