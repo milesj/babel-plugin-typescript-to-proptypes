@@ -110,7 +110,8 @@ npm install --save-dev babel-plugin-typescript-to-proptypes
 ## Usage
 
 Add the plugin to your Babel config. It's preferred to enable this plugin for development only, or
-when building a library.
+when building a library. Requires either the `@babel/plugin-syntax-jsx` plugin or the
+`@babel/preset-react` preset.
 
 ```tsx
 // babel.config.js
