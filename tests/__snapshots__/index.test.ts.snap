@@ -286,6 +286,46 @@ export default class MaxSize extends React.Component<Props> {
 }"
 `;
 
+exports[`babel-plugin-typescript-to-proptypes strict adds \`isRequired\` when strict 1`] = `
+"import _pt from 'prop-types';
+import React from 'react';
+interface Props {
+  name?: string;
+  title: string;
+}
+export default class Strict extends React.Component<Props> {
+  static propTypes = {
+    name: _pt.string,
+    title: _pt.string.isRequired
+  };
+
+  render() {
+    return null;
+  }
+
+}"
+`;
+
+exports[`babel-plugin-typescript-to-proptypes strict omits \`isRequired\` when not strict 1`] = `
+"import _pt from 'prop-types';
+import React from 'react';
+interface Props {
+  name?: string;
+  title: string;
+}
+export default class Strict extends React.Component<Props> {
+  static propTypes = {
+    name: _pt.string,
+    title: _pt.string
+  };
+
+  render() {
+    return null;
+  }
+
+}"
+`;
+
 exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/avoids-state.ts 1`] = `
 "import _pt from 'prop-types';
 import React from 'react';

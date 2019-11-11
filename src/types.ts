@@ -21,6 +21,7 @@ export interface PluginOptions {
   implicitChildren?: boolean;
   maxDepth?: number;
   maxSize?: number;
+  strict?: boolean;
   typeCheck?: boolean | string;
 }
 

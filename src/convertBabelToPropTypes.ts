@@ -386,7 +386,10 @@ function convertListToProps(
         property.key,
         wrapIsRequired(
           propType,
-          property.optional || defaultProps.includes(name) || mustBeOptional(type),
+          !state.options.strict ||
+            property.optional ||
+            defaultProps.includes(name) ||
+            mustBeOptional(type),
         ),
       );
 

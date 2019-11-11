@@ -404,6 +404,48 @@ class Example extends React.Component {
 }
 ```
 
+#### `strict` (boolean)
+
+Enables strict prop types by adding `isRequired` to all non-optional properties. Disable this option
+if you want to accept nulls and non-required for all prop types. Defaults to `true`.
+
+```tsx
+module.exports = {
+  plugins: [['babel-plugin-typescript-to-proptypes', { strict: true }]],
+};
+```
+
+```tsx
+// Before
+import React from 'react';
+
+interface Props {
+  opt?: string;
+  req: number;
+}
+
+class Example extends React.Component<Props> {
+  render() {
+    return <div />;
+  }
+}
+
+// After
+import React from 'react';
+import PropTypes from 'prop-types';
+
+class Example extends React.Component {
+  static propTypes = {
+    opt: PropTypes.string,
+    req: PropTyines.number.isRequired,
+  };
+
+  render() {
+    return <div />;
+  }
+}
+```
+
 #### `typeCheck` (boolean|string)
 
 _NOT FINISHED_ Resolve full type information for aliases and references using TypeScript's built-in

@@ -283,6 +283,32 @@ describe('babel-plugin-typescript-to-proptypes', () => {
     });
   });
 
+  describe('strict', () => {
+    it('adds `isRequired` when strict', () => {
+      expect(
+        transform(
+          path.join(__dirname, './fixtures/special/strict.ts'),
+          {},
+          {
+            strict: true,
+          },
+        ),
+      ).toMatchSnapshot();
+    });
+
+    it('omits `isRequired` when not strict', () => {
+      expect(
+        transform(
+          path.join(__dirname, './fixtures/special/strict.ts'),
+          {},
+          {
+            strict: false,
+          },
+        ),
+      ).toMatchSnapshot();
+    });
+  });
+
   // describe('typeCheck', () => {
   //   glob
   //     .sync('./fixtures/special/checker/*.ts', { cwd: __dirname, dot: false })

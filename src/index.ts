@@ -70,6 +70,7 @@ export default declare((api: any, options: PluginOptions, root: string) => {
           forbidExtraProps: false,
           maxDepth: MAX_DEPTH,
           maxSize: MAX_SIZE,
+          strict: true,
           typeCheck: false,
           ...options,
         },
