@@ -1,8 +1,3 @@
-/**
- * @copyright   2018-2019, Miles Johnson
- * @license     https://opensource.org/licenses/MIT
- */
-
 /* eslint-disable */
 
 import { types as t } from '@babel/core';
