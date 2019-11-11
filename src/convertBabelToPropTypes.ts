@@ -94,6 +94,12 @@ function convert(type: any, state: ConvertState, depth: number): PropType | null
       propTypesImportedName,
     );
 
+    // Foo.VALUE -> *
+  } else if (t.isTSEnumMember(type)) {
+    if (type.initializer) {
+      return type.initializer as t.Literal;
+    }
+
     // (() => void) -> PropTypes.func
   } else if (t.isTSFunctionType(type)) {
     return createMember(t.identifier('func'), propTypesImportedName);

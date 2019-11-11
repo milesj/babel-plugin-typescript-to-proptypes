@@ -8,6 +8,12 @@ export type Bar = {
   bar?: number;
 };
 
+enum Color {
+  RED = 'Red',
+  BLUE = 'Blue',
+  GREEN = 'Green',
+}
+
 export interface Props {
   union: number | string | object;
   intersection?: number & string & object;
@@ -19,6 +25,8 @@ export interface Props {
   anyUnion: any | number | string;
   typeRefUnion: Foo | Bar;
   typeRefIntersection?: Foo & Bar;
+  enumUnion: Color.RED | Color.BLUE;
+  enumIntersection: Color.BLUE & Color.GREEN;
 }
 
 export default class TypeUnionIntersection extends React.Component<Props> {

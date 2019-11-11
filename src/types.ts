@@ -12,7 +12,7 @@ export interface TypePropertyMap {
   [key: string]: t.TSPropertySignature[];
 }
 
-export type PropType = t.MemberExpression | t.CallExpression | t.Identifier;
+export type PropType = t.MemberExpression | t.CallExpression | t.Identifier | t.Literal;
 
 export interface PluginOptions {
   comments?: boolean;
@@ -41,7 +41,11 @@ export interface ConvertState {
   };
   reactImportedName: string;
   referenceTypes: {
-    [key: string]: t.TSEnumDeclaration | t.TSInterfaceDeclaration | t.TSTypeAliasDeclaration;
+    [key: string]:
+      | t.TSEnumDeclaration
+      | t.TSEnumMember
+      | t.TSInterfaceDeclaration
+      | t.TSTypeAliasDeclaration;
   };
   typeChecker?: ts.TypeChecker;
   typeProgram?: ts.Program;
