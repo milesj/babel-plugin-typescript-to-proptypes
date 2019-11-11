@@ -2182,6 +2182,11 @@ contains-path@^0.1.0:
   resolved "https://registry.npmjs.org/contains-path/-/contains-path-0.1.0.tgz#fe8cf184ff6670b6baef01a9d4861a5cbec4120a"
   integrity sha1-/ozxhP9mcLa67wGp1IYaXL7EEgo=
 
+conventional-changelog-beemo@^1.5.1:
+  version "1.5.1"
+  resolved "https://registry.npmjs.org/conventional-changelog-beemo/-/conventional-changelog-beemo-1.5.1.tgz#dcc1c64b0f8528ebc76e9a2ea03ad29ff55be931"
+  integrity sha512-yLuOXVcDjW4FReZsPHBo3y/cCr5ZP+VDPCc0n69X3A/ec41io24pMZp4GoSJd1/cPZXgwhUcl47CwX3GEv6JNQ==
+
 convert-source-map@^1.1.0, convert-source-map@^1.4.0, convert-source-map@^1.7.0:
   version "1.7.0"
   resolved "https://registry.npmjs.org/convert-source-map/-/convert-source-map-1.7.0.tgz#17a2cb882d7f77d3490585e2ce6c524424a3a442"

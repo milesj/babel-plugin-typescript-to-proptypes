@@ -1,8 +1,3 @@
-/**
- * @copyright   2018-2019, Miles Johnson
- * @license     https://opensource.org/licenses/MIT
- */
-
 /* eslint-disable @typescript-eslint/no-use-before-define */
 
 import { types as t } from '@babel/core';

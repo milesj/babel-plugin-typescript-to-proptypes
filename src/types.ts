@@ -1,8 +1,3 @@
-/**
- * @copyright   2018-2019, Miles Johnson
- * @license     https://opensource.org/licenses/MIT
- */
-
 import { types as t, traverse } from '@babel/core';
 import ts from 'typescript';
 
