@@ -163,7 +163,10 @@ export default declare((api: any, options: PluginOptions, root: string) => {
 
           programPath.traverse({
             // airbnbPropTypes.componentWithName()
-            CallExpression({ node }: Path<t.CallExpression>) {
+            // React.forwardRef()
+            // React.memo()
+            CallExpression(path: Path<t.CallExpression>) {
+              const { node } = path;
               const { namedImports } = state.airbnbPropTypes;
 
               if (
@@ -172,6 +175,28 @@ export default declare((api: any, options: PluginOptions, root: string) => {
                 namedImports.includes(node.callee.name)
               ) {
                 state.airbnbPropTypes.count += 1;
+              }
+
+              // INCOMPLETE
+              if (
+                t.isMemberExpression(node.callee) &&
+                t.isIdentifier(node.callee.object) &&
+                t.isIdentifier(node.callee.property) &&
+                node.callee.object.name === state.reactImportedName &&
+                (node.callee.property.name === 'forwardRef' || node.callee.property.name === 'memo')
+              ) {
+                if (
+                  t.isVariableDeclarator(path.parent) &&
+                  t.isVariableDeclaration(path.parentPath.parent)
+                ) {
+                  transformers.push(() =>
+                    addToFunctionOrVar(
+                      path.parentPath.parentPath as any,
+                      ((path.parent as t.VariableDeclarator).id as t.Identifier).name,
+                      state,
+                    ),
+                  );
+                }
               }
             },
 
