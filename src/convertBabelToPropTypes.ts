@@ -8,6 +8,7 @@
 import { types as t } from '@babel/core';
 import { addComment } from '@babel/types';
 import { convertSymbolFromSource } from './convertTSToPropTypes';
+import extractEnumValues from './extractEnumValues';
 import getTypeName from './getTypeName';
 import {
   createCall,
@@ -72,6 +73,24 @@ function convert(type: any, state: ConvertState, depth: number): PropType | null
     return createCall(
       t.identifier('oneOf'),
       [t.arrayExpression([type.literal])],
+      propTypesImportedName,
+    );
+
+    // enum Foo {} -> PropTypes.oneOf
+  } else if (t.isTSEnumDeclaration(type)) {
+    return createCall(
+      t.identifier('oneOf'),
+      [
+        t.arrayExpression(
+          extractEnumValues(type).map(value => {
+            if (typeof value === 'number') {
+              return t.numericLiteral(value);
+            }
+
+            return t.stringLiteral(value);
+          }),
+        ),
+      ],
       propTypesImportedName,
     );
 

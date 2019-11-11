@@ -1216,6 +1216,65 @@ export default class TypeComplex extends React.Component<Props> {
 }"
 `;
 
+exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/type-enum.ts 1`] = `
+"import _pt from 'prop-types';
+import React from 'react';
+enum Standard {
+  FOO,
+  BAR,
+  BAZ,
+}
+enum FirstInitializer {
+  FOO = 10,
+  BAR,
+  BAZ,
+}
+enum AllNumbers {
+  FOO = 10,
+  BAR = 20,
+  BAZ = 30,
+}
+enum AllStrings {
+  FOO = 'Foo',
+  BAR = 'Bar',
+  BAZ = 'Baz',
+}
+enum MixedTypes {
+  FOO = 1,
+  BAR = 'Bar',
+  BAZ = 2,
+}
+const enum ConstEnum {
+  Up,
+  Down,
+  Left,
+  Right,
+}
+export interface Props {
+  standard: Standard;
+  first?: FirstInitializer;
+  numbers?: AllNumbers;
+  strings: AllStrings;
+  mixed?: MixedTypes;
+  constant?: ConstEnum;
+}
+export default class TypeEnum extends React.Component<Props> {
+  static propTypes = {
+    standard: _pt.oneOf([0, 1, 2]).isRequired,
+    first: _pt.oneOf([10, 11, 12]),
+    numbers: _pt.oneOf([10, 20, 30]),
+    strings: _pt.oneOf(['Foo', 'Bar', 'Baz']).isRequired,
+    mixed: _pt.oneOf([1, 'Bar', 2]),
+    constant: _pt.oneOf([0, 1, 2, 3])
+  };
+
+  render() {
+    return null;
+  }
+
+}"
+`;
+
 exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/type-function.ts 1`] = `
 "import _pt from 'prop-types';
 import React from 'react';

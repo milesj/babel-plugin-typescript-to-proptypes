@@ -232,6 +232,11 @@ export default declare((api: any, options: PluginOptions, root: string) => {
               }
             },
 
+            // `enum Foo {}`
+            TSEnumDeclaration({ node }: Path<t.TSInterfaceDeclaration>) {
+              state.referenceTypes[node.id.name] = node;
+            },
+
             // `interface FooProps {}`
             TSInterfaceDeclaration({ node }: Path<t.TSInterfaceDeclaration>) {
               state.componentTypes[node.id.name] = extractTypeProperties(
