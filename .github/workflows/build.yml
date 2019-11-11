@@ -16,6 +16,6 @@ jobs:
       - run: yarn install --ignore-engines --frozen-lockfile
       - run: yarn run build
       - run: yarn run jest -w 2
-      - run: echo $CWD
-      - run: yarn beemo create-config eslint && cat .eslintrc.js
+      - run: echo $CWD && echo $PWD
+      - run: yarn beemo create-config eslint && cat .eslintrc.js && cat tsconfig.json
       - run: yarn run eslint
