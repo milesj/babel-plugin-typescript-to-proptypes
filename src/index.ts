@@ -3,16 +3,19 @@
  * @license     https://opensource.org/licenses/MIT
  */
 
+/* eslint-disable prefer-destructuring */
+
 import { declare } from '@babel/helper-plugin-utils';
 import { addDefault, addNamed } from '@babel/helper-module-imports';
 import syntaxTypeScript from '@babel/plugin-syntax-typescript';
 import { types as t } from '@babel/core';
+import { TSTypeParameterInstantiation } from '@babel/types';
 import addToClass from './addToClass';
 import addToFunctionOrVar from './addToFunctionOrVar';
 import extractTypeProperties from './extractTypeProperties';
 // import { loadProgram } from './typeChecker';
 import upsertImport from './upsertImport';
-import { Path, PluginOptions, ConvertState } from './types';
+import { Path, PluginOptions, ConvertState, PropTypeDeclaration } from './types';
 
 const BABEL_VERSION = 7;
 const MAX_DEPTH = 3;
@@ -27,13 +30,17 @@ function isComponentName(name: string) {
   return !!name.match(/^[A-Z]/u);
 }
 
-function isPropsParam(param: t.Node) {
+function isPropsParam(param: t.Node): param is t.Identifier | t.ObjectPattern {
   return (
     // (props: Props)
     (t.isIdentifier(param) && !!param.typeAnnotation) ||
     // ({ ...props }: Props)
     (t.isObjectPattern(param) && !!param.typeAnnotation)
   );
+}
+
+function isPropsType(param: t.Node): param is PropTypeDeclaration {
+  return t.isTSTypeReference(param) || t.isTSIntersectionType(param) || t.isTSUnionType(param);
 }
 
 export default declare((api: any, options: PluginOptions, root: string) => {
@@ -116,7 +123,9 @@ export default declare((api: any, options: PluginOptions, root: string) => {
             }
 
             if (node.source.value === 'airbnb-prop-types') {
-              const response = upsertImport(node, { checkForNamed: 'forbidExtraProps' });
+              const response = upsertImport(node, {
+                checkForNamed: 'forbidExtraProps',
+              });
 
               state.airbnbPropTypes.hasImport = true;
               state.airbnbPropTypes.namedImports = response.namedImports;
@@ -164,8 +173,6 @@ export default declare((api: any, options: PluginOptions, root: string) => {
 
           programPath.traverse({
             // airbnbPropTypes.componentWithName()
-            // React.forwardRef()
-            // React.memo()
             CallExpression(path: Path<t.CallExpression>) {
               const { node } = path;
               const { namedImports } = state.airbnbPropTypes;
@@ -176,28 +183,6 @@ export default declare((api: any, options: PluginOptions, root: string) => {
                 namedImports.includes(node.callee.name)
               ) {
                 state.airbnbPropTypes.count += 1;
-              }
-
-              // INCOMPLETE
-              if (
-                t.isMemberExpression(node.callee) &&
-                t.isIdentifier(node.callee.object) &&
-                t.isIdentifier(node.callee.property) &&
-                node.callee.object.name === state.reactImportedName &&
-                (node.callee.property.name === 'forwardRef' || node.callee.property.name === 'memo')
-              ) {
-                if (
-                  t.isVariableDeclarator(path.parent) &&
-                  t.isVariableDeclaration(path.parentPath.parent)
-                ) {
-                  transformers.push(() =>
-                    addToFunctionOrVar(
-                      path.parentPath.parentPath as any,
-                      ((path.parent as t.VariableDeclarator).id as t.Identifier).name,
-                      state,
-                    ),
-                  );
-                }
               }
             },
 
@@ -232,13 +217,22 @@ export default declare((api: any, options: PluginOptions, root: string) => {
             // `function Foo(props: Props) {}`
             FunctionDeclaration(path: Path<t.FunctionDeclaration>) {
               const { node } = path;
-              const valid =
+
+              if (
                 !!state.reactImportedName &&
                 isComponentName(node.id.name) &&
-                isPropsParam(node.params[0]);
-
-              if (valid) {
-                transformers.push(() => addToFunctionOrVar(path, node.id.name, state));
+                isPropsParam(node.params[0]) &&
+                t.isTSTypeAnnotation(node.params[0].typeAnnotation) &&
+                isPropsType(node.params[0].typeAnnotation.typeAnnotation)
+              ) {
+                transformers.push(() =>
+                  addToFunctionOrVar(
+                    path,
+                    node.id.name,
+                    (node.params[0] as any).typeAnnotation.typeAnnotation,
+                    state,
+                  ),
+                );
               }
             },
 
@@ -253,7 +247,11 @@ export default declare((api: any, options: PluginOptions, root: string) => {
 
             // PropTypes.*
             MemberExpression({ node }: Path<t.MemberExpression>) {
-              if (t.isIdentifier(node.object, { name: state.propTypes.defaultImport })) {
+              if (
+                t.isIdentifier(node.object, {
+                  name: state.propTypes.defaultImport,
+                })
+              ) {
                 state.propTypes.count += 1;
               }
             },
@@ -291,6 +289,8 @@ export default declare((api: any, options: PluginOptions, root: string) => {
 
             // `const Foo = (props: Props) => {};`
             // `const Foo: React.FC<Props> = () => {};`
+            // `const Ref = React.forwardRef<Element, Props>();`
+            // `const Memo = React.memo<Props>();`
             VariableDeclaration(path: Path<t.VariableDeclaration>) {
               const { node } = path;
 
@@ -300,39 +300,102 @@ export default declare((api: any, options: PluginOptions, root: string) => {
 
               const decl = node.declarations[0];
               const id = decl.id as t.Identifier;
-              let valid = false;
+              let props: PropTypeDeclaration | null = null;
 
               // const Foo: React.FC<Props> = () => {};
               if (id.typeAnnotation && id.typeAnnotation.typeAnnotation) {
                 const type = id.typeAnnotation.typeAnnotation;
 
-                // prettier-ignore
-                valid = t.isTSTypeReference(type) &&
+                if (
+                  t.isTSTypeReference(type) &&
                   !!type.typeParameters &&
-                  type.typeParameters.params.length > 0 && (
+                  type.typeParameters.params.length > 0 &&
+                  isPropsType(type.typeParameters.params[0]) &&
                   // React.FC, React.FunctionComponent
-                  (
-                    t.isTSQualifiedName(type.typeName) &&
-                    t.isIdentifier(type.typeName.left, { name: state.reactImportedName }) &&
-                    REACT_FC_NAMES.some(name => t.isIdentifier((type.typeName as any).right, { name }))
-                  ) ||
-                  // FC, FunctionComponent
-                  (
-                    !!state.reactImportedName &&
-                    REACT_FC_NAMES.some(name => t.isIdentifier(type.typeName, { name }))
-                  )
-                );
+                  ((t.isTSQualifiedName(type.typeName) &&
+                    t.isIdentifier(type.typeName.left, {
+                      name: state.reactImportedName,
+                    }) &&
+                    REACT_FC_NAMES.some(name =>
+                      t.isIdentifier((type.typeName as any).right, { name }),
+                    )) ||
+                    // FC, FunctionComponent
+                    (!!state.reactImportedName &&
+                      REACT_FC_NAMES.some(name => t.isIdentifier(type.typeName, { name }))))
+                ) {
+                  props = type.typeParameters.params[0];
+                }
 
                 // const Foo = (props: Props) => {};
               } else if (t.isArrowFunctionExpression(decl.init)) {
-                valid =
+                if (
                   !!state.reactImportedName &&
                   isComponentName(id.name) &&
-                  isPropsParam(decl.init.params[0]);
+                  isPropsParam(decl.init.params[0]) &&
+                  t.isTSTypeAnnotation(decl.init.params[0].typeAnnotation) &&
+                  isPropsType(decl.init.params[0].typeAnnotation.typeAnnotation)
+                ) {
+                  props = decl.init.params[0].typeAnnotation.typeAnnotation;
+                }
+
+                // const Ref = React.forwardRef();
+                // const Memo = React.memo<Props>();
+              } else if (t.isCallExpression(decl.init)) {
+                const { init } = decl;
+                const typeParameters = (init as any).typeParameters as TSTypeParameterInstantiation;
+
+                if (
+                  t.isMemberExpression(init.callee) &&
+                  t.isIdentifier(init.callee.object) &&
+                  t.isIdentifier(init.callee.property) &&
+                  init.callee.object.name === state.reactImportedName
+                ) {
+                  if (init.callee.property.name === 'forwardRef') {
+                    // const Ref = React.forwardRef<Element, Props>();
+                    if (
+                      !!typeParameters &&
+                      t.isTSTypeParameterInstantiation(typeParameters) &&
+                      typeParameters.params.length > 1 &&
+                      isPropsType(typeParameters.params[1])
+                    ) {
+                      props = typeParameters.params[1];
+
+                      // const Ref = React.forwardRef((props: Props) => {});
+                    } else if (
+                      t.isArrowFunctionExpression(init.arguments[0]) &&
+                      init.arguments[0].params.length > 0 &&
+                      isPropsParam(init.arguments[0].params[0]) &&
+                      t.isTSTypeAnnotation(init.arguments[0].params[0].typeAnnotation) &&
+                      isPropsType(init.arguments[0].params[0].typeAnnotation.typeAnnotation)
+                    ) {
+                      props = init.arguments[0].params[0].typeAnnotation.typeAnnotation;
+                    }
+                  } else if (init.callee.property.name === 'memo') {
+                    // const Ref = React.memo<Props>();
+                    if (
+                      !!typeParameters &&
+                      t.isTSTypeParameterInstantiation(typeParameters) &&
+                      typeParameters.params.length > 0 &&
+                      isPropsType(typeParameters.params[0])
+                    ) {
+                      props = typeParameters.params[0];
+
+                      // const Ref = React.memo((props: Props) => {});
+                    } else if (
+                      t.isArrowFunctionExpression(init.arguments[0]) &&
+                      init.arguments[0].params.length > 0 &&
+                      isPropsParam(init.arguments[0].params[0]) &&
+                      t.isTSTypeAnnotation(init.arguments[0].params[0].typeAnnotation) &&
+                      isPropsType(init.arguments[0].params[0].typeAnnotation.typeAnnotation)
+                    ) {
+                      props = init.arguments[0].params[0].typeAnnotation.typeAnnotation;
+                    }
+                  }
+                }
               }
 
-              if (valid) {
-                transformers.push(() => addToFunctionOrVar(path, id.name, state));
+              if (props) {
+                transformers.push(() => addToFunctionOrVar(path, id.name, props!, state));
               }
             },
           });

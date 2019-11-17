@@ -982,6 +982,53 @@ export function withVar() {
 }"
 `;
 
+exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/memo-ref-components.tsx 1`] = `
+"import _pt from 'prop-types';
+import React from 'react';
+interface RefProps {
+  foo?: string;
+  ref: React.Ref<HTMLButtonElement>;
+}
+
+function BaseRefComp(props: RefProps) {
+  return null;
+}
+
+BaseRefComp.propTypes = {
+  foo: _pt.string,
+  ref: _pt.oneOfType([_pt.string, _pt.func, _pt.object]).isRequired
+};
+const RefComp = React.forwardRef<HTMLButtonElement, RefProps>((props, ref) => <BaseRefComp ref={ref} {...props} />);
+RefComp.propTypes = {
+  foo: _pt.string,
+  ref: _pt.oneOfType([_pt.string, _pt.func, _pt.object]).isRequired
+};
+const RefCompAlt = React.forwardRef((props: RefProps, ref: React.Ref<HTMLButtonElement>) => <BaseRefComp ref={ref} {...props} />);
+RefCompAlt.propTypes = {
+  foo: _pt.string,
+  ref: _pt.oneOfType([_pt.string, _pt.func, _pt.object]).isRequired
+};
+const RefCompNoTypes = React.forwardRef((props, ref) => null);
+interface MemoProps {
+  bar: number;
+}
+const MemoComp = React.memo<MemoProps>(props => {
+  return null;
+});
+MemoComp.propTypes = {
+  bar: _pt.number.isRequired
+};
+const MemoCompAlt = React.memo((props: MemoProps) => {
+  return null;
+});
+MemoCompAlt.propTypes = {
+  bar: _pt.number.isRequired
+};
+const MemoCompNoTypes = React.memo(props => {
+  return null;
+});"
+`;
+
 exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/multiple-components.ts 1`] = `
 "import _pt from 'prop-types';
 import React from 'react';

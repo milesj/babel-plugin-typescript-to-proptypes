@@ -2,45 +2,24 @@ import { types as t } from '@babel/core';
 import convertToPropTypes from './convertBabelToPropTypes';
 import extractGenericTypeNames from './extractGenericTypeNames';
 import { createPropTypesObject, mergePropTypes } from './propTypes';
-import { Path, ConvertState } from './types';
-
-function extractTypeNames(path: Path<t.FunctionDeclaration | t.VariableDeclaration>): string[] {
-  if (t.isFunctionDeclaration(path.node)) {
-    return extractGenericTypeNames((path.node.params[0] as any).typeAnnotation.typeAnnotation);
-  }
-
-  if (t.isVariableDeclaration(path.node)) {
-    const decl = path.node.declarations[0];
-    const id = decl.id as t.Identifier;
-
-    if (id.typeAnnotation && id.typeAnnotation.typeAnnotation) {
-      return extractGenericTypeNames(
-        (id.typeAnnotation.typeAnnotation as any).typeParameters.params[0],
-      );
-    } else if (decl.init && t.isArrowFunctionExpression(decl.init)) {
-      return extractGenericTypeNames((decl.init.params[0] as any).typeAnnotation.typeAnnotation);
-    }
-  }
-
-  return [];
-}
+import { Path, ConvertState, PropTypeDeclaration } from './types';
 
 function findStaticProperty(
   path: Path<t.Node>,
   funcName: string,
   name: string,
 ): t.AssignmentExpression | undefined {
-  const expr = path
-    .getAllNextSiblings()
-    .find(
-      sibPath =>
-        t.isExpressionStatement(sibPath.node) &&
-        t.isAssignmentExpression(sibPath.node.expression, { operator: '=' }) &&
-        t.isMemberExpression(sibPath.node.expression.left) &&
-        t.isObjectExpression(sibPath.node.expression.right) &&
-        t.isIdentifier(sibPath.node.expression.left.object, { name: funcName }) &&
-        t.isIdentifier(sibPath.node.expression.left.property, { name }),
-    );
+  const expr = path.getAllNextSiblings().find(
+    sibPath =>
+      t.isExpressionStatement(sibPath.node) &&
+      t.isAssignmentExpression(sibPath.node.expression, { operator: '=' }) &&
+      t.isMemberExpression(sibPath.node.expression.left) &&
+      t.isObjectExpression(sibPath.node.expression.right) &&
+      t.isIdentifier(sibPath.node.expression.left.object, {
+        name: funcName,
+      }) &&
+      t.isIdentifier(sibPath.node.expression.left.property, { name }),
+  );
 
   // @ts-ignore
   return expr && expr.node.expression;
@@ -49,6 +28,7 @@ function findStaticProperty(
 export default function addToFunctionOrVar(
   path: Path<t.FunctionDeclaration | t.VariableDeclaration>,
   name: string,
+  propsType: PropTypeDeclaration,
   state: ConvertState,
 ) {
   const rootPath =
@@ -70,7 +50,7 @@ export default function addToFunctionOrVar(
     });
   }
 
-  const typeNames = extractTypeNames(path);
+  const typeNames = extractGenericTypeNames(propsType);
   const propTypesList = convertToPropTypes(
     state.componentTypes,
     typeNames,

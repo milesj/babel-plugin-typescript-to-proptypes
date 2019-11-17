@@ -22,7 +22,7 @@ function transform(filePath: string, options: any = {}, pluginOptions: PluginOpt
 }
 
 describe('babel-plugin-typescript-to-proptypes', () => {
-  glob.sync('./fixtures/**/*.ts', { cwd: __dirname, dot: false }).forEach(basePath => {
+  glob.sync('./fixtures/**/*.{ts,tsx}', { cwd: __dirname, dot: false }).forEach(basePath => {
     const filePath = String(basePath);
 
     if (filePath.includes('/special/')) {

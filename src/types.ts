@@ -7,6 +7,8 @@ export interface TypePropertyMap {
   [key: string]: t.TSPropertySignature[];
 }
 
+export type PropTypeDeclaration = t.TSTypeReference | t.TSIntersectionType | t.TSUnionType;
+
 export type PropType = t.MemberExpression | t.CallExpression | t.Identifier | t.Literal;
 
 export interface PluginOptions {
