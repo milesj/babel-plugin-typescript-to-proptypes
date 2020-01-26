@@ -185,8 +185,8 @@ function convert(type: any, state: ConvertState, depth: number): PropType | null
       return convertSymbolFromSource(state.filePath, name, state);
     }
 
-    // any (we need to support all these in case of unions)
-    return createMember(t.identifier('any'), propTypesImportedName);
+    // Nothing found, so just omit
+    return null;
 
     // [] -> PropTypes.arrayOf(), PropTypes.array
   } else if (t.isTSArrayType(type)) {
@@ -249,6 +249,7 @@ function convert(type: any, state: ConvertState, depth: number): PropType | null
   } else if (t.isTSUnionType(type) || t.isTSIntersectionType(type)) {
     const isAllLiterals = type.types.every(param => t.isTSLiteralType(param));
     const containsAny = type.types.some(param => t.isTSAnyKeyword(param));
+    const containsNull = type.types.some(param => t.isTSNullKeyword(param));
     let label;
     let args;
 
@@ -264,6 +265,11 @@ function convert(type: any, state: ConvertState, depth: number): PropType | null
     } else {
       args = convertArray(type.types, state, depth);
       label = t.identifier('oneOfType');
+
+      // Contained unresolved references, so just omit for now
+      if (args.length !== type.types.length && args.length === 1 && (containsAny || containsNull)) {
+        return null;
+      }
     }
 
     if (label && args.length > 0) {

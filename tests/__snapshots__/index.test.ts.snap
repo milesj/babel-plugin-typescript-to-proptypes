@@ -43,8 +43,7 @@ export default class CustomSuffix extends React.Component<Props> {
     nameOpt: NameShape,
     age: AgePropType.isRequired,
     ageOpt: AgePropType,
-    both: _pt.oneOfType([NameShape, AgePropType, _pt.bool]).isRequired,
-    height: _pt.any.isRequired
+    both: _pt.oneOfType([NameShape, AgePropType, _pt.bool]).isRequired
   };
 
   render() {
@@ -1641,6 +1640,7 @@ export interface Props {
   typeRefIntersection?: Foo & Bar;
   enumUnion: Color.RED | Color.BLUE;
   enumIntersection: Color.BLUE & Color.GREEN;
+  missingToNull?: InvalidReference | null;
 }
 export default class TypeUnionIntersection extends React.Component<Props> {
   static propTypes = {
