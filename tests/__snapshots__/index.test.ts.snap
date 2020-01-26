@@ -601,6 +601,41 @@ export default class ClassStandard extends React.Component<Props> {
 }"
 `;
 
+exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/conditional-unions.ts 1`] = `
+"import _pt from 'prop-types';
+import React from 'react';
+interface BasicProps {
+  foo: boolean;
+}
+interface ConditionA extends BasicProps {
+  A: string;
+  B?: string;
+}
+interface ConditionB extends BasicProps {
+  A?: string;
+  B: string;
+}
+export interface Props {
+  name: ConditionA | ConditionB;
+}
+export default class ConditionalUnions extends React.Component<Props> {
+  static propTypes = {
+    name: _pt.oneOfType([_pt.shape({
+      A: _pt.string.isRequired,
+      B: _pt.string
+    }), _pt.shape({
+      A: _pt.string,
+      B: _pt.string.isRequired
+    })]).isRequired
+  };
+
+  render() {
+    return null;
+  }
+
+}"
+`;
+
 exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/custom-prop-types-import-name.ts 1`] = `
 "import React from 'react';
 import PT from 'prop-types';
