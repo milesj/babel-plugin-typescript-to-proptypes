@@ -111,8 +111,14 @@ function convert(type: any, state: ConvertState, depth: number): PropType | null
   } else if (t.isTSTypeReference(type)) {
     const name = getTypeName(type.typeName);
 
-    // node
-    if (
+    // Array<*>
+    if (name === 'Array') {
+      const args = convertArray([type.typeParameters?.params[0]], state, depth);
+
+      return createCall(t.identifier('arrayOf'), args, propTypesImportedName);
+
+      // node
+    } else if (
       isReactTypeMatch(name, 'ReactText', reactImportedName) ||
       isReactTypeMatch(name, 'ReactNode', reactImportedName) ||
       isReactTypeMatch(name, 'ReactType', reactImportedName)

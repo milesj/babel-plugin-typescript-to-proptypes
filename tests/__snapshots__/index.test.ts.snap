@@ -1181,10 +1181,10 @@ import React from 'react';
 export interface Props {
   any: any[];
   null: null[];
-  numbers?: number[];
+  numbers?: Array<number>;
   strings: string[];
   booleans: boolean[];
-  objects?: object[];
+  objects?: Array<object>;
   union: (string | number)[];
   intersection: (string & number)[];
   nested?: string[][];
