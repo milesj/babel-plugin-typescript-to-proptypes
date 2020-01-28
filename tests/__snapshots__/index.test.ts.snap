@@ -1444,17 +1444,11 @@ export interface Props {
 export default class NullUndefined extends React.Component<Props> {
   static propTypes = {
     nullable: _pt.oneOfType([_pt.string, _pt.oneOf([null])]),
-    undefined: _pt.oneOfType([_pt.string]),
     optional: _pt.string,
-    optionalUndefined: _pt.oneOfType([_pt.string]),
     optionalNullable: _pt.oneOfType([_pt.string, _pt.oneOf([null])]),
-    optionalBoth: _pt.oneOfType([_pt.string, _pt.oneOf([null])]),
     literalNullable: _pt.oneOfType([_pt.oneOf(['foo']), _pt.oneOf([null])]),
-    literalUndefined: _pt.oneOfType([_pt.oneOf(['foo'])]),
     literalOptional: _pt.oneOf(['foo']),
-    literalOptionalUndefined: _pt.oneOfType([_pt.oneOf(['foo'])]),
-    literalOptionalNullable: _pt.oneOfType([_pt.oneOf(['foo']), _pt.oneOf([null])]),
-    literalOptionalBoth: _pt.oneOfType([_pt.oneOf(['foo']), _pt.oneOf([null])])
+    literalOptionalNullable: _pt.oneOfType([_pt.oneOf(['foo']), _pt.oneOf([null])])
   };
 
   render() {
@@ -1640,7 +1634,7 @@ export interface Props {
   typeRefIntersection?: Foo & Bar;
   enumUnion: Color.RED | Color.BLUE;
   enumIntersection: Color.BLUE & Color.GREEN;
-  missingToNull?: InvalidReference | null;
+  missingRefs?: InvalidReference | null;
 }
 export default class TypeUnionIntersection extends React.Component<Props> {
   static propTypes = {

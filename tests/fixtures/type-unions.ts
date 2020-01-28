@@ -28,7 +28,7 @@ export interface Props {
   enumUnion: Color.RED | Color.BLUE;
   enumIntersection: Color.BLUE & Color.GREEN;
   // @ts-ignore
-  missingToNull?: InvalidReference | null;
+  missingRefs?: InvalidReference | null;
 }
 
 export default class TypeUnionIntersection extends React.Component<Props> {

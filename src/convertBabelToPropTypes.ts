@@ -249,7 +249,6 @@ function convert(type: any, state: ConvertState, depth: number): PropType | null
   } else if (t.isTSUnionType(type) || t.isTSIntersectionType(type)) {
     const isAllLiterals = type.types.every(param => t.isTSLiteralType(param));
     const containsAny = type.types.some(param => t.isTSAnyKeyword(param));
-    const containsNull = type.types.some(param => t.isTSNullKeyword(param));
     let label;
     let args;
 
@@ -267,7 +266,7 @@ function convert(type: any, state: ConvertState, depth: number): PropType | null
       label = t.identifier('oneOfType');
 
       // Contained unresolved references, so just omit for now
-      if (args.length !== type.types.length && args.length === 1 && (containsAny || containsNull)) {
+      if (args.length !== type.types.length) {
         return null;
       }
     }
