@@ -327,7 +327,8 @@ export default declare((api: any, options: PluginOptions, root: string) => {
                 }
 
                 // const Foo = (props: Props) => {};
-              } else if (t.isArrowFunctionExpression(decl.init)) {
+                // const Foo = function(props: Props) {};
+              } else if (t.isArrowFunctionExpression(decl.init) || t.isFunctionExpression(decl.init)) {
                 if (
                   !!state.reactImportedName &&
                   isComponentName(id.name) &&
