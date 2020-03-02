@@ -115,6 +115,10 @@ function convert(type: any, state: ConvertState, depth: number): PropType | null
     if (name === 'Array') {
       const args = convertArray([type.typeParameters?.params[0]], state, depth);
 
+      if (args.length === 0) {
+        return null;
+      }
+
       return createCall(t.identifier('arrayOf'), args, propTypesImportedName);
 
       // node
