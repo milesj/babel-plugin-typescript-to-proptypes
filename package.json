@@ -36,22 +36,22 @@
     "@babel/plugin-syntax-typescript": "^7.8.3"
   },
   "devDependencies": {
-    "@babel/core": "^7.8.3",
+    "@babel/core": "^7.8.6",
     "@babel/plugin-proposal-class-properties": "^7.8.3",
     "@babel/plugin-transform-runtime": "^7.8.3",
-    "@babel/preset-env": "^7.8.3",
+    "@babel/preset-env": "^7.8.6",
     "@babel/preset-react": "^7.8.3",
     "@babel/preset-typescript": "^7.8.3",
-    "@milesj/build-tools": "^1.0.0",
+    "@milesj/build-tools": "^1.0.1",
     "@types/babel-core": "^6.25.6",
     "@types/babel-types": "^7.0.7",
-    "@types/node": "^13.5.0",
+    "@types/node": "^13.7.7",
     "@types/prop-types": "^15.7.3",
-    "@types/react": "^16.9.19",
+    "@types/react": "^16.9.23",
     "conventional-changelog-beemo": "^1.6.0",
-    "fast-glob": "^3.1.1",
+    "fast-glob": "^3.2.2",
     "prop-types": "^15.7.2",
-    "typescript": "^3.7.5"
+    "typescript": "^3.8.3"
   },
   "beemo": {
     "module": "@milesj/build-tools",
