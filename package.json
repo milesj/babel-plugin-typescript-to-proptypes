@@ -26,6 +26,9 @@
     "test": "yarn run jest",
     "posttest": "yarn run eslint"
   },
+  "engines": {
+    "node": ">=10.10.0"
+  },
   "peerDependencies": {
     "@babel/core": "^7.0.0",
     "typescript": "^3.0.0"
@@ -36,16 +39,16 @@
     "@babel/plugin-syntax-typescript": "^7.8.3"
   },
   "devDependencies": {
-    "@babel/core": "^7.8.6",
+    "@babel/core": "^7.8.7",
     "@babel/plugin-proposal-class-properties": "^7.8.3",
     "@babel/plugin-transform-runtime": "^7.8.3",
-    "@babel/preset-env": "^7.8.6",
+    "@babel/preset-env": "^7.8.7",
     "@babel/preset-react": "^7.8.3",
     "@babel/preset-typescript": "^7.8.3",
-    "@milesj/build-tools": "^1.0.1",
+    "@milesj/build-tools": "^2.0.0",
     "@types/babel-core": "^6.25.6",
     "@types/babel-types": "^7.0.7",
-    "@types/node": "^13.7.7",
+    "@types/node": "^13.9.0",
     "@types/prop-types": "^15.7.3",
     "@types/react": "^16.9.23",
     "conventional-changelog-beemo": "^1.6.0",
