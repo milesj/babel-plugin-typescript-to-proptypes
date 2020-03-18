@@ -220,6 +220,7 @@ export default declare((api: any, options: PluginOptions, root: string) => {
 
               if (
                 !!state.reactImportedName &&
+                node.id &&
                 isComponentName(node.id.name) &&
                 isPropsParam(node.params[0]) &&
                 t.isTSTypeAnnotation(node.params[0].typeAnnotation) &&
@@ -303,7 +304,7 @@ export default declare((api: any, options: PluginOptions, root: string) => {
               let props: PropTypeDeclaration | null = null;
 
               // const Foo: React.FC<Props> = () => {};
-              if (id.typeAnnotation && id.typeAnnotation.typeAnnotation) {
+              if (id && id.typeAnnotation && id.typeAnnotation.typeAnnotation) {
                 const type = id.typeAnnotation.typeAnnotation;
 
                 if (
@@ -328,7 +329,10 @@ export default declare((api: any, options: PluginOptions, root: string) => {
 
                 // const Foo = (props: Props) => {};
                 // const Foo = function(props: Props) {};
-              } else if (t.isArrowFunctionExpression(decl.init) || t.isFunctionExpression(decl.init)) {
+              } else if (
+                t.isArrowFunctionExpression(decl.init) ||
+                t.isFunctionExpression(decl.init)
+              ) {
                 if (
                   !!state.reactImportedName &&
                   isComponentName(id.name) &&
