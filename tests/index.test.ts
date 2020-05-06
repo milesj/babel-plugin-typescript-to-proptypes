@@ -34,7 +34,7 @@ describe('babel-plugin-typescript-to-proptypes', () => {
     // }
 
     it(`transforms ${filePath}`, () => {
-      expect(transform(path.join(__dirname, filePath))).toMatchSnapshot();
+      expect(transform(path.join(__dirname, filePath), {}, { maxSize: 0 })).toMatchSnapshot();
     });
   });
 

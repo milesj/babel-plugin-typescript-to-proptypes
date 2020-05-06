@@ -125,7 +125,8 @@ function convert(type: any, state: ConvertState, depth: number): PropType | null
     } else if (
       isReactTypeMatch(name, 'ReactText', reactImportedName) ||
       isReactTypeMatch(name, 'ReactNode', reactImportedName) ||
-      isReactTypeMatch(name, 'ReactType', reactImportedName)
+      isReactTypeMatch(name, 'ReactType', reactImportedName) ||
+      isReactTypeMatch(name, 'ElementType', reactImportedName)
     ) {
       return createMember(t.identifier('node'), propTypesImportedName);
 
@@ -133,7 +134,8 @@ function convert(type: any, state: ConvertState, depth: number): PropType | null
     } else if (
       isReactTypeMatch(name, 'ComponentType', reactImportedName) ||
       isReactTypeMatch(name, 'ComponentClass', reactImportedName) ||
-      isReactTypeMatch(name, 'StatelessComponent', reactImportedName)
+      isReactTypeMatch(name, 'StatelessComponent', reactImportedName) ||
+      isReactTypeMatch(name, 'ElementType', reactImportedName)
     ) {
       return getInstalledPropTypesVersion() >= PROP_TYPES_15_7
         ? createMember(t.identifier('elementType'), propTypesImportedName)

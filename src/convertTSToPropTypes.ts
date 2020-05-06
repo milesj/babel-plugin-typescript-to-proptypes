@@ -92,7 +92,8 @@ export function convert(type: ts.Type, state: ConvertState, depth: number): Prop
     } else if (
       isReactTypeMatch(name, 'ComponentType', reactImportedName) ||
       isReactTypeMatch(name, 'ComponentClass', reactImportedName) ||
-      isReactTypeMatch(name, 'StatelessComponent', reactImportedName)
+      isReactTypeMatch(name, 'StatelessComponent', reactImportedName) ||
+      isReactTypeMatch(name, 'ElementType', reactImportedName)
     ) {
       return createMember(t.identifier('func'), propTypesImportedName);
 

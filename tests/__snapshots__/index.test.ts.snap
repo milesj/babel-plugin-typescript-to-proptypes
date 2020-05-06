@@ -1543,7 +1543,7 @@ export default class TypePrimitives extends React.Component<Props> {
 
 exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/type-react.ts 1`] = `
 "import _pt from 'prop-types';
-import React, { ReactText, ReactNode, ReactType, ComponentType, ComponentClass, StatelessComponent, MouseEvent, ReactElement, SFCElement, FunctionComponentElement } from 'react';
+import React, { ReactText, ReactNode, ReactType, ElementType, ComponentType, ComponentClass, StatelessComponent, MouseEvent, ReactElement, SFCElement, FunctionComponentElement } from 'react';
 export interface Props {
   text: React.ReactText;
   textAlias?: ReactText;
@@ -1551,6 +1551,8 @@ export interface Props {
   nodeAlias?: ReactNode;
   type: React.ReactType;
   typeAlias?: ReactType;
+  elementType: React.ElementType;
+  elementTypeAlias?: ElementType;
   comp: React.ComponentType;
   compGeneric?: React.ComponentType<any>;
   compAlias: ComponentType;
@@ -1579,6 +1581,8 @@ export default class TypeReact extends React.Component<Props> {
     nodeAlias: _pt.node,
     type: _pt.node.isRequired,
     typeAlias: _pt.node,
+    elementType: _pt.node.isRequired,
+    elementTypeAlias: _pt.node,
     comp: _pt.elementType.isRequired,
     compGeneric: _pt.elementType,
     compAlias: _pt.elementType.isRequired,
