@@ -224,6 +224,7 @@ export default declare((api: any, options: PluginOptions, root: string) => {
                 isComponentName(node.id.name) &&
                 isPropsParam(node.params[0]) &&
                 t.isTSTypeAnnotation(node.params[0].typeAnnotation) &&
+                // @ts-expect-error TODO: revisit once babel types stabilize
                 isPropsType(node.params[0].typeAnnotation.typeAnnotation)
               ) {
                 transformers.push(() =>
@@ -309,21 +310,29 @@ export default declare((api: any, options: PluginOptions, root: string) => {
 
                 if (
                   t.isTSTypeReference(type) &&
+                  // @ts-expect-error TODO: revisit once babel types stabilize
                   !!type.typeParameters &&
+                  // @ts-expect-error TODO: revisit once babel types stabilize
                   type.typeParameters.params.length > 0 &&
+                  // @ts-expect-error TODO: revisit once babel types stabilize
                   isPropsType(type.typeParameters.params[0]) &&
                   // React.FC, React.FunctionComponent
+                  // @ts-expect-error TODO: revisit once babel types stabilize
                   ((t.isTSQualifiedName(type.typeName) &&
+                    // @ts-expect-error TODO: revisit once babel types stabilize
                     t.isIdentifier(type.typeName.left, {
                       name: state.reactImportedName,
                     }) &&
                     REACT_FC_NAMES.some((name) =>
+                      // @ts-expect-error TODO: revisit once babel types stabilize
                       t.isIdentifier((type.typeName as any).right, { name }),
                     )) ||
                     // FC, FunctionComponent
                     (!!state.reactImportedName &&
+                      // @ts-expect-error TODO: revisit once babel types stabilize
                       REACT_FC_NAMES.some((name) => t.isIdentifier(type.typeName, { name }))))
                 ) {
+                  // @ts-expect-error TODO: revisit once babel types stabilize
                   props = type.typeParameters.params[0];
                 }
 
@@ -338,8 +347,10 @@ export default declare((api: any, options: PluginOptions, root: string) => {
                   isComponentName(id.name) &&
                   isPropsParam(decl.init.params[0]) &&
                   t.isTSTypeAnnotation(decl.init.params[0].typeAnnotation) &&
+                  // @ts-expect-error TODO: revisit once babel types stabilize
                   isPropsType(decl.init.params[0].typeAnnotation.typeAnnotation)
                 ) {
+                  // @ts-expect-error TODO: revisit once babel types stabilize
                   props = decl.init.params[0].typeAnnotation.typeAnnotation;
                 }
 
@@ -371,8 +382,10 @@ export default declare((api: any, options: PluginOptions, root: string) => {
                       init.arguments[0].params.length > 0 &&
                       isPropsParam(init.arguments[0].params[0]) &&
                       t.isTSTypeAnnotation(init.arguments[0].params[0].typeAnnotation) &&
+                      // @ts-expect-error TODO: revisit once babel types stabilize
                       isPropsType(init.arguments[0].params[0].typeAnnotation.typeAnnotation)
                     ) {
+                      // @ts-expect-error TODO: revisit once babel types stabilize
                       props = init.arguments[0].params[0].typeAnnotation.typeAnnotation;
                     }
                   } else if (init.callee.property.name === 'memo') {
@@ -391,8 +404,10 @@ export default declare((api: any, options: PluginOptions, root: string) => {
                       init.arguments[0].params.length > 0 &&
                       isPropsParam(init.arguments[0].params[0]) &&
                       t.isTSTypeAnnotation(init.arguments[0].params[0].typeAnnotation) &&
+                      // @ts-expect-error TODO: revisit once babel types stabilize
                       isPropsType(init.arguments[0].params[0].typeAnnotation.typeAnnotation)
                     ) {
+                      // @ts-expect-error TODO: revisit once babel types stabilize
                       props = init.arguments[0].params[0].typeAnnotation.typeAnnotation;
                     }
                   }
