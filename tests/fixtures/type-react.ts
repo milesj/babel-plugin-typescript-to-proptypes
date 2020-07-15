@@ -2,6 +2,7 @@ import React, {
   ReactText,
   ReactNode,
   ReactType,
+  ElementType,
   ComponentType,
   ComponentClass,
   StatelessComponent,
@@ -18,6 +19,8 @@ export interface Props {
   nodeAlias?: ReactNode;
   type: React.ReactType;
   typeAlias?: ReactType;
+  elementType: React.ElementType;
+  elementTypeAlias?: ElementType;
   comp: React.ComponentType;
   compGeneric?: React.ComponentType<any>;
   compAlias: ComponentType;
