@@ -4,4 +4,6 @@ interface Props {
   name: string;
 }
 
-export const VarExportNamed = function(props: Props) { return null; };
+export const VarExportNamed = function (props: Props) {
+  return null;
+};

@@ -8,6 +8,8 @@ export interface BProps {
   b: boolean;
 }
 
-const VarMultipleAnnotations = function(props: AProps & BProps) { return null; };
+const VarMultipleAnnotations = function (props: AProps & BProps) {
+  return null;
+};
 
 export default VarMultipleAnnotations;

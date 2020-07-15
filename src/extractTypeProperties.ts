@@ -7,7 +7,7 @@ export default function extractTypeProperties(
 ): t.TSPropertySignature[] {
   const properties: t.TSPropertySignature[] = [];
   const mapToPropertySignature = (data: any[]) => {
-    data.forEach(prop => {
+    data.forEach((prop) => {
       if (t.isTSPropertySignature(prop)) {
         properties.push(prop);
       }
@@ -26,7 +26,7 @@ export default function extractTypeProperties(
 
     // interface {}
   } else if (t.isTSInterfaceDeclaration(node)) {
-    (node.extends || []).forEach(ext => {
+    (node.extends || []).forEach((ext) => {
       properties.push(...extractTypeProperties(ext.expression, types));
     });
 
@@ -42,7 +42,7 @@ export default function extractTypeProperties(
 
     // Props & {}, Props | {}
   } else if (t.isTSIntersectionType(node) || t.isTSUnionType(node)) {
-    node.types.forEach(intType => {
+    node.types.forEach((intType) => {
       properties.push(...extractTypeProperties(intType, types));
     });
   }

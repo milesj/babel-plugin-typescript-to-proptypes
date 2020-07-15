@@ -13,6 +13,8 @@ export type Props = AProps &
     name: string;
   };
 
-const VarExtendedTypeAliases = function(props: Props) { return null; };
+const VarExtendedTypeAliases = function (props: Props) {
+  return null;
+};
 
 export default VarExtendedTypeAliases;

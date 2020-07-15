@@ -12,6 +12,8 @@ export interface Props extends AProps, BProps {
   name: string;
 }
 
-const VarExtendedInterfaces = function(props: Props) { return null; };
+const VarExtendedInterfaces = function (props: Props) {
+  return null;
+};
 
 export default VarExtendedInterfaces;

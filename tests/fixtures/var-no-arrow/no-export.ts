@@ -4,4 +4,6 @@ interface Props {
   name: string;
 }
 
-const VarNoExport = function(props: Props) { return null; };
+const VarNoExport = function (props: Props) {
+  return null;
+};

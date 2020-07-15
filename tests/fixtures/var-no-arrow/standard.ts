@@ -4,6 +4,8 @@ interface Props {
   name: string;
 }
 
-const VarStandard = function(props: Props) { return null; };
+const VarStandard = function (props: Props) {
+  return null;
+};
 
 export default VarStandard;

@@ -5,7 +5,9 @@ interface Props {
   name: string;
 }
 
-const VarMergeWithExistingPropTypes = function(props: Props) { return null; };
+const VarMergeWithExistingPropTypes = function (props: Props) {
+  return null;
+};
 
 VarMergeWithExistingPropTypes.propTypes = {
   // @ts-ignore

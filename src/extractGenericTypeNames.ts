@@ -6,7 +6,7 @@ export default function extractGenericTypeNames(node: any): string[] {
 
   // <Foo>
   if (t.isTSTypeParameterInstantiation(node)) {
-    node.params.forEach(param => {
+    node.params.forEach((param) => {
       names.push(...extractGenericTypeNames(param));
     });
 
@@ -16,7 +16,7 @@ export default function extractGenericTypeNames(node: any): string[] {
 
     // Foo & Bar, Foo | Bar
   } else if (t.isTSIntersectionType(node) || t.isTSUnionType(node)) {
-    node.types.forEach(param => {
+    node.types.forEach((param) => {
       names.push(...extractGenericTypeNames(param));
     });
   }

@@ -81,13 +81,13 @@ type Props = {
   name?: string;
 };
 
-const Example: React.FC<Props> = props => <div />;
+const Example: React.FC<Props> = (props) => <div />;
 
 // After
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const Example = props => <div />;
+const Example = (props) => <div />;
 
 Example.propTypes = {
   name: PropTypes.string,

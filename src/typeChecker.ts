@@ -11,9 +11,10 @@ export function loadTSConfig(): ts.CompilerOptions {
     return config;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const { config: maybeConfig, error } = ts.readConfigFile(
     path.join(process.cwd(), 'tsconfig.json'),
-    filePath => fs.readFileSync(filePath, 'utf8'),
+    (filePath) => fs.readFileSync(filePath, 'utf8'),
   );
 
   if (error) {
@@ -37,7 +38,10 @@ export function loadProgram(pattern: true | string, root: string): ts.Program {
   }
 
   program = ts.createProgram(
-    glob.sync(pattern === true ? './src/**/*.ts' : pattern, { absolute: true, cwd: root }),
+    glob.sync(pattern === true ? './src/**/*.ts' : pattern, {
+      absolute: true,
+      cwd: root,
+    }),
     loadTSConfig(),
   );
 

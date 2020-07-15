@@ -2,7 +2,7 @@ import { types as t } from '@babel/core';
 import { ConvertState, PropType } from './types';
 
 export function hasCustomPropTypeSuffix(name: string, suffixes?: string[]): boolean {
-  return !!suffixes && suffixes.some(suffix => name.endsWith(suffix));
+  return !!suffixes && suffixes.some((suffix) => name.endsWith(suffix));
 }
 
 export function isReactTypeMatch(name: string, type: string, reactImportedName: string): boolean {
@@ -64,14 +64,14 @@ export function mergePropTypes(
   const existingProps: { [key: string]: boolean } = {};
 
   // Extract existing props so that we don't duplicate
-  properties.forEach(property => {
+  properties.forEach((property) => {
     if (t.isObjectProperty(property) && t.isIdentifier(property.key)) {
       existingProps[property.key.name] = true;
     }
   });
 
   // Add to the beginning of the array so existing/custom prop types aren't overwritten
-  propTypes.forEach(propType => {
+  propTypes.forEach((propType) => {
     if (t.isIdentifier(propType.key) && !existingProps[propType.key.name]) {
       properties.unshift(propType);
     }
@@ -94,7 +94,7 @@ export function getInstalledPropTypesVersion(): number {
 
   try {
     // eslint-disable-next-line global-require
-    installedVersion = parseFloat(require('prop-types/package.json').version);
+    installedVersion = Number.parseFloat(require('prop-types/package.json').version);
   } catch {
     // Swallow
   }

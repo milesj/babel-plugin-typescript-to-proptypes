@@ -7,7 +7,9 @@ interface Props {
 
 const CustomShape = PropTypes.string;
 
-const VarMergeWithNoOverride = function(props: Props) { return null; };
+const VarMergeWithNoOverride = function (props: Props) {
+  return null;
+};
 
 // @ts-ignore
 VarMergeWithNoOverride.propTypes = {

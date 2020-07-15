@@ -23,7 +23,7 @@ interface MemoProps {
   bar: number;
 }
 
-const MemoComp = React.memo<MemoProps>(props => {
+const MemoComp = React.memo<MemoProps>((props) => {
   return null;
 });
 
@@ -31,6 +31,6 @@ const MemoCompAlt = React.memo((props: MemoProps) => {
   return null;
 });
 
-const MemoCompNoTypes = React.memo(props => {
+const MemoCompNoTypes = React.memo((props) => {
   return null;
 });

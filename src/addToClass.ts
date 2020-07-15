@@ -9,7 +9,7 @@ function findStaticProperty(
   name: string,
 ): t.ClassProperty | t.ClassMethod | undefined {
   return node.body.body.find(
-    property =>
+    (property) =>
       t.isClassProperty(property, { static: true }) &&
       t.isIdentifier(property.key, { name }) &&
       (t.isObjectExpression(property.value) || t.isCallExpression(property.value)),
@@ -25,7 +25,7 @@ export default function addToClass(node: t.ClassDeclaration, state: ConvertState
   const defaultPropsKeyList: string[] = [];
 
   if (defaultProps && t.isClassProperty(defaultProps) && t.isObjectExpression(defaultProps.value)) {
-    defaultProps.value.properties.forEach(prop => {
+    defaultProps.value.properties.forEach((prop) => {
       if (t.isProperty(prop) && t.isIdentifier(prop.key)) {
         defaultPropsKeyList.push(prop.key.name);
       }
@@ -54,7 +54,7 @@ export default function addToClass(node: t.ClassDeclaration, state: ConvertState
       createPropTypesObject(propTypesList, state),
     );
 
-    // @ts-ignore
+    // @ts-expect-error
     staticProperty.static = true;
 
     node.body.body.unshift(staticProperty);

@@ -4,6 +4,8 @@ interface Props {
   name: string;
 }
 
-const VarCustomReactImportName = function(props: Props) { return null; };
+const VarCustomReactImportName = function (props: Props) {
+  return null;
+};
 
 export default VarCustomReactImportName;

@@ -77,7 +77,7 @@ function convert(type: any, state: ConvertState, depth: number): PropType | null
       t.identifier('oneOf'),
       [
         t.arrayExpression(
-          extractEnumValues(type).map(value => {
+          extractEnumValues(type).map((value) => {
             if (typeof value === 'number') {
               return t.numericLiteral(value);
             }
@@ -212,7 +212,7 @@ function convert(type: any, state: ConvertState, depth: number): PropType | null
     } else if (type.members.length === 1 && t.isTSIndexSignature(type.members[0])) {
       const index = type.members[0] as t.TSIndexSignature;
 
-      if (index.typeAnnotation && index.typeAnnotation.typeAnnotation) {
+      if (index.typeAnnotation?.typeAnnotation) {
         const result = convert(index.typeAnnotation.typeAnnotation, state, depth);
 
         if (result) {
@@ -227,7 +227,7 @@ function convert(type: any, state: ConvertState, depth: number): PropType | null
         [
           t.objectExpression(
             convertListToProps(
-              type.members.filter(member =>
+              type.members.filter((member) =>
                 t.isTSPropertySignature(member),
               ) as t.TSPropertySignature[],
               state,
@@ -251,13 +251,13 @@ function convert(type: any, state: ConvertState, depth: number): PropType | null
     // string | number -> PropTypes.oneOfType([PropTypes.string, PropTypes.number])
     // 'foo' | 'bar' -> PropTypes.oneOf(['foo', 'bar'])
   } else if (t.isTSUnionType(type) || t.isTSIntersectionType(type)) {
-    const isAllLiterals = type.types.every(param => t.isTSLiteralType(param));
-    const containsAny = type.types.some(param => t.isTSAnyKeyword(param));
+    const isAllLiterals = type.types.every((param) => t.isTSLiteralType(param));
+    const containsAny = type.types.some((param) => t.isTSAnyKeyword(param));
     let label;
     let args;
 
     if (isAllLiterals) {
-      args = type.types.map(param => (param as t.TSLiteralType).literal);
+      args = type.types.map((param) => (param as t.TSLiteralType).literal);
       label = t.identifier('oneOf');
 
       if (state.options.maxSize) {
@@ -290,7 +290,7 @@ function convert(type: any, state: ConvertState, depth: number): PropType | null
       [
         t.objectExpression(
           convertListToProps(
-            type.body.body.filter(property =>
+            type.body.body.filter((property) =>
               t.isTSPropertySignature(property),
             ) as t.TSPropertySignature[],
             state,
@@ -323,7 +323,8 @@ function convert(type: any, state: ConvertState, depth: number): PropType | null
       }
 
       const property = properties.find(
-        prop => t.isTSPropertySignature(prop) && (prop.key as any).name === indexType.literal.value,
+        (prop) =>
+          t.isTSPropertySignature(prop) && (prop.key as any).name === indexType.literal.value,
       );
 
       return property ? convert(property.typeAnnotation!.typeAnnotation, state, depth) : null;
@@ -347,7 +348,8 @@ function mustBeOptional(type: t.Node): boolean {
   // Unions that contain undefined or null cannot be required by design
   if (t.isTSUnionType(type)) {
     return type.types.some(
-      value => t.isTSAnyKeyword(value) || t.isTSNullKeyword(value) || t.isTSUndefinedKeyword(value),
+      (value) =>
+        t.isTSAnyKeyword(value) || t.isTSNullKeyword(value) || t.isTSUndefinedKeyword(value),
     );
   }
 
@@ -357,7 +359,7 @@ function mustBeOptional(type: t.Node): boolean {
 function convertArray(types: any[], state: ConvertState, depth: number): PropType[] {
   const propTypes: PropType[] = [];
 
-  types.forEach(type => {
+  types.forEach((type) => {
     const prop = convert(type, state, depth);
 
     if (prop) {
@@ -378,7 +380,7 @@ function convertListToProps(
   let hasChildren = false;
   let size = 0;
 
-  properties.some(property => {
+  properties.some((property) => {
     if (state.options.maxSize && size === state.options.maxSize) {
       return true;
     }
@@ -404,7 +406,7 @@ function convertListToProps(
       );
 
       if (state.options.comments && property.leadingComments) {
-        property.leadingComments.forEach(comment => {
+        property.leadingComments.forEach((comment) => {
           addComment(objProperty as any, 'leading', comment.value);
         });
       }
@@ -442,7 +444,7 @@ export default function convertToPropTypes(
 ): t.ObjectProperty[] {
   const properties: t.ObjectProperty[] = [];
 
-  typeNames.forEach(typeName => {
+  typeNames.forEach((typeName) => {
     if (types[typeName]) {
       properties.push(...convertListToProps(types[typeName], state, defaultProps, 0));
     }

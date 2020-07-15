@@ -3,7 +3,7 @@
  * @license     https://opensource.org/licenses/MIT
  */
 
-/* eslint-disable prefer-destructuring */
+/* eslint-disable prefer-destructuring, @typescript-eslint/no-unsafe-assignment */
 
 import { declare } from '@babel/helper-plugin-utils';
 import { addDefault, addNamed } from '@babel/helper-module-imports';
@@ -108,7 +108,7 @@ export default declare((api: any, options: PluginOptions, root: string) => {
           // }
 
           // Find existing `react` and `prop-types` imports
-          programPath.node.body.forEach(node => {
+          programPath.node.body.forEach((node) => {
             if (!t.isImportDeclaration(node)) {
               return;
             }
@@ -187,7 +187,7 @@ export default declare((api: any, options: PluginOptions, root: string) => {
             },
 
             // `class Foo extends React.Component<Props> {}`
-            // @ts-ignore
+            // @ts-expect-error
             'ClassDeclaration|ClassExpression': (path: Path<t.ClassDeclaration>) => {
               const { node } = path;
               // prettier-ignore
@@ -261,7 +261,7 @@ export default declare((api: any, options: PluginOptions, root: string) => {
             TSEnumDeclaration({ node }: Path<t.TSEnumDeclaration>) {
               state.referenceTypes[node.id.name] = node;
 
-              node.members.forEach(member => {
+              node.members.forEach((member) => {
                 state.referenceTypes[
                   `${node.id.name}.${(member.id as t.Identifier).name}`
                 ] = member;
@@ -304,7 +304,7 @@ export default declare((api: any, options: PluginOptions, root: string) => {
               let props: PropTypeDeclaration | null = null;
 
               // const Foo: React.FC<Props> = () => {};
-              if (id && id.typeAnnotation && id.typeAnnotation.typeAnnotation) {
+              if (id?.typeAnnotation?.typeAnnotation) {
                 const type = id.typeAnnotation.typeAnnotation;
 
                 if (
@@ -317,12 +317,12 @@ export default declare((api: any, options: PluginOptions, root: string) => {
                     t.isIdentifier(type.typeName.left, {
                       name: state.reactImportedName,
                     }) &&
-                    REACT_FC_NAMES.some(name =>
+                    REACT_FC_NAMES.some((name) =>
                       t.isIdentifier((type.typeName as any).right, { name }),
                     )) ||
                     // FC, FunctionComponent
                     (!!state.reactImportedName &&
-                      REACT_FC_NAMES.some(name => t.isIdentifier(type.typeName, { name }))))
+                      REACT_FC_NAMES.some((name) => t.isIdentifier(type.typeName, { name }))))
                 ) {
                   props = type.typeParameters.params[0];
                 }
@@ -406,7 +406,7 @@ export default declare((api: any, options: PluginOptions, root: string) => {
           });
 
           // After we have extracted all our information, run all transformers
-          transformers.forEach(transformer => {
+          transformers.forEach((transformer) => {
             transformer();
           });
         },
@@ -420,7 +420,7 @@ export default declare((api: any, options: PluginOptions, root: string) => {
 
           // Remove the `prop-types` import of no components exist,
           // and be sure not to remove pre-existing imports.
-          path.get('body').forEach(bodyPath => {
+          path.get('body').forEach((bodyPath) => {
             if (
               state.propTypes.count === 0 &&
               t.isImportDeclaration(bodyPath.node) &&

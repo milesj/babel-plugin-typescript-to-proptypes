@@ -25,7 +25,7 @@ export default function upsertImport(
   let hasNamed = false;
 
   response.namedImports = imp.specifiers
-    .filter(spec => {
+    .filter((spec) => {
       if (t.isImportDefaultSpecifier(spec) || t.isImportNamespaceSpecifier(spec)) {
         response.defaultImport = spec.local.name;
         hasDefault = true;
@@ -35,7 +35,7 @@ export default function upsertImport(
 
       return true;
     })
-    .map(spec => {
+    .map((spec) => {
       const { name } = spec.local;
 
       if (name === checkForNamed) {

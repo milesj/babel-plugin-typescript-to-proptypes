@@ -10,7 +10,7 @@ function findStaticProperty(
   name: string,
 ): t.AssignmentExpression | undefined {
   const expr = path.getAllNextSiblings().find(
-    sibPath =>
+    (sibPath) =>
       t.isExpressionStatement(sibPath.node) &&
       t.isAssignmentExpression(sibPath.node.expression, { operator: '=' }) &&
       t.isMemberExpression(sibPath.node.expression.left) &&
@@ -21,8 +21,8 @@ function findStaticProperty(
       t.isIdentifier(sibPath.node.expression.left.property, { name }),
   );
 
-  // @ts-ignore
-  return expr && expr.node.expression;
+  // @ts-expect-error
+  return expr?.node.expression;
 }
 
 export default function addToFunctionOrVar(
@@ -43,7 +43,7 @@ export default function addToFunctionOrVar(
     t.isAssignmentExpression(defaultProps) &&
     t.isObjectExpression(defaultProps.right)
   ) {
-    defaultProps.right.properties.forEach(prop => {
+    defaultProps.right.properties.forEach((prop) => {
       if (t.isProperty(prop) && t.isIdentifier(prop.key)) {
         defaultPropsKeyList.push(prop.key.name);
       }
