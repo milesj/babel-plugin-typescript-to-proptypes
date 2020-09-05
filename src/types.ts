@@ -1,5 +1,5 @@
 import { types as t, traverse } from '@babel/core';
-import ts from 'typescript';
+import { ComponentNode } from 'typescript-to-proptypes';
 
 export type Path<N> = traverse.NodePath<N>;
 
@@ -19,7 +19,7 @@ export interface PluginOptions {
   maxDepth?: number;
   maxSize?: number;
   strict?: boolean;
-  typeCheck?: boolean | string;
+  typeCheck?: boolean | string | string[];
 }
 
 export interface ConvertState {
@@ -45,6 +45,5 @@ export interface ConvertState {
       | t.TSInterfaceDeclaration
       | t.TSTypeAliasDeclaration;
   };
-  typeChecker?: ts.TypeChecker;
-  typeProgram?: ts.Program;
+  props?: ComponentNode[];
 }

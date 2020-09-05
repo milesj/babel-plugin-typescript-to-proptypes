@@ -13,7 +13,7 @@ import { TSTypeParameterInstantiation } from '@babel/types';
 import addToClass from './addToClass';
 import addToFunctionOrVar from './addToFunctionOrVar';
 import extractTypeProperties from './extractTypeProperties';
-// import { loadProgram } from './typeChecker';
+import { getProps } from './typeChecker';
 import upsertImport from './upsertImport';
 import { Path, PluginOptions, ConvertState, PropTypeDeclaration } from './types';
 
@@ -102,10 +102,20 @@ export default declare((api: any, options: PluginOptions, root: string) => {
             return;
           }
 
-          // if (options.typeCheck) {
-          //   state.typeProgram = loadProgram(options.typeCheck, root);
-          //   state.typeChecker = state.typeProgram.getTypeChecker();
-          // }
+          if (options.typeCheck) {
+            // NOTE: Depending on how slow/fast `getProps` is, we could
+            // call it *all* the time and remove a lot of the duplicate
+            // code below that is parsing the props from TS
+
+            state.props = getProps({
+              filename: state.filePath,
+              pattern: options.typeCheck,
+              root,
+            });
+
+            // TODO: Take the props generated from running the typescript
+            // compiler, and inject them into the AST.
+          }
 
           // Find existing `react` and `prop-types` imports
           programPath.node.body.forEach((node) => {
