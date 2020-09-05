@@ -1,49 +1,55 @@
-import fs from 'fs';
 import path from 'path';
 import glob from 'fast-glob';
 import ts from 'typescript';
+import * as ttp from 'typescript-to-proptypes';
 
-let config: ts.CompilerOptions;
-let program: ts.Program;
+const TS_CONFIG = ttp.loadConfig(path.join(process.cwd(), 'tsconfig.json'));
 
-export function loadTSConfig(): ts.CompilerOptions {
-  if (config) {
-    return config;
-  }
+const PROGRAM_LOOKUP: Record<string, ts.Program> = {};
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  const { config: maybeConfig, error } = ts.readConfigFile(
-    path.join(process.cwd(), 'tsconfig.json'),
-    (filePath) => fs.readFileSync(filePath, 'utf8'),
-  );
-
-  if (error) {
-    throw error;
-  }
-
-  const { options, errors } = ts.parseJsonConfigFileContent(maybeConfig, ts.sys, process.cwd());
-
-  if (errors.length > 0) {
-    throw errors[0];
-  }
-
-  config = options;
-
-  return options;
+function getProgramCacheKey(pattern: string | string[]) {
+  return typeof pattern === 'string' ? pattern : pattern.join('//');
 }
 
-export function loadProgram(pattern: true | string, root: string): ts.Program {
-  if (program) {
-    return program;
+export function loadProgram(
+  pattern: true | string | string[],
+  root: string,
+): ts.Program {
+  const globSource = pattern === true ? './src/**/*.ts' : pattern;
+  const key = getProgramCacheKey(globSource);
+
+  if (key in PROGRAM_LOOKUP) {
+    return PROGRAM_LOOKUP[key];
   }
 
-  program = ts.createProgram(
-    glob.sync(pattern === true ? './src/**/*.ts' : pattern, {
+  PROGRAM_LOOKUP[key] = ttp.createProgram(
+    glob.sync(globSource, {
       absolute: true,
       cwd: root,
     }),
-    loadTSConfig(),
+    TS_CONFIG,
   );
 
-  return program;
+  return PROGRAM_LOOKUP[key];
+}
+
+interface GetPropsOptions {
+  filename: string;
+  pattern: true | string | string[];
+  root: string;
+}
+
+export function getProps({
+  filename,
+  pattern,
+  root,
+}: GetPropsOptions): ttp.ComponentNode[] {
+  const program = loadProgram(pattern, root);
+
+  // `parseFromProgram` retrieves the TS definitions for the
+  // props for every component in the file, and returns an
+  // object representation of the props for each component
+  return ttp.parseFromProgram(filename, program, {
+    checkDeclarations: true,
+  }).body;
 }
