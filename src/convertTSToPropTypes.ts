@@ -9,12 +9,20 @@ import {
   isReactTypeMatch,
   // wrapIsRequired,
 } from './propTypes';
+import {
+  getDefaultImportNameFromPragma,
+  getNodeTypesFromPragma,
+  getFunctionTypesFromPragma,
+  getElementTypesFromPragma,
+} from './jsx-pragma';
 import { ConvertState, PropType } from './types';
 
 export function convert(type: ts.Type, state: ConvertState, depth: number): PropType | null {
   const { reactImportedName, propTypes } = state;
   const propTypesImportedName = propTypes.defaultImport;
   const isMaxDepth = depth >= (state.options.maxDepth || 3);
+  const jsxPragma = state.options.jsxPragma;
+  const defaultImportName = getDefaultImportNameFromPragma(jsxPragma);
 
   // Remove wrapping parens
   // if (ts.isParenthesizedExpression(type)) {
@@ -82,34 +90,31 @@ export function convert(type: ts.Type, state: ConvertState, depth: number): Prop
 
     // node
     if (
-      isReactTypeMatch(name, 'ReactText', reactImportedName) ||
-      isReactTypeMatch(name, 'ReactNode', reactImportedName) ||
-      isReactTypeMatch(name, 'ReactType', reactImportedName)
+      getNodeTypesFromPragma(jsxPragma).some((element) =>
+        isReactTypeMatch(name, element, defaultImportName, reactImportedName),
+      )
     ) {
       return createMember(t.identifier('node'), propTypesImportedName);
 
       // function
     } else if (
-      isReactTypeMatch(name, 'ComponentType', reactImportedName) ||
-      isReactTypeMatch(name, 'ComponentClass', reactImportedName) ||
-      isReactTypeMatch(name, 'StatelessComponent', reactImportedName) ||
-      isReactTypeMatch(name, 'ElementType', reactImportedName)
+      getFunctionTypesFromPragma(jsxPragma).some((element) =>
+        isReactTypeMatch(name, element, defaultImportName, reactImportedName),
+      )
     ) {
       return createMember(t.identifier('func'), propTypesImportedName);
 
       // element
     } else if (
-      isReactTypeMatch(name, 'Element', 'JSX') ||
-      isReactTypeMatch(name, 'ReactElement', reactImportedName) ||
-      isReactTypeMatch(name, 'ComponentElement', reactImportedName) ||
-      isReactTypeMatch(name, 'FunctionComponentElement', reactImportedName) ||
-      isReactTypeMatch(name, 'DOMElement', reactImportedName) ||
-      isReactTypeMatch(name, 'SFCElement', reactImportedName)
+      isReactTypeMatch(name, 'Element', defaultImportName, 'JSX') ||
+      getElementTypesFromPragma(jsxPragma).some((element) =>
+        isReactTypeMatch(name, element, defaultImportName, reactImportedName),
+      )
     ) {
       return createMember(t.identifier('element'), propTypesImportedName);
 
       // oneOfType
-    } else if (isReactTypeMatch(name, 'Ref', reactImportedName)) {
+    } else if (isReactTypeMatch(name, 'Ref', defaultImportName, reactImportedName)) {
       return createCall(
         t.identifier('oneOfType'),
         [

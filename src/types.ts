@@ -11,6 +11,8 @@ export type PropTypeDeclaration = t.TSTypeReference | t.TSIntersectionType | t.T
 
 export type PropType = t.MemberExpression | t.CallExpression | t.Identifier | t.Literal;
 
+export type JsxPragma = 'react' | 'preact';
+
 export interface PluginOptions {
   comments?: boolean;
   customPropTypeSuffixes?: string[];
@@ -20,6 +22,7 @@ export interface PluginOptions {
   maxSize?: number;
   strict?: boolean;
   typeCheck?: boolean | string;
+  jsxPragma?: JsxPragma;
 }
 
 export interface ConvertState {

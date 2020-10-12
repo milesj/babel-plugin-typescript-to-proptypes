@@ -307,6 +307,20 @@ describe('babel-plugin-typescript-to-proptypes', () => {
         ),
       ).toMatchSnapshot();
     });
+
+    it('emits unsupported pragma error if jsxPragma is not in the supported list', () => {
+      expect(
+        () => transform(
+          path.join(__dirname, './fixtures/special/ts-preset.ts'),
+          {
+            presets: ['@babel/preset-typescript'],
+          },
+          {
+            jsxPragma: 'something-else' as any,
+          },
+        ),
+      ).toThrow(/Unsupported JSX Pragma/u);
+    });
   });
 
   // describe('typeCheck', () => {
