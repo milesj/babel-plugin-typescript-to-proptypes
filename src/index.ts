@@ -439,6 +439,7 @@ export default declare((api: any, options: PluginOptions, root: string) => {
             if (
               state.propTypes.count === 0 &&
               t.isImportDeclaration(bodyPath.node) &&
+              bodyPath.node.specifiers.length <= 1 &&
               bodyPath.node.source.value === 'prop-types'
             ) {
               bodyPath.remove();

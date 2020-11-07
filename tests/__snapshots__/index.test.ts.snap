@@ -1156,6 +1156,21 @@ export default class NoPropTypesImport extends React.Component<Props> {
 }"
 `;
 
+exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/no-remove-existing-prop-types-destructure.ts 1`] = `
+"import React from 'react';
+import PropTypes, { string } from 'prop-types';
+export default class NoRemoveExistingPropTypesDestructure extends React.Component {
+  static propTypes = {
+    name: string
+  };
+
+  render() {
+    return null;
+  }
+
+}"
+`;
+
 exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/no-remove-existing-prop-types-import.ts 1`] = `
 "import React from 'react';
 import PropTypes from 'prop-types';
@@ -1172,6 +1187,24 @@ export default class NoRemoveExistingPropTypesImport extends React.Component {
 `;
 
 exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/non-react-file.ts 1`] = `"export default function noop() {}"`;
+
+exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/prop-types-destructure.ts 1`] = `
+"import React from 'react';
+import PropTypes, { string } from 'prop-types';
+export interface Props {
+  name: string;
+}
+export default class PropTypesDestructure extends React.Component<Props> {
+  static propTypes = {
+    name: PropTypes.string.isRequired
+  };
+
+  render() {
+    return null;
+  }
+
+}"
+`;
 
 exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/prop-types-import.ts 1`] = `
 "import React from 'react';
