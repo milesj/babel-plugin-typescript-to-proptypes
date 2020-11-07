@@ -16,11 +16,16 @@ import extractTypeProperties from './extractTypeProperties';
 // import { loadProgram } from './typeChecker';
 import upsertImport from './upsertImport';
 import { Path, PluginOptions, ConvertState, PropTypeDeclaration } from './types';
+import {
+  checkForUnsupportedPragma,
+  getClassComponentNamesFromPragma,
+  getDefaultImportNameFromPragma,
+  getFcNamesFromPragma,
+} from './jsx-pragma';
 
 const BABEL_VERSION = 7;
 const MAX_DEPTH = 3;
 const MAX_SIZE = 25;
-const REACT_FC_NAMES = ['SFC', 'StatelessComponent', 'FC', 'FunctionComponent'];
 
 function isNotTS(name: string): boolean {
   return name.endsWith('.js') || name.endsWith('.jsx');
@@ -75,6 +80,7 @@ export default declare((api: any, options: PluginOptions, root: string) => {
           comments: false,
           customPropTypeSuffixes: [],
           forbidExtraProps: false,
+          jsxPragma: 'react',
           maxDepth: MAX_DEPTH,
           maxSize: MAX_SIZE,
           strict: true,
@@ -89,6 +95,7 @@ export default declare((api: any, options: PluginOptions, root: string) => {
         reactImportedName: '',
         referenceTypes: {},
       };
+      checkForUnsupportedPragma(((this as any).state as ConvertState).options.jsxPragma);
     },
 
     visitor: {
@@ -132,9 +139,9 @@ export default declare((api: any, options: PluginOptions, root: string) => {
               state.airbnbPropTypes.forbidImport = response.namedImport;
             }
 
-            if (node.source.value === 'react') {
+            if (node.source.value === state.options.jsxPragma) {
               const response = upsertImport(node, {
-                checkForDefault: 'React',
+                checkForDefault: getDefaultImportNameFromPragma(state.options.jsxPragma),
               });
 
               state.reactImportedName = response.defaultImport;
@@ -190,21 +197,22 @@ export default declare((api: any, options: PluginOptions, root: string) => {
             // @ts-expect-error
             'ClassDeclaration|ClassExpression': (path: Path<t.ClassDeclaration>) => {
               const { node } = path;
+
+              const classComponentNames = getClassComponentNamesFromPragma(state.options.jsxPragma);
+
               // prettier-ignore
               const valid = node.superTypeParameters && (
                 // React.Component, React.PureComponent
                 (
                   t.isMemberExpression(node.superClass) &&
                   t.isIdentifier(node.superClass.object, { name: state.reactImportedName }) && (
-                    t.isIdentifier(node.superClass.property, { name: 'Component' }) ||
-                    t.isIdentifier(node.superClass.property, { name: 'PureComponent' })
+                    classComponentNames.some(name => t.isIdentifier((node.superClass as t.MemberExpression).property, { name }))
                   )
                 ) ||
                 // Component, PureComponent
                 (
                   state.reactImportedName && (
-                    t.isIdentifier(node.superClass, { name: 'Component' }) ||
-                    t.isIdentifier(node.superClass, { name: 'PureComponent' })
+                    classComponentNames.some(name => t.isIdentifier(node.superClass, { name }))
                   )
                 )
               );
@@ -307,6 +315,7 @@ export default declare((api: any, options: PluginOptions, root: string) => {
               // const Foo: React.FC<Props> = () => {};
               if (id?.typeAnnotation?.typeAnnotation) {
                 const type = id.typeAnnotation.typeAnnotation;
+                const fcNames = getFcNamesFromPragma(state.options.jsxPragma);
 
                 if (
                   t.isTSTypeReference(type) &&
@@ -323,14 +332,14 @@ export default declare((api: any, options: PluginOptions, root: string) => {
                     t.isIdentifier(type.typeName.left, {
                       name: state.reactImportedName,
                     }) &&
-                    REACT_FC_NAMES.some((name) =>
+                    fcNames.some((name) =>
                       // @ts-expect-error TODO: revisit once babel types stabilize
                       t.isIdentifier((type.typeName as any).right, { name }),
                     )) ||
                     // FC, FunctionComponent
                     (!!state.reactImportedName &&
                       // @ts-expect-error TODO: revisit once babel types stabilize
-                      REACT_FC_NAMES.some((name) => t.isIdentifier(type.typeName, { name }))))
+                      fcNames.some((name) => t.isIdentifier(type.typeName, { name }))))
                 ) {
                   // @ts-expect-error TODO: revisit once babel types stabilize
                   props = type.typeParameters.params[0];

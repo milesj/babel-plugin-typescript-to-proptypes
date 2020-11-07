@@ -6,6 +6,12 @@ import { convertSymbolFromSource } from './convertTSToPropTypes';
 import extractEnumValues from './extractEnumValues';
 import getTypeName from './getTypeName';
 import {
+  getDefaultImportNameFromPragma,
+  getNodeTypesFromPragma,
+  getFunctionTypesFromPragma,
+  getElementTypesFromPragma,
+} from './jsx-pragma';
+import {
   createCall,
   createMember,
   hasCustomPropTypeSuffix,
@@ -22,6 +28,8 @@ function convert(type: any, state: ConvertState, depth: number): PropType | null
   const { reactImportedName, propTypes } = state;
   const propTypesImportedName = propTypes.defaultImport;
   const isMaxDepth = depth >= state.options.maxDepth;
+  const { jsxPragma } = state.options;
+  const defaultImportName = getDefaultImportNameFromPragma(jsxPragma);
 
   // Remove wrapping parens
   if (t.isTSParenthesizedType(type)) {
@@ -123,19 +131,17 @@ function convert(type: any, state: ConvertState, depth: number): PropType | null
 
       // node
     } else if (
-      isReactTypeMatch(name, 'ReactText', reactImportedName) ||
-      isReactTypeMatch(name, 'ReactNode', reactImportedName) ||
-      isReactTypeMatch(name, 'ReactType', reactImportedName) ||
-      isReactTypeMatch(name, 'ElementType', reactImportedName)
+      getNodeTypesFromPragma(jsxPragma).some((element) =>
+        isReactTypeMatch(name, element, defaultImportName, reactImportedName),
+      )
     ) {
       return createMember(t.identifier('node'), propTypesImportedName);
 
       // function
     } else if (
-      isReactTypeMatch(name, 'ComponentType', reactImportedName) ||
-      isReactTypeMatch(name, 'ComponentClass', reactImportedName) ||
-      isReactTypeMatch(name, 'StatelessComponent', reactImportedName) ||
-      isReactTypeMatch(name, 'ElementType', reactImportedName)
+      getFunctionTypesFromPragma(jsxPragma).some((element) =>
+        isReactTypeMatch(name, element, defaultImportName, reactImportedName),
+      )
     ) {
       return getInstalledPropTypesVersion() >= PROP_TYPES_15_7
         ? createMember(t.identifier('elementType'), propTypesImportedName)
@@ -143,17 +149,15 @@ function convert(type: any, state: ConvertState, depth: number): PropType | null
 
       // element
     } else if (
-      isReactTypeMatch(name, 'Element', 'JSX') ||
-      isReactTypeMatch(name, 'ReactElement', reactImportedName) ||
-      isReactTypeMatch(name, 'ComponentElement', reactImportedName) ||
-      isReactTypeMatch(name, 'FunctionComponentElement', reactImportedName) ||
-      isReactTypeMatch(name, 'DOMElement', reactImportedName) ||
-      isReactTypeMatch(name, 'SFCElement', reactImportedName)
+      isReactTypeMatch(name, 'Element', defaultImportName, 'JSX') ||
+      getElementTypesFromPragma(jsxPragma).some((element) =>
+        isReactTypeMatch(name, element, defaultImportName, reactImportedName),
+      )
     ) {
       return createMember(t.identifier('element'), propTypesImportedName);
 
       // oneOfType
-    } else if (isReactTypeMatch(name, 'Ref', reactImportedName)) {
+    } else if (isReactTypeMatch(name, 'Ref', defaultImportName, reactImportedName)) {
       return createCall(
         t.identifier('oneOfType'),
         [

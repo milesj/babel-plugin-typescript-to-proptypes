@@ -5,8 +5,17 @@ export function hasCustomPropTypeSuffix(name: string, suffixes?: string[]): bool
   return !!suffixes && suffixes.some((suffix) => name.endsWith(suffix));
 }
 
-export function isReactTypeMatch(name: string, type: string, reactImportedName: string): boolean {
-  return name === type || name === `React.${type}` || name === `${reactImportedName}.${type}`;
+export function isReactTypeMatch(
+  name: string,
+  type: string,
+  defaultImportName: string,
+  reactImportedName: string,
+): boolean {
+  return (
+    name === type ||
+    name === `${defaultImportName}.${type}` ||
+    name === `${reactImportedName}.${type}`
+  );
 }
 
 export function wrapIsRequired(propType: PropType, optional?: boolean | null): PropType {
