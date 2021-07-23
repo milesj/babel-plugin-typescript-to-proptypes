@@ -121,6 +121,13 @@ function convert(type: any, state: ConvertState, depth: number): PropType | null
 
       return createCall(t.identifier('arrayOf'), args, propTypesImportedName);
 
+      // Record<string, string> -> PropTypes.objectOf(PropTypes.string)
+    } else if (name === 'Record') {
+      const result = convert(type.typeParameters?.params[1], state, depth);
+      if (result) {
+        return createCall(t.identifier('objectOf'), [result], propTypesImportedName);
+      }
+
       // node
     } else if (
       isReactTypeMatch(name, 'ReactText', reactImportedName) ||

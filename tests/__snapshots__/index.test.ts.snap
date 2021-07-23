@@ -1644,6 +1644,26 @@ export default class TypeReact extends React.Component<Props> {
 }"
 `;
 
+exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/type-record.ts 1`] = `
+"import _pt from 'prop-types';
+import React from 'react';
+export interface Props {
+  errors?: Record<string, boolean>;
+  attributes: Record<string, string>;
+}
+export default class TypeRecord extends React.Component<Props> {
+  static propTypes = {
+    errors: _pt.objectOf(_pt.bool),
+    attributes: _pt.objectOf(_pt.string).isRequired
+  };
+
+  render() {
+    return null;
+  }
+
+}"
+`;
+
 exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/type-unions.ts 1`] = `
 "import _pt from 'prop-types';
 import React from 'react';
