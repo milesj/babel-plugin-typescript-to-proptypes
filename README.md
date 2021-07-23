@@ -300,6 +300,49 @@ class Example extends React.Component {
 }
 ```
 
+#### `mapUnknownReferenceTypesToAny` (boolean)
+
+By default unknown reference types are omitted from the generated prop types.
+Sometimes though it might be necessary to keep the prop in the generated prop types.
+In this case the prop type would be `any`.
+
+Defaults to `false`.
+
+```tsx
+module.exports = {
+  plugins: [['babel-plugin-typescript-to-proptypes', { mapUnknownReferenceTypesToAny: true }]],
+};
+```
+
+```tsx
+// Before
+import React from 'react';
+
+interface Props<T> {
+  as?: T;
+}
+
+class Example<T> extends React.Component<Props<T>> {
+  render() {
+    return <div />;
+  }
+}
+
+// After
+import React from 'react';
+import PropTypes from 'prop-types';
+
+class Example extends React.Component {
+  static propTypes = {
+    as: PropTypes.any,
+  };
+
+  render() {
+    return <div />;
+  }
+}
+```
+
 #### `maxDepth` (number)
 
 Maximum depth to convert while handling recursive or deeply nested shapes. Defaults to `3`.

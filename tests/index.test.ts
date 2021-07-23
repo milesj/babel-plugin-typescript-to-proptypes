@@ -247,6 +247,20 @@ describe('babel-plugin-typescript-to-proptypes', () => {
     });
   });
 
+  describe('mapUnknownReferenceTypesToAny', () => {
+    it('supports custom prop type suffixes', () => {
+      expect(
+        transform(
+          path.join(__dirname, './fixtures/special/map-unknown-reference-types-to-any.ts'),
+          {},
+          {
+            mapUnknownReferenceTypesToAny: true,
+          },
+        ),
+      ).toMatchSnapshot();
+    });
+  });
+
   describe('maxDepth', () => {
     it('stops converting once max depth is met', () => {
       expect(

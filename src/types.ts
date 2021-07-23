@@ -16,6 +16,7 @@ export interface PluginOptions {
   customPropTypeSuffixes?: string[];
   forbidExtraProps?: boolean;
   implicitChildren?: boolean;
+  mapUnknownReferenceTypesToAny?: boolean;
   maxDepth?: number;
   maxSize?: number;
   strict?: boolean;

@@ -191,8 +191,10 @@ function convert(type: any, state: ConvertState, depth: number): PropType | null
       return convertSymbolFromSource(state.filePath, name, state);
     }
 
-    // Nothing found, so just omit
-    return null;
+    // Nothing found. If explicitly requested, return a prop type with "any", otherwise omit the prop.
+    return state.options.mapUnknownReferenceTypesToAny
+      ? createMember(t.identifier('any'), propTypesImportedName)
+      : null;
 
     // [] -> PropTypes.arrayOf(), PropTypes.array
   } else if (t.isTSArrayType(type)) {
