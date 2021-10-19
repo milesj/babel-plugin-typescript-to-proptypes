@@ -15,16 +15,14 @@
   ],
   "scripts": {
     "build": "beemo typescript",
-    "coverage": "yarn run jest --coverage",
+    "coverage": "yarn run test --coverage",
+    "check": "yarn run type && yarn run test && yarn run lint",
     "lint": "beemo eslint",
-    "jest": "beemo jest",
+    "test": "beemo jest",
     "format": "beemo prettier",
     "release": "npx np --yolo --no-yarn",
     "type": "beemo typescript --noEmit",
-    "prerelease": "yarn test && yarn run build",
-    "pretest": "yarn run type",
-    "test": "yarn run jest",
-    "posttest": "yarn run lint"
+    "prerelease": "yarn test && yarn run build"
   },
   "engines": {
     "node": ">=10.10.0"
