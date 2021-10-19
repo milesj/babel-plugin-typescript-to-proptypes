@@ -1,5 +1,5 @@
 import ts from 'typescript';
-import { traverse,types as t } from '@babel/core';
+import { traverse, types as t } from '@babel/core';
 
 export type Path<N> = traverse.NodePath<N>;
 
@@ -10,36 +10,36 @@ export type PropTypeDeclaration = t.TSIntersectionType | t.TSTypeReference | t.T
 export type PropType = t.CallExpression | t.Identifier | t.Literal | t.MemberExpression;
 
 export interface PluginOptions {
-  comments?: boolean;
-  customPropTypeSuffixes?: string[];
-  forbidExtraProps?: boolean;
-  implicitChildren?: boolean;
-  maxDepth?: number;
-  maxSize?: number;
-  strict?: boolean;
-  typeCheck?: boolean | string;
+	comments?: boolean;
+	customPropTypeSuffixes?: string[];
+	forbidExtraProps?: boolean;
+	implicitChildren?: boolean;
+	maxDepth?: number;
+	maxSize?: number;
+	strict?: boolean;
+	typeCheck?: boolean | string;
 }
 
 export interface ConvertState {
-  airbnbPropTypes: {
-    count: number;
-    forbidImport: string;
-    hasImport: boolean;
-    namedImports: string[];
-  };
-  componentTypes: TypePropertyMap;
-  filePath: string;
-  options: Required<PluginOptions>;
-  propTypes: {
-    count: number;
-    defaultImport: string;
-    hasImport: boolean;
-  };
-  reactImportedName: string;
-  referenceTypes: Record<string, | t.TSEnumDeclaration
-      | t.TSEnumMember
-      | t.TSInterfaceDeclaration
-      | t.TSTypeAliasDeclaration>;
-  typeChecker?: ts.TypeChecker;
-  typeProgram?: ts.Program;
+	airbnbPropTypes: {
+		count: number;
+		forbidImport: string;
+		hasImport: boolean;
+		namedImports: string[];
+	};
+	componentTypes: TypePropertyMap;
+	filePath: string;
+	options: Required<PluginOptions>;
+	propTypes: {
+		count: number;
+		defaultImport: string;
+		hasImport: boolean;
+	};
+	reactImportedName: string;
+	referenceTypes: Record<
+		string,
+		t.TSEnumDeclaration | t.TSEnumMember | t.TSInterfaceDeclaration | t.TSTypeAliasDeclaration
+	>;
+	typeChecker?: ts.TypeChecker;
+	typeProgram?: ts.Program;
 }

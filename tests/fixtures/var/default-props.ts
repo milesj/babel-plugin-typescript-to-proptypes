@@ -1,13 +1,13 @@
 import React from 'react';
 
 interface Props {
-  name: string;
+	name: string;
 }
 
 const VarDefaultProps = (props: Props) => null;
 
 VarDefaultProps.defaultProps = {
-  name: 'Foo',
+	name: 'Foo',
 };
 
 export default VarDefaultProps;

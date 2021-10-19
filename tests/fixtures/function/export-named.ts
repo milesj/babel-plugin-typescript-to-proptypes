@@ -1,9 +1,9 @@
 import React from 'react';
 
 interface Props {
-  name: string;
+	name: string;
 }
 
 export function FuncExportNamed(props: Props) {
-  return null;
+	return null;
 }

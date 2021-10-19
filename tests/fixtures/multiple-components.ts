@@ -1,25 +1,25 @@
 import React from 'react';
 
 interface AProps {
-  foo: string;
+	foo: string;
 }
 
 class MultipleComponentsClass extends React.Component<AProps> {
-  render() {
-    return null;
-  }
+	render() {
+		return null;
+	}
 }
 
 interface BProps {
-  bar: number;
+	bar: number;
 }
 
 function MultipleComponentsFunc(props: BProps) {
-  return null;
+	return null;
 }
 
 interface CProps {
-  bar: number;
+	bar: number;
 }
 
 const MultipleComponentsVar: React.SFC<CProps> = () => null;

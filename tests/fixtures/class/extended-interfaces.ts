@@ -1,19 +1,19 @@
 import React from 'react';
 
 export interface AProps {
-  a: number;
+	a: number;
 }
 
 export interface BProps {
-  b: boolean;
+	b: boolean;
 }
 
 export interface Props extends AProps, BProps {
-  name: string;
+	name: string;
 }
 
 export default class ClassExtendedInterfaces extends React.Component<Props> {
-  render() {
-    return null;
-  }
+	render() {
+		return null;
+	}
 }

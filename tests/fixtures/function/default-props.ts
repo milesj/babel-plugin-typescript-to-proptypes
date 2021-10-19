@@ -1,14 +1,14 @@
 import React from 'react';
 
 interface Props {
-  name: string;
+	name: string;
 }
 
 export default function FuncDefaultProps(props: Props) {
-  return null;
+	return null;
 }
 
 // @ts-ignore
 FuncDefaultProps.defaultProps = {
-  name: 'Foo',
+	name: 'Foo',
 };

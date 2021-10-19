@@ -1,6 +1,6 @@
 export default {
-  compilerOptions: {
-    noImplicitOverride: false,
-  },
-  exclude: ['./tests/fixtures/**/*'],
+	compilerOptions: {
+		noImplicitOverride: false,
+	},
+	exclude: ['./tests/fixtures/**/*'],
 };

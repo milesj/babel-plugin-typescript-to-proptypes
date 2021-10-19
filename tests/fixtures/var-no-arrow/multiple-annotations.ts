@@ -1,15 +1,15 @@
 import React from 'react';
 
 export interface AProps {
-  a: number;
+	a: number;
 }
 
 export interface BProps {
-  b: boolean;
+	b: boolean;
 }
 
 const VarMultipleAnnotations = function (props: AProps & BProps) {
-  return null;
+	return null;
 };
 
 export default VarMultipleAnnotations;

@@ -1,7 +1,7 @@
 import React from 'react';
 
 interface Props {
-  name: string;
+	name: string;
 }
 
 const SFC: React.SFC<Props> = () => null;

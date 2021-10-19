@@ -1,7 +1,7 @@
 import React from 'react';
 
 const VarNoAnnotations = function () {
-  return null;
+	return null;
 };
 
 export default VarNoAnnotations;

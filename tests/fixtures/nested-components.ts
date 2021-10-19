@@ -1,19 +1,19 @@
 import React from 'react';
 
 interface AProps {
-  foo: string;
+	foo: string;
 }
 
 interface BProps {
-  bar: number;
+	bar: number;
 }
 
 class NestedComponentsClass extends React.Component<AProps> {
-  render() {
-    function NestedComponentsFunc(props: BProps) {
-      return null;
-    }
+	render() {
+		function NestedComponentsFunc(props: BProps) {
+			return null;
+		}
 
-    return null;
-  }
+		return null;
+	}
 }

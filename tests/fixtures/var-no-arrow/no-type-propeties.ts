@@ -3,7 +3,7 @@ import React from 'react';
 interface Props {}
 
 const VarNoTypeProperties = function (props: Props) {
-  return null;
+	return null;
 };
 
 export default VarNoTypeProperties;

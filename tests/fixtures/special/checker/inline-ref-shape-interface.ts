@@ -1,16 +1,16 @@
 import React from 'react';
 
 interface Location {
-  lat?: number;
-  long: number;
+	lat?: number;
+	long: number;
 }
 
 interface Props {
-  location: Location;
+	location: Location;
 }
 
 export default class CheckerInlineRefShapeInterface extends React.Component<Props> {
-  render() {
-    return null;
-  }
+	render() {
+		return null;
+	}
 }

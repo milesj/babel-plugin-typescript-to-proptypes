@@ -1,17 +1,17 @@
 import React from 'react';
 
 export type AProps = {
-  a: number;
+	a: number;
 };
 
 export type BProps = {
-  b: boolean;
+	b: boolean;
 };
 
 export type Props = AProps &
-  BProps & {
-    name: string;
-  };
+	BProps & {
+		name: string;
+	};
 
 const VarExtendedTypeAliases = (props: Props) => null;
 

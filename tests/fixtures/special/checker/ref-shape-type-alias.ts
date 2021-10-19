@@ -2,11 +2,11 @@ import React from 'react';
 import { LocationAlias } from './types';
 
 interface Props {
-  location: LocationAlias;
+	location: LocationAlias;
 }
 
 export default class CheckerInlineRefShapeTypeAlias extends React.Component<Props> {
-  render() {
-    return null;
-  }
+	render() {
+		return null;
+	}
 }

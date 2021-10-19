@@ -2,14 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 interface Props {
-  name: string;
+	name: string;
 }
 
 export default function FuncMergeWithExistingPropTypes(props: Props) {
-  return null;
+	return null;
 }
 
 // @ts-ignore
 FuncMergeWithExistingPropTypes.propTypes = {
-  custom: PropTypes.number.isRequired,
+	custom: PropTypes.number.isRequired,
 };

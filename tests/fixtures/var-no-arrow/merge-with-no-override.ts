@@ -2,18 +2,18 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 interface Props {
-  name: string;
+	name: string;
 }
 
 const CustomShape = PropTypes.string;
 
 const VarMergeWithNoOverride = function (props: Props) {
-  return null;
+	return null;
 };
 
 // @ts-ignore
 VarMergeWithNoOverride.propTypes = {
-  name: CustomShape.isRequired,
+	name: CustomShape.isRequired,
 };
 
 export default VarMergeWithNoOverride;
