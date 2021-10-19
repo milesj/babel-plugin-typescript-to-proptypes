@@ -2819,22 +2819,24 @@ var _react = _interopRequireDefault(require('react'));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 interface Props {
   name: string;
 }
 
 class ESTarget extends _react.default.Component<Props> {
-  static propTypes = {
-    name: _propTypes.default.string.isRequired
-  };
-
   render() {
     return null;
   }
 
 }
 
-exports.default = ESTarget;"
+exports.default = ESTarget;
+
+_defineProperty(ESTarget, 'propTypes', {
+  name: _propTypes.default.string.isRequired
+});"
 `;
 
 exports[`babel-plugin-typescript-to-proptypes works correctly when transpiling to CJS modules 2`] = `
@@ -2854,35 +2856,37 @@ interface Props {
 }
 
 class ESTarget extends _react.default.Component<Props> {
-  static propTypes = {
-    name: _propTypes.default.string.isRequired
-  };
-
   render() {
     return null;
   }
 
 }
 
-exports.default = ESTarget;"
+exports.default = ESTarget;
+ESTarget.propTypes = {
+  name: _propTypes.default.string.isRequired
+};"
 `;
 
 exports[`babel-plugin-typescript-to-proptypes works correctly when transpiling to ESM modules 1`] = `
 "import _pt from 'prop-types';
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 import React from 'react';
 interface Props {
   name: string;
 }
 export default class ESTarget extends React.Component<Props> {
-  static propTypes = {
-    name: _pt.string.isRequired
-  };
-
   render() {
     return null;
   }
 
-}"
+}
+
+_defineProperty(ESTarget, 'propTypes', {
+  name: _pt.string.isRequired
+});"
 `;
 
 exports[`babel-plugin-typescript-to-proptypes works correctly when transpiling to ESM modules 2`] = `
@@ -2892,15 +2896,14 @@ interface Props {
   name: string;
 }
 export default class ESTarget extends React.Component<Props> {
-  static propTypes = {
-    name: _pt.string.isRequired
-  };
-
   render() {
     return null;
   }
 
-}"
+}
+ESTarget.propTypes = {
+  name: _pt.string.isRequired
+};"
 `;
 
 exports[`babel-plugin-typescript-to-proptypes works correctly when using ALL the things 1`] = `
