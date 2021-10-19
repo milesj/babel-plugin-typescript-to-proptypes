@@ -234,6 +234,11 @@ function convert(
 			return createMember(t.identifier('object'), propTypesImportedName);
 		}
 
+		// func
+		if (type.members.some((member) => t.isTSCallSignatureDeclaration(member))) {
+			return createMember(t.identifier('func'), propTypesImportedName);
+		}
+
 		// objectOf
 		if (type.members.length === 1 && t.isTSIndexSignature(type.members[0])) {
 			const index = type.members[0];
@@ -307,10 +312,17 @@ function convert(
 
 		// interface Foo {}
 	} else if (t.isTSInterfaceDeclaration(type)) {
+		// object
 		if (type.body.body.length === 0 || isMaxDepth) {
 			return createMember(t.identifier('object'), propTypesImportedName);
 		}
 
+		// func
+		if (type.body.body.some((member) => t.isTSCallSignatureDeclaration(member))) {
+			return createMember(t.identifier('func'), propTypesImportedName);
+		}
+
+		// shape
 		return createCall(
 			t.identifier('shape'),
 			[

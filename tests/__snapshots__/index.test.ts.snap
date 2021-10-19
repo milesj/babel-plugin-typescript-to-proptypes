@@ -1318,6 +1318,32 @@ export default class TypeBuiltins extends React.Component<Props> {
 }"
 `;
 
+exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/type-call-sigs.ts 1`] = `
+"import _pt from 'prop-types';
+import React from 'react';
+type SigAlias = {
+  (): string;
+};
+interface SigInt {
+  (): number;
+}
+interface Props {
+  typeAlias: SigAlias;
+  interface: SigInt;
+}
+export default class CallSigs extends React.Component<Props> {
+  static propTypes = {
+    typeAlias: _pt.func.isRequired,
+    interface: _pt.func.isRequired
+  };
+
+  render() {
+    return null;
+  }
+
+}"
+`;
+
 exports[`babel-plugin-typescript-to-proptypes transforms ./fixtures/type-complex.ts 1`] = `
 "import _pt from 'prop-types';
 import React from 'react';

@@ -1,4 +1,3 @@
-import ts from 'typescript';
 import { types as t } from '@babel/core';
 import type { NodePath } from '@babel/traverse';
 
