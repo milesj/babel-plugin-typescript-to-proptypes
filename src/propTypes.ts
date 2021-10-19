@@ -41,7 +41,7 @@ export function createPropTypesObject(
 }
 
 export function mergePropTypes(
-	expr: t.Node | undefined,
+	expr: t.Node | null | undefined,
 	propTypes: t.ObjectProperty[],
 	state: ConvertState,
 	wrapForbid: boolean = true,

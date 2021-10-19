@@ -4,7 +4,11 @@ import { transformFileSync } from '@babel/core';
 import plugin from '../src';
 import { PluginOptions } from '../src/types';
 
-function transform(filePath: string, options: any = {}, pluginOptions: PluginOptions = {}): string {
+function transform(
+	filePath: string,
+	options: Record<string, unknown> = {},
+	pluginOptions: PluginOptions = {},
+): string {
 	return (
 		transformFileSync(filePath, {
 			babelrc: false,
@@ -13,11 +17,10 @@ function transform(filePath: string, options: any = {}, pluginOptions: PluginOpt
 			filename: filePath,
 			plugins: [[plugin, pluginOptions]],
 			generatorOpts: {
-				quotes: 'single',
 				jsescOption: { quotes: 'single' },
 			},
 			...options,
-		}).code ?? ''
+		})?.code ?? ''
 	);
 }
 

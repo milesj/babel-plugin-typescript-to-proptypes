@@ -351,7 +351,7 @@ function convert(
 			const property = properties.find(
 				(prop) =>
 					t.isTSPropertySignature(prop) &&
-					(prop.key as t.Identifier).name === indexType.literal.value,
+					(prop.key as t.Identifier).name === (indexType.literal as t.StringLiteral).value,
 			);
 
 			return property ? convert(property.typeAnnotation!.typeAnnotation, state, depth) : null;
@@ -435,7 +435,6 @@ function convertListToProps(
 
 			if (state.options.comments && property.leadingComments) {
 				property.leadingComments.forEach((comment) => {
-					// @ts-expect-error Weird types
 					addComment(objProperty, 'leading', comment.value);
 				});
 			}

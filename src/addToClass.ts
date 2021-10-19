@@ -13,7 +13,7 @@ function findStaticProperty(
 			t.isClassProperty(property, { static: true }) &&
 			t.isIdentifier(property.key, { name }) &&
 			(t.isObjectExpression(property.value) || t.isCallExpression(property.value)),
-	);
+	) as t.ClassMethod | t.ClassProperty;
 }
 
 export function addToClass(node: t.ClassDeclaration, state: ConvertState) {
@@ -47,14 +47,15 @@ export function addToClass(node: t.ClassDeclaration, state: ConvertState) {
 	const propTypes = findStaticProperty(node, 'propTypes');
 
 	if (propTypes) {
-		propTypes.value = mergePropTypes(propTypes.value, propTypesList, state);
+		if (t.isClassProperty(propTypes)) {
+			propTypes.value = mergePropTypes(propTypes.value, propTypesList, state);
+		}
 	} else {
 		const staticProperty = t.classProperty(
 			t.identifier('propTypes'),
 			createPropTypesObject(propTypesList, state),
 		);
 
-		// @ts-expect-error Allow setting unknown
 		staticProperty.static = true;
 
 		node.body.body.unshift(staticProperty);

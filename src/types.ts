@@ -1,7 +1,8 @@
 import ts from 'typescript';
-import { traverse, types as t } from '@babel/core';
+import { types as t } from '@babel/core';
+import type { NodePath } from '@babel/traverse';
 
-export type Path<N> = traverse.NodePath<N>;
+export type Path<N> = NodePath<N>;
 
 export type TypePropertyMap = Record<string, t.TSPropertySignature[]>;
 
