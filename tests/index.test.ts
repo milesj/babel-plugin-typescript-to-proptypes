@@ -16,6 +16,7 @@ function transform(
 			configFile: false,
 			filename: filePath,
 			plugins: [[plugin, pluginOptions]],
+			presets: [],
 			generatorOpts: {
 				jsescOption: { quotes: 'single' },
 			},
@@ -99,16 +100,14 @@ describe('babel-plugin-typescript-to-proptypes', () => {
 	it('works correctly when transpiling to ESM modules', () => {
 		expect(
 			transform(path.join(__dirname, './fixtures/special/es-target.ts'), {
-				presets: [['@babel/preset-env', { targets: { node: 'current' }, modules: false }]],
+				presets: [['@babel/preset-env', { targets: { node: 12 }, modules: false }]],
 			}),
 		).toMatchSnapshot();
 
 		// loose
 		expect(
 			transform(path.join(__dirname, './fixtures/special/es-target.ts'), {
-				presets: [
-					['@babel/preset-env', { targets: { node: 'current' }, modules: false, loose: true }],
-				],
+				presets: [['@babel/preset-env', { targets: { node: 12 }, modules: false, loose: true }]],
 			}),
 		).toMatchSnapshot();
 	});
@@ -116,7 +115,7 @@ describe('babel-plugin-typescript-to-proptypes', () => {
 	it('works correctly when transpiling to CJS modules', () => {
 		expect(
 			transform(path.join(__dirname, './fixtures/special/es-target.ts'), {
-				presets: [['@babel/preset-env', { targets: { node: 'current' }, modules: 'commonjs' }]],
+				presets: [['@babel/preset-env', { targets: { node: 12 }, modules: 'commonjs' }]],
 			}),
 		).toMatchSnapshot();
 
@@ -124,7 +123,7 @@ describe('babel-plugin-typescript-to-proptypes', () => {
 		expect(
 			transform(path.join(__dirname, './fixtures/special/es-target.ts'), {
 				presets: [
-					['@babel/preset-env', { targets: { node: 'current' }, modules: 'commonjs', loose: true }],
+					['@babel/preset-env', { targets: { node: 12 }, modules: 'commonjs', loose: true }],
 				],
 			}),
 		).toMatchSnapshot();
