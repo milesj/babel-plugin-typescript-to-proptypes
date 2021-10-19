@@ -231,7 +231,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/helper-module-imports@npm:^7.10.4, @babel/helper-module-imports@npm:^7.12.13, @babel/helper-module-imports@npm:^7.12.5, @babel/helper-module-imports@npm:^7.14.5, @babel/helper-module-imports@npm:^7.15.4":
+"@babel/helper-module-imports@npm:^7.10.4, @babel/helper-module-imports@npm:^7.12.13, @babel/helper-module-imports@npm:^7.14.5, @babel/helper-module-imports@npm:^7.15.4":
   version: 7.15.4
   resolution: "@babel/helper-module-imports@npm:7.15.4"
   dependencies:
@@ -405,7 +405,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/plugin-proposal-class-properties@npm:^7.12.1, @babel/plugin-proposal-class-properties@npm:^7.14.5":
+"@babel/plugin-proposal-class-properties@npm:^7.14.5":
   version: 7.14.5
   resolution: "@babel/plugin-proposal-class-properties@npm:7.14.5"
   dependencies:
@@ -825,7 +825,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/plugin-syntax-typescript@npm:^7.12.1, @babel/plugin-syntax-typescript@npm:^7.14.5, @babel/plugin-syntax-typescript@npm:^7.7.2":
+"@babel/plugin-syntax-typescript@npm:^7.14.5, @babel/plugin-syntax-typescript@npm:^7.7.2":
   version: 7.14.5
   resolution: "@babel/plugin-syntax-typescript@npm:7.14.5"
   dependencies:
@@ -1194,7 +1194,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/plugin-transform-runtime@npm:^7.12.1, @babel/plugin-transform-runtime@npm:^7.15.8":
+"@babel/plugin-transform-runtime@npm:^7.15.8":
   version: 7.15.8
   resolution: "@babel/plugin-transform-runtime@npm:7.15.8"
   dependencies:
@@ -1302,7 +1302,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/preset-env@npm:^7.12.1, @babel/preset-env@npm:^7.15.8":
+"@babel/preset-env@npm:^7.15.8":
   version: 7.15.8
   resolution: "@babel/preset-env@npm:7.15.8"
   dependencies:
@@ -1413,7 +1413,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/preset-react@npm:^7.12.5, @babel/preset-react@npm:^7.14.5":
+"@babel/preset-react@npm:^7.14.5":
   version: 7.14.5
   resolution: "@babel/preset-react@npm:7.14.5"
   dependencies:
@@ -1429,7 +1429,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/preset-typescript@npm:^7.12.1, @babel/preset-typescript@npm:^7.15.0":
+"@babel/preset-typescript@npm:^7.15.0":
   version: 7.15.0
   resolution: "@babel/preset-typescript@npm:7.15.0"
   dependencies:
@@ -1489,7 +1489,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/types@npm:^7.0.0, @babel/types@npm:^7.12.6, @babel/types@npm:^7.14.9, @babel/types@npm:^7.15.4, @babel/types@npm:^7.15.6, @babel/types@npm:^7.3.0, @babel/types@npm:^7.3.3, @babel/types@npm:^7.4.4, @babel/types@npm:^7.8.3":
+"@babel/types@npm:^7.0.0, @babel/types@npm:^7.14.9, @babel/types@npm:^7.15.4, @babel/types@npm:^7.15.6, @babel/types@npm:^7.3.0, @babel/types@npm:^7.3.3, @babel/types@npm:^7.4.4, @babel/types@npm:^7.8.3":
   version: 7.15.6
   resolution: "@babel/types@npm:7.15.6"
   dependencies:
@@ -2595,7 +2595,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^14.14.41, @types/node@npm:^14.14.6":
+"@types/node@npm:^14.14.41, @types/node@npm:^14.17.27":
   version: 14.17.27
   resolution: "@types/node@npm:14.17.27"
   checksum: 4f7eeaa329f4b2b9ff4bb0bb4582ad92e328a4e66f62d5b96ac4e3b51210ed092bb56726c30643beb860f6df633a29e08ed94adad2d573c85b4794d0bf0bbc06
@@ -2616,14 +2616,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/prop-types@npm:*, @types/prop-types@npm:^15.7.3":
+"@types/prop-types@npm:*, @types/prop-types@npm:^15.7.4":
   version: 15.7.4
   resolution: "@types/prop-types@npm:15.7.4"
   checksum: ef6e1899e59b876c273811b1bd845022fc66d5a3d11cb38a25b6c566b30514ae38fe20a40f67622f362a4f4f7f9224e22d8da101cff3d6e97e11d7b4c307cfc1
   languageName: node
   linkType: hard
 
-"@types/react@npm:^16.9.56":
+"@types/react@npm:^16.14.17":
   version: 16.14.17
   resolution: "@types/react@npm:16.14.17"
   dependencies:
@@ -3235,30 +3235,30 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "babel-plugin-typescript-to-proptypes@workspace:."
   dependencies:
-    "@babel/core": ^7.12.3
-    "@babel/helper-module-imports": ^7.12.5
-    "@babel/plugin-proposal-class-properties": ^7.12.1
-    "@babel/plugin-syntax-typescript": ^7.12.1
-    "@babel/plugin-transform-runtime": ^7.12.1
-    "@babel/preset-env": ^7.12.1
-    "@babel/preset-react": ^7.12.5
-    "@babel/preset-typescript": ^7.12.1
-    "@babel/types": ^7.12.6
+    "@babel/core": ^7.15.8
+    "@babel/helper-module-imports": ^7.15.4
+    "@babel/plugin-proposal-class-properties": ^7.14.5
+    "@babel/plugin-syntax-typescript": ^7.14.5
+    "@babel/plugin-transform-runtime": ^7.15.8
+    "@babel/preset-env": ^7.15.8
+    "@babel/preset-react": ^7.14.5
+    "@babel/preset-typescript": ^7.15.0
+    "@babel/types": ^7.15.6
     "@beemo/cli": ^2.0.3
     "@beemo/core": ^2.1.1
     "@beemo/dev": ^1.6.3
     "@types/babel__traverse": ^7.14.2
-    "@types/node": ^14.14.6
-    "@types/prop-types": ^15.7.3
-    "@types/react": ^16.9.56
-    conventional-changelog-beemo: ^2.0.0
-    fast-glob: ^3.2.4
+    "@types/node": ^14.17.27
+    "@types/prop-types": ^15.7.4
+    "@types/react": ^16.14.17
+    conventional-changelog-beemo: ^2.1.0
+    fast-glob: ^3.2.7
     packemon: ^1.6.0
     prop-types: ^15.7.2
-    typescript: ^4.0.5
+    typescript: ^4.4.4
   peerDependencies:
     "@babel/core": ^7.0.0
-    typescript: ^3.0.0 || ^4.0.0
+    typescript: ^4.0.0
   languageName: unknown
   linkType: soft
 
@@ -3765,7 +3765,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"conventional-changelog-beemo@npm:^2.0.0, conventional-changelog-beemo@npm:^2.1.0":
+"conventional-changelog-beemo@npm:^2.1.0":
   version: 2.1.0
   resolution: "conventional-changelog-beemo@npm:2.1.0"
   checksum: 76df24df558c41b71eaa539237bf12fa0341693949714d8d859b556184c7d3b872d924176769c7584e205ebc115b2ec9d738b4601fe436d1856b8569281c252f
@@ -4704,7 +4704,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fast-glob@npm:^3.1.1, fast-glob@npm:^3.2.4, fast-glob@npm:^3.2.7":
+"fast-glob@npm:^3.1.1, fast-glob@npm:^3.2.7":
   version: 3.2.7
   resolution: "fast-glob@npm:3.2.7"
   dependencies:
@@ -8876,7 +8876,7 @@ resolve@~1.19.0:
   languageName: node
   linkType: hard
 
-"typescript@^4.0.5, typescript@^4.4.3, typescript@~4.4.2":
+"typescript@^4.4.3, typescript@^4.4.4, typescript@~4.4.2":
   version: 4.4.4
   resolution: "typescript@npm:4.4.4"
   bin:
@@ -8886,7 +8886,7 @@ resolve@~1.19.0:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@^4.0.5#~builtin<compat/typescript>, typescript@patch:typescript@^4.4.3#~builtin<compat/typescript>, typescript@patch:typescript@~4.4.2#~builtin<compat/typescript>":
+"typescript@patch:typescript@^4.4.3#~builtin<compat/typescript>, typescript@patch:typescript@^4.4.4#~builtin<compat/typescript>, typescript@patch:typescript@~4.4.2#~builtin<compat/typescript>":
   version: 4.4.4
   resolution: "typescript@patch:typescript@npm%3A4.4.4#~builtin<compat/typescript>::version=4.4.4&hash=32657b"
   bin:
