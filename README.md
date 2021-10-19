@@ -6,8 +6,8 @@
 
 A Babel plugin to generate React PropTypes from TypeScript interfaces or type aliases.
 
-> Does not support converting external type references (as Babel has no type information) without
-> the `typeCheck` option being enabled.
+> This plugin DOES NOT support converting props who's type information is referenced in another
+> file, as Babel as no access to this information, and we do not run TypeScript's type checker.
 
 ## Examples
 
@@ -438,53 +438,6 @@ class Example extends React.Component {
 	static propTypes = {
 		opt: PropTypes.string,
 		req: PropTyines.number.isRequired,
-	};
-
-	render() {
-		return <div />;
-	}
-}
-```
-
-#### `typeCheck` (boolean|string)
-
-_NOT FINISHED_ Resolve full type information for aliases and references using TypeScript's built-in
-type checker. When enabled with `true`, will glob for files using `./src/**/*.ts`. Glob can be
-customized by passing a string. Defaults to `false`.
-
-> Note: This process is heavy and may increase compilation times.
-
-```tsx
-module.exports = {
-	plugins: [['babel-plugin-typescript-to-proptypes', { typeCheck: true }]],
-};
-```
-
-```tsx
-// Before
-import React from 'react';
-import { Location } from './types';
-
-interface Props {
-	location?: Location;
-}
-
-class Example extends React.Component<Props> {
-	render() {
-		return <div />;
-	}
-}
-
-// After
-import React from 'react';
-import PropTypes from 'prop-types';
-
-class Example extends React.Component {
-	static propTypes = {
-		location: PropTypes.shape({
-			lat: PropTypes.number,
-			long: PropTypes.number,
-		}),
 	};
 
 	render() {

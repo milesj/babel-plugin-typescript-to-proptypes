@@ -104,11 +104,6 @@ export default (api: any, options: PluginOptions, root: string) => {
 						return;
 					}
 
-					// if (options.typeCheck) {
-					//   state.typeProgram = loadProgram(options.typeCheck, root);
-					//   state.typeChecker = state.typeProgram.getTypeChecker();
-					// }
-
 					// Find existing `react` and `prop-types` imports
 					programPath.node.body.forEach((node) => {
 						if (!t.isImportDeclaration(node)) {

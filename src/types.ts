@@ -41,6 +41,4 @@ export interface ConvertState {
 		string,
 		t.TSEnumDeclaration | t.TSEnumMember | t.TSInterfaceDeclaration | t.TSTypeAliasDeclaration
 	>;
-	typeChecker?: ts.TypeChecker;
-	typeProgram?: ts.Program;
 }
