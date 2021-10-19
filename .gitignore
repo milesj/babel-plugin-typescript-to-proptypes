@@ -15,6 +15,7 @@ coverage/
 esm/
 lib/
 node_modules/
+dts/
 
 # Custom
 *.min.js
