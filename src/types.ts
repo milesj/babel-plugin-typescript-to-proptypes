@@ -1,15 +1,13 @@
-import { types as t, traverse } from '@babel/core';
 import ts from 'typescript';
+import { traverse,types as t } from '@babel/core';
 
 export type Path<N> = traverse.NodePath<N>;
 
-export interface TypePropertyMap {
-  [key: string]: t.TSPropertySignature[];
-}
+export type TypePropertyMap = Record<string, t.TSPropertySignature[]>;
 
-export type PropTypeDeclaration = t.TSTypeReference | t.TSIntersectionType | t.TSUnionType;
+export type PropTypeDeclaration = t.TSIntersectionType | t.TSTypeReference | t.TSUnionType;
 
-export type PropType = t.MemberExpression | t.CallExpression | t.Identifier | t.Literal;
+export type PropType = t.CallExpression | t.Identifier | t.Literal | t.MemberExpression;
 
 export interface PluginOptions {
   comments?: boolean;
@@ -38,13 +36,10 @@ export interface ConvertState {
     hasImport: boolean;
   };
   reactImportedName: string;
-  referenceTypes: {
-    [key: string]:
-      | t.TSEnumDeclaration
+  referenceTypes: Record<string, | t.TSEnumDeclaration
       | t.TSEnumMember
       | t.TSInterfaceDeclaration
-      | t.TSTypeAliasDeclaration;
-  };
+      | t.TSTypeAliasDeclaration>;
   typeChecker?: ts.TypeChecker;
   typeProgram?: ts.Program;
 }

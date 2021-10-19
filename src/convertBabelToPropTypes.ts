@@ -2,455 +2,482 @@
 
 import { types as t } from '@babel/core';
 import { addComment } from '@babel/types';
-import { convertSymbolFromSource } from './convertTSToPropTypes';
-import extractEnumValues from './extractEnumValues';
-import getTypeName from './getTypeName';
+import { extractEnumValues } from './extractEnumValues';
+import { getTypeName } from './getTypeName';
 import {
-  createCall,
-  createMember,
-  hasCustomPropTypeSuffix,
-  isReactTypeMatch,
-  wrapIsRequired,
-  getInstalledPropTypesVersion,
+	createCall,
+	createMember,
+	getInstalledPropTypesVersion,
+	hasCustomPropTypeSuffix,
+	isReactTypeMatch,
+	wrapIsRequired,
 } from './propTypes';
-import { PropType, TypePropertyMap, ConvertState } from './types';
+import { ConvertState, PropType, TypePropertyMap } from './types';
 
 const NATIVE_BUILT_INS = ['Date', 'Error', 'RegExp', 'Map', 'WeakMap', 'Set', 'WeakSet', 'Promise'];
 const PROP_TYPES_15_7 = 15.7;
 
-function convert(type: any, state: ConvertState, depth: number): PropType | null {
-  const { reactImportedName, propTypes } = state;
-  const propTypesImportedName = propTypes.defaultImport;
-  const isMaxDepth = depth >= state.options.maxDepth;
+// eslint-disable-next-line complexity
+function convert(
+	type: t.Node | null | undefined,
+	state: ConvertState,
+	depth: number,
+): PropType | null {
+	if (!type) {
+		return null;
+	}
 
-  // Remove wrapping parens
-  if (t.isTSParenthesizedType(type)) {
-    type = type.typeAnnotation;
-  }
+	const { reactImportedName, propTypes } = state;
+	const propTypesImportedName = propTypes.defaultImport;
+	const isMaxDepth = depth >= state.options.maxDepth;
 
-  state.propTypes.count += 1;
+	// Remove wrapping parens
+	if (t.isTSParenthesizedType(type)) {
+		type = type.typeAnnotation;
+	}
 
-  // any -> PropTypes.any
-  // unknown -> PropTypes.any
-  if (t.isTSAnyKeyword(type) || t.isTSVoidKeyword(type) || type.type === 'TSUnknownKeyword') {
-    return createMember(t.identifier('any'), propTypesImportedName);
+	state.propTypes.count += 1;
 
-    // string -> PropTypes.string
-  } else if (t.isTSStringKeyword(type)) {
-    return createMember(t.identifier('string'), propTypesImportedName);
+	// any -> PropTypes.any
+	// unknown -> PropTypes.any
+	if (t.isTSAnyKeyword(type) || t.isTSVoidKeyword(type) || type.type === 'TSUnknownKeyword') {
+		return createMember(t.identifier('any'), propTypesImportedName);
+	}
 
-    // number -> PropTypes.number
-  } else if (t.isTSNumberKeyword(type)) {
-    return createMember(t.identifier('number'), propTypesImportedName);
+	// string -> PropTypes.string
+	if (t.isTSStringKeyword(type)) {
+		return createMember(t.identifier('string'), propTypesImportedName);
+	}
 
-    // boolean -> PropTypes.bool
-  } else if (t.isTSBooleanKeyword(type)) {
-    return createMember(t.identifier('bool'), propTypesImportedName);
+	// number -> PropTypes.number
+	if (t.isTSNumberKeyword(type)) {
+		return createMember(t.identifier('number'), propTypesImportedName);
+	}
 
-    // symbol -> PropTypes.symbol
-  } else if (t.isTSSymbolKeyword(type)) {
-    return createMember(t.identifier('symbol'), propTypesImportedName);
+	// boolean -> PropTypes.bool
+	if (t.isTSBooleanKeyword(type)) {
+		return createMember(t.identifier('bool'), propTypesImportedName);
+	}
 
-    // object -> PropTypes.object
-  } else if (t.isTSObjectKeyword(type)) {
-    return createMember(t.identifier('object'), propTypesImportedName);
+	// symbol -> PropTypes.symbol
+	if (t.isTSSymbolKeyword(type)) {
+		return createMember(t.identifier('symbol'), propTypesImportedName);
+	}
 
-    // null -> PropTypes.oneOf([null])
-  } else if (t.isTSNullKeyword(type)) {
-    return createCall(
-      t.identifier('oneOf'),
-      [t.arrayExpression([t.nullLiteral()])],
-      propTypesImportedName,
-    );
+	// object -> PropTypes.object
+	if (t.isTSObjectKeyword(type)) {
+		return createMember(t.identifier('object'), propTypesImportedName);
+	}
 
-    // 'foo' -> PropTypes.oneOf(['foo'])
-  } else if (t.isTSLiteralType(type)) {
-    return createCall(
-      t.identifier('oneOf'),
-      [t.arrayExpression([type.literal])],
-      propTypesImportedName,
-    );
+	// null -> PropTypes.oneOf([null])
+	if (t.isTSNullKeyword(type)) {
+		return createCall(
+			t.identifier('oneOf'),
+			[t.arrayExpression([t.nullLiteral()])],
+			propTypesImportedName,
+		);
+	}
 
-    // enum Foo {} -> PropTypes.oneOf
-  } else if (t.isTSEnumDeclaration(type)) {
-    return createCall(
-      t.identifier('oneOf'),
-      [
-        t.arrayExpression(
-          extractEnumValues(type).map((value) => {
-            if (typeof value === 'number') {
-              return t.numericLiteral(value);
-            }
+	// 'foo' -> PropTypes.oneOf(['foo'])
+	if (t.isTSLiteralType(type)) {
+		return createCall(
+			t.identifier('oneOf'),
+			[t.arrayExpression([type.literal])],
+			propTypesImportedName,
+		);
+	}
 
-            return t.stringLiteral(value);
-          }),
-        ),
-      ],
-      propTypesImportedName,
-    );
+	// enum Foo {} -> PropTypes.oneOf
+	if (t.isTSEnumDeclaration(type)) {
+		return createCall(
+			t.identifier('oneOf'),
+			[
+				t.arrayExpression(
+					extractEnumValues(type).map((value) => {
+						if (typeof value === 'number') {
+							return t.numericLiteral(value);
+						}
 
-    // Foo.VALUE -> *
-  } else if (t.isTSEnumMember(type)) {
-    if (type.initializer) {
-      return type.initializer as t.Literal;
-    }
+						return t.stringLiteral(value);
+					}),
+				),
+			],
+			propTypesImportedName,
+		);
+	}
 
-    // (() => void) -> PropTypes.func
-  } else if (t.isTSFunctionType(type)) {
-    return createMember(t.identifier('func'), propTypesImportedName);
+	// Foo.VALUE -> *
+	if (t.isTSEnumMember(type)) {
+		if (type.initializer) {
+			return type.initializer as t.Literal;
+		}
 
-    // React.ReactNode -> PropTypes.node
-    // React.ReactElement -> PropTypes.element
-    // React.MouseEvent -> PropTypes.object
-    // React.MouseEventHandler -> PropTypes.func
-    // React.Ref -> PropTypes.oneOfType()
-    // JSX.Element -> PropTypes.element
-    // FooShape, FooPropType -> FooShape, FooPropType
-    // Date, Error, RegExp -> Date, Error, RegExp
-    // CustomType -> PropTypes.any
-  } else if (t.isTSTypeReference(type)) {
-    const name = getTypeName(type.typeName);
+		// (() => void) -> PropTypes.func
+	} else if (t.isTSFunctionType(type)) {
+		return createMember(t.identifier('func'), propTypesImportedName);
 
-    // Array<*>
-    if (name === 'Array') {
-      const args = convertArray([type.typeParameters?.params[0]], state, depth);
+		// React.ReactNode -> PropTypes.node
+		// React.ReactElement -> PropTypes.element
+		// React.MouseEvent -> PropTypes.object
+		// React.MouseEventHandler -> PropTypes.func
+		// React.Ref -> PropTypes.oneOfType()
+		// JSX.Element -> PropTypes.element
+		// FooShape, FooPropType -> FooShape, FooPropType
+		// Date, Error, RegExp -> Date, Error, RegExp
+		// CustomType -> PropTypes.any
+	} else if (t.isTSTypeReference(type)) {
+		const name = getTypeName(type.typeName);
 
-      if (args.length === 0) {
-        return null;
-      }
+		// Array<*>
+		if (name === 'Array') {
+			const val = type.typeParameters?.params[0];
+			const args = convertArray(val ? [val] : [], state, depth);
 
-      return createCall(t.identifier('arrayOf'), args, propTypesImportedName);
+			if (args.length === 0) {
+				return null;
+			}
 
-      // node
-    } else if (
-      isReactTypeMatch(name, 'ReactText', reactImportedName) ||
-      isReactTypeMatch(name, 'ReactNode', reactImportedName) ||
-      isReactTypeMatch(name, 'ReactType', reactImportedName) ||
-      isReactTypeMatch(name, 'ElementType', reactImportedName)
-    ) {
-      return createMember(t.identifier('node'), propTypesImportedName);
+			return createCall(t.identifier('arrayOf'), args, propTypesImportedName);
+		}
 
-      // function
-    } else if (
-      isReactTypeMatch(name, 'ComponentType', reactImportedName) ||
-      isReactTypeMatch(name, 'ComponentClass', reactImportedName) ||
-      isReactTypeMatch(name, 'StatelessComponent', reactImportedName) ||
-      isReactTypeMatch(name, 'ElementType', reactImportedName)
-    ) {
-      return getInstalledPropTypesVersion() >= PROP_TYPES_15_7
-        ? createMember(t.identifier('elementType'), propTypesImportedName)
-        : createMember(t.identifier('func'), propTypesImportedName);
+		// node
+		if (
+			isReactTypeMatch(name, 'ReactText', reactImportedName) ||
+			isReactTypeMatch(name, 'ReactNode', reactImportedName) ||
+			isReactTypeMatch(name, 'ReactType', reactImportedName) ||
+			isReactTypeMatch(name, 'ElementType', reactImportedName)
+		) {
+			return createMember(t.identifier('node'), propTypesImportedName);
+		}
 
-      // element
-    } else if (
-      isReactTypeMatch(name, 'Element', 'JSX') ||
-      isReactTypeMatch(name, 'ReactElement', reactImportedName) ||
-      isReactTypeMatch(name, 'ComponentElement', reactImportedName) ||
-      isReactTypeMatch(name, 'FunctionComponentElement', reactImportedName) ||
-      isReactTypeMatch(name, 'DOMElement', reactImportedName) ||
-      isReactTypeMatch(name, 'SFCElement', reactImportedName)
-    ) {
-      return createMember(t.identifier('element'), propTypesImportedName);
+		// function
+		if (
+			isReactTypeMatch(name, 'ComponentType', reactImportedName) ||
+			isReactTypeMatch(name, 'ComponentClass', reactImportedName) ||
+			isReactTypeMatch(name, 'StatelessComponent', reactImportedName) ||
+			isReactTypeMatch(name, 'ElementType', reactImportedName)
+		) {
+			return getInstalledPropTypesVersion() >= PROP_TYPES_15_7
+				? createMember(t.identifier('elementType'), propTypesImportedName)
+				: createMember(t.identifier('func'), propTypesImportedName);
+		}
 
-      // oneOfType
-    } else if (isReactTypeMatch(name, 'Ref', reactImportedName)) {
-      return createCall(
-        t.identifier('oneOfType'),
-        [
-          t.arrayExpression([
-            createMember(t.identifier('string'), propTypesImportedName),
-            createMember(t.identifier('func'), propTypesImportedName),
-            createMember(t.identifier('object'), propTypesImportedName),
-          ]),
-        ],
-        propTypesImportedName,
-      );
+		// element
+		if (
+			isReactTypeMatch(name, 'Element', 'JSX') ||
+			isReactTypeMatch(name, 'ReactElement', reactImportedName) ||
+			isReactTypeMatch(name, 'ComponentElement', reactImportedName) ||
+			isReactTypeMatch(name, 'FunctionComponentElement', reactImportedName) ||
+			isReactTypeMatch(name, 'DOMElement', reactImportedName) ||
+			isReactTypeMatch(name, 'SFCElement', reactImportedName)
+		) {
+			return createMember(t.identifier('element'), propTypesImportedName);
+		}
 
-      // function
-    } else if (name.endsWith('Handler')) {
-      return createMember(t.identifier('func'), propTypesImportedName);
+		// oneOfType
+		if (isReactTypeMatch(name, 'Ref', reactImportedName)) {
+			return createCall(
+				t.identifier('oneOfType'),
+				[
+					t.arrayExpression([
+						createMember(t.identifier('string'), propTypesImportedName),
+						createMember(t.identifier('func'), propTypesImportedName),
+						createMember(t.identifier('object'), propTypesImportedName),
+					]),
+				],
+				propTypesImportedName,
+			);
+		}
 
-      // object
-    } else if (name.endsWith('Event')) {
-      return createMember(t.identifier('object'), propTypesImportedName);
+		// function
+		if (name.endsWith('Handler')) {
+			return createMember(t.identifier('func'), propTypesImportedName);
+		}
 
-      // native built-ins
-    } else if (NATIVE_BUILT_INS.includes(name)) {
-      return createCall(t.identifier('instanceOf'), [t.identifier(name)], propTypesImportedName);
+		// object
+		if (name.endsWith('Event')) {
+			return createMember(t.identifier('object'), propTypesImportedName);
+		}
 
-      // inline references
-    } else if (state.referenceTypes[name]) {
-      return convert(state.referenceTypes[name], state, depth);
+		// native built-ins
+		if (NATIVE_BUILT_INS.includes(name)) {
+			return createCall(t.identifier('instanceOf'), [t.identifier(name)], propTypesImportedName);
+		}
 
-      // custom prop type variables
-    } else if (hasCustomPropTypeSuffix(name, state.options.customPropTypeSuffixes)) {
-      return t.identifier(name);
+		// inline references
+		if (state.referenceTypes[name]) {
+			return convert(state.referenceTypes[name], state, depth);
+		}
 
-      // external references (uses type checker)
-    } else if (state.typeChecker) {
-      return convertSymbolFromSource(state.filePath, name, state);
-    }
+		// custom prop type variables
+		if (hasCustomPropTypeSuffix(name, state.options.customPropTypeSuffixes)) {
+			return t.identifier(name);
+		}
 
-    // Nothing found, so just omit
-    return null;
+		// Nothing found, so just omit
+		return null;
 
-    // [] -> PropTypes.arrayOf(), PropTypes.array
-  } else if (t.isTSArrayType(type)) {
-    const args = convertArray([type.elementType], state, depth);
+		// [] -> PropTypes.arrayOf(), PropTypes.array
+	} else if (t.isTSArrayType(type)) {
+		const args = convertArray([type.elementType], state, depth);
 
-    return args.length > 0
-      ? createCall(t.identifier('arrayOf'), args, propTypesImportedName)
-      : createMember(t.identifier('array'), propTypesImportedName);
+		return args.length > 0
+			? createCall(t.identifier('arrayOf'), args, propTypesImportedName)
+			: createMember(t.identifier('array'), propTypesImportedName);
 
-    // {} -> PropTypes.object
-    // { [key: string]: string } -> PropTypes.objectOf(PropTypes.string)
-    // { foo: string } -> PropTypes.shape({ foo: PropTypes.string })
-  } else if (t.isTSTypeLiteral(type)) {
-    // object
-    if (type.members.length === 0 || isMaxDepth) {
-      return createMember(t.identifier('object'), propTypesImportedName);
+		// {} -> PropTypes.object
+		// { [key: string]: string } -> PropTypes.objectOf(PropTypes.string)
+		// { foo: string } -> PropTypes.shape({ foo: PropTypes.string })
+	} else if (t.isTSTypeLiteral(type)) {
+		// object
+		if (type.members.length === 0 || isMaxDepth) {
+			return createMember(t.identifier('object'), propTypesImportedName);
+		}
 
-      // objectOf
-    } else if (type.members.length === 1 && t.isTSIndexSignature(type.members[0])) {
-      const index = type.members[0] as t.TSIndexSignature;
+		// objectOf
+		if (type.members.length === 1 && t.isTSIndexSignature(type.members[0])) {
+			const index = type.members[0];
 
-      if (index.typeAnnotation?.typeAnnotation) {
-        const result = convert(index.typeAnnotation.typeAnnotation, state, depth);
+			if (index.typeAnnotation?.typeAnnotation) {
+				const result = convert(index.typeAnnotation.typeAnnotation, state, depth);
 
-        if (result) {
-          return createCall(t.identifier('objectOf'), [result], propTypesImportedName);
-        }
-      }
+				if (result) {
+					return createCall(t.identifier('objectOf'), [result], propTypesImportedName);
+				}
+			}
 
-      // shape
-    } else {
-      return createCall(
-        t.identifier('shape'),
-        [
-          t.objectExpression(
-            convertListToProps(
-              type.members.filter((member) =>
-                t.isTSPropertySignature(member),
-              ) as t.TSPropertySignature[],
-              state,
-              [],
-              depth + 1,
-            ),
-          ),
-        ],
-        propTypesImportedName,
-      );
-    }
+			// shape
+		} else {
+			return createCall(
+				t.identifier('shape'),
+				[
+					t.objectExpression(
+						convertListToProps(
+							type.members.filter((member) =>
+								t.isTSPropertySignature(member),
+							) as t.TSPropertySignature[],
+							state,
+							[],
+							depth + 1,
+						),
+					),
+				],
+				propTypesImportedName,
+			);
+		}
 
-    // { [K in Type]: string } -> PropTypes.objectOf(PropTypes.string)
-  } else if (t.isTSMappedType(type)) {
-    const result = convert(type.typeAnnotation, state, depth);
+		// { [K in Type]: string } -> PropTypes.objectOf(PropTypes.string)
+	} else if (t.isTSMappedType(type)) {
+		const result = convert(type.typeAnnotation, state, depth);
 
-    if (result) {
-      return createCall(t.identifier('objectOf'), [result], propTypesImportedName);
-    }
+		if (result) {
+			return createCall(t.identifier('objectOf'), [result], propTypesImportedName);
+		}
 
-    // string | number -> PropTypes.oneOfType([PropTypes.string, PropTypes.number])
-    // 'foo' | 'bar' -> PropTypes.oneOf(['foo', 'bar'])
-  } else if (t.isTSUnionType(type) || t.isTSIntersectionType(type)) {
-    const isAllLiterals = type.types.every((param) => t.isTSLiteralType(param));
-    const containsAny = type.types.some((param) => t.isTSAnyKeyword(param));
-    let label;
-    let args;
+		// string | number -> PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+		// 'foo' | 'bar' -> PropTypes.oneOf(['foo', 'bar'])
+	} else if (t.isTSUnionType(type) || t.isTSIntersectionType(type)) {
+		const isAllLiterals = type.types.every((param) => t.isTSLiteralType(param));
+		const containsAny = type.types.some((param) => t.isTSAnyKeyword(param));
+		let label;
+		let args;
 
-    if (isAllLiterals) {
-      args = type.types.map((param) => (param as t.TSLiteralType).literal);
-      label = t.identifier('oneOf');
+		if (isAllLiterals) {
+			args = type.types.map((param) => (param as t.TSLiteralType).literal);
+			label = t.identifier('oneOf');
 
-      if (state.options.maxSize) {
-        args = args.slice(0, state.options.maxSize);
-      }
-    } else if (containsAny) {
-      return createMember(t.identifier('any'), propTypesImportedName);
-    } else {
-      args = convertArray(type.types, state, depth);
-      label = t.identifier('oneOfType');
+			if (state.options.maxSize) {
+				args = args.slice(0, state.options.maxSize);
+			}
+		} else if (containsAny) {
+			return createMember(t.identifier('any'), propTypesImportedName);
+		} else {
+			args = convertArray(type.types, state, depth);
+			label = t.identifier('oneOfType');
 
-      // Contained unresolved references, so just omit for now
-      if (args.length !== type.types.length) {
-        return null;
-      }
-    }
+			// Contained unresolved references, so just omit for now
+			if (args.length !== type.types.length) {
+				return null;
+			}
+		}
 
-    if (label && args.length > 0) {
-      return createCall(label, [t.arrayExpression(args)], propTypesImportedName);
-    }
+		if (label && args.length > 0) {
+			return createCall(label, [t.arrayExpression(args)], propTypesImportedName);
+		}
 
-    // interface Foo {}
-  } else if (t.isTSInterfaceDeclaration(type)) {
-    if (type.body.body.length === 0 || isMaxDepth) {
-      return createMember(t.identifier('object'), propTypesImportedName);
-    }
+		// interface Foo {}
+	} else if (t.isTSInterfaceDeclaration(type)) {
+		if (type.body.body.length === 0 || isMaxDepth) {
+			return createMember(t.identifier('object'), propTypesImportedName);
+		}
 
-    return createCall(
-      t.identifier('shape'),
-      [
-        t.objectExpression(
-          convertListToProps(
-            type.body.body.filter((property) =>
-              t.isTSPropertySignature(property),
-            ) as t.TSPropertySignature[],
-            state,
-            [],
-            depth + 1,
-          ),
-        ),
-      ],
-      propTypesImportedName,
-    );
+		return createCall(
+			t.identifier('shape'),
+			[
+				t.objectExpression(
+					convertListToProps(
+						type.body.body.filter((property) =>
+							t.isTSPropertySignature(property),
+						) as t.TSPropertySignature[],
+						state,
+						[],
+						depth + 1,
+					),
+				),
+			],
+			propTypesImportedName,
+		);
 
-    // type Foo = {};
-  } else if (t.isTSTypeAliasDeclaration(type)) {
-    return convert(type.typeAnnotation, state, depth);
+		// type Foo = {};
+	} else if (t.isTSTypeAliasDeclaration(type)) {
+		return convert(type.typeAnnotation, state, depth);
 
-    // Type['prop']
-  } else if (t.isTSIndexedAccessType(type)) {
-    const { objectType, indexType } = type;
+		// Type['prop']
+	} else if (t.isTSIndexedAccessType(type)) {
+		const { objectType, indexType } = type;
 
-    if (t.isTSTypeReference(objectType) && t.isTSLiteralType(indexType)) {
-      const ref = state.referenceTypes[(objectType.typeName as any).name];
-      let properties;
+		if (t.isTSTypeReference(objectType) && t.isTSLiteralType(indexType)) {
+			const ref = state.referenceTypes[(objectType.typeName as t.Identifier).name];
+			let properties;
 
-      if (t.isTSInterfaceDeclaration(ref)) {
-        properties = ref.body.body;
-      } else if (t.isTSTypeAliasDeclaration(ref) && t.isTSTypeLiteral(ref.typeAnnotation)) {
-        properties = ref.typeAnnotation.members;
-      } else {
-        return null;
-      }
+			if (t.isTSInterfaceDeclaration(ref)) {
+				properties = ref.body.body;
+			} else if (t.isTSTypeAliasDeclaration(ref) && t.isTSTypeLiteral(ref.typeAnnotation)) {
+				properties = ref.typeAnnotation.members;
+			} else {
+				return null;
+			}
 
-      const property = properties.find(
-        (prop) =>
-          t.isTSPropertySignature(prop) && (prop.key as any).name === indexType.literal.value,
-      );
+			const property = properties.find(
+				(prop) =>
+					t.isTSPropertySignature(prop) &&
+					(prop.key as t.Identifier).name === indexType.literal.value,
+			);
 
-      return property ? convert(property.typeAnnotation!.typeAnnotation, state, depth) : null;
-    }
+			return property ? convert(property.typeAnnotation!.typeAnnotation, state, depth) : null;
+		}
 
-    // typeof foo
-  } else if (t.isTSTypeQuery(type)) {
-    return createMember(t.identifier('any'), propTypesImportedName);
+		// typeof foo
+	} else if (t.isTSTypeQuery(type)) {
+		return createMember(t.identifier('any'), propTypesImportedName);
 
-    // keyof foo
-  } else if (t.isTSTypeOperator(type) && type.operator === 'keyof') {
-    return createMember(t.identifier('any'), propTypesImportedName);
-  }
+		// keyof foo
+	} else if (t.isTSTypeOperator(type) && type.operator === 'keyof') {
+		return createMember(t.identifier('any'), propTypesImportedName);
+	}
 
-  state.propTypes.count -= 1;
+	state.propTypes.count -= 1;
 
-  return null;
+	return null;
 }
 
 function mustBeOptional(type: t.Node): boolean {
-  // Unions that contain undefined or null cannot be required by design
-  if (t.isTSUnionType(type)) {
-    return type.types.some(
-      (value) =>
-        t.isTSAnyKeyword(value) || t.isTSNullKeyword(value) || t.isTSUndefinedKeyword(value),
-    );
-  }
+	// Unions that contain undefined or null cannot be required by design
+	if (t.isTSUnionType(type)) {
+		return type.types.some(
+			(value) =>
+				t.isTSAnyKeyword(value) || t.isTSNullKeyword(value) || t.isTSUndefinedKeyword(value),
+		);
+	}
 
-  return false;
+	return false;
 }
 
-function convertArray(types: any[], state: ConvertState, depth: number): PropType[] {
-  const propTypes: PropType[] = [];
+function convertArray(types: t.Node[], state: ConvertState, depth: number): PropType[] {
+	const propTypes: PropType[] = [];
 
-  types.forEach((type) => {
-    const prop = convert(type, state, depth);
+	types.forEach((type) => {
+		const prop = convert(type, state, depth);
 
-    if (prop) {
-      propTypes.push(prop);
-    }
-  });
+		if (prop) {
+			propTypes.push(prop);
+		}
+	});
 
-  return propTypes;
+	return propTypes;
 }
 
 function convertListToProps(
-  properties: t.TSPropertySignature[],
-  state: ConvertState,
-  defaultProps: string[],
-  depth: number,
+	properties: t.TSPropertySignature[],
+	state: ConvertState,
+	defaultProps: string[],
+	depth: number,
 ): t.ObjectProperty[] {
-  const propTypes: t.ObjectProperty[] = [];
-  let hasChildren = false;
-  let size = 0;
+	const propTypes: t.ObjectProperty[] = [];
+	let hasChildren = false;
+	let size = 0;
 
-  properties.some((property) => {
-    if (state.options.maxSize && size === state.options.maxSize) {
-      return true;
-    }
+	properties.some((property) => {
+		if (state.options.maxSize && size === state.options.maxSize) {
+			return true;
+		}
 
-    if (!property.typeAnnotation) {
-      return false;
-    }
+		if (!property.typeAnnotation) {
+			return false;
+		}
 
-    const type = property.typeAnnotation.typeAnnotation;
-    const propType = convert(type, state, depth);
-    const { name } = property.key as t.Identifier;
+		const type = property.typeAnnotation.typeAnnotation;
+		const propType = convert(type, state, depth);
+		const { name } = property.key as t.Identifier;
 
-    if (propType) {
-      const objProperty = t.objectProperty(
-        property.key,
-        wrapIsRequired(
-          propType,
-          !state.options.strict ||
-            property.optional ||
-            defaultProps.includes(name) ||
-            mustBeOptional(type),
-        ),
-      );
+		if (propType) {
+			const objProperty = t.objectProperty(
+				property.key,
+				wrapIsRequired(
+					propType,
+					!state.options.strict ||
+						// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+						property.optional ||
+						defaultProps.includes(name) ||
+						mustBeOptional(type),
+				),
+			);
 
-      if (state.options.comments && property.leadingComments) {
-        property.leadingComments.forEach((comment) => {
-          addComment(objProperty as any, 'leading', comment.value);
-        });
-      }
+			if (state.options.comments && property.leadingComments) {
+				property.leadingComments.forEach((comment) => {
+					// @ts-expect-error Weird types
+					addComment(objProperty, 'leading', comment.value);
+				});
+			}
 
-      propTypes.push(objProperty);
+			propTypes.push(objProperty);
 
-      if (name === 'children') {
-        hasChildren = true;
-      }
+			if (name === 'children') {
+				hasChildren = true;
+			}
 
-      size += 1;
-    }
+			size += 1;
+		}
 
-    return false;
-  });
+		return false;
+	});
 
-  // Only append implicit children when the root list is being created
-  if (!hasChildren && depth === 0 && propTypes.length > 0 && state.options.implicitChildren) {
-    propTypes.push(
-      t.objectProperty(
-        t.identifier('children'),
-        createMember(t.identifier('node'), state.propTypes.defaultImport),
-      ),
-    );
-  }
+	// Only append implicit children when the root list is being created
+	if (!hasChildren && depth === 0 && propTypes.length > 0 && state.options.implicitChildren) {
+		propTypes.push(
+			t.objectProperty(
+				t.identifier('children'),
+				createMember(t.identifier('node'), state.propTypes.defaultImport),
+			),
+		);
+	}
 
-  return propTypes;
+	return propTypes;
 }
 
-export default function convertToPropTypes(
-  types: TypePropertyMap,
-  typeNames: string[],
-  state: ConvertState,
-  defaultProps: string[],
+export function convertToPropTypes(
+	types: TypePropertyMap,
+	typeNames: string[],
+	state: ConvertState,
+	defaultProps: string[],
 ): t.ObjectProperty[] {
-  const properties: t.ObjectProperty[] = [];
+	const properties: t.ObjectProperty[] = [];
 
-  typeNames.forEach((typeName) => {
-    if (types[typeName]) {
-      properties.push(...convertListToProps(types[typeName], state, defaultProps, 0));
-    }
-  });
+	typeNames.forEach((typeName) => {
+		if (types[typeName]) {
+			properties.push(...convertListToProps(types[typeName], state, defaultProps, 0));
+		}
+	});
 
-  return properties;
+	return properties;
 }

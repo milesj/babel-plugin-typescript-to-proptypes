@@ -35,7 +35,6 @@
   },
   "dependencies": {
     "@babel/helper-module-imports": "^7.12.5",
-    "@babel/helper-plugin-utils": "^7.10.4",
     "@babel/plugin-syntax-typescript": "^7.12.1",
     "@babel/types": "^7.12.6"
   },
