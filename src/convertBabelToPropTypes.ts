@@ -40,7 +40,7 @@ function convert(
 
 	// any -> PropTypes.any
 	// unknown -> PropTypes.any
-	if (t.isTSAnyKeyword(type) || t.isTSVoidKeyword(type) || type.type === 'TSUnknownKeyword') {
+	if (t.isTSAnyKeyword(type) || t.isTSVoidKeyword(type) || t.isTSUnknownKeyword(type)) {
 		return createMember(t.identifier('any'), propTypesImportedName);
 	}
 
@@ -221,8 +221,11 @@ function convert(
 			return t.identifier(name);
 		}
 
-		// Nothing found, so just omit
-		return null;
+		// Nothing found. If explicitly requested, return a prop type with "any",
+		// otherwise omit the prop.
+		return state.options.mapUnknownReferenceTypesToAny
+			? createMember(t.identifier('any'), propTypesImportedName)
+			: null;
 
 		// [] -> PropTypes.arrayOf(), PropTypes.array
 	} else if (t.isTSArrayType(type)) {

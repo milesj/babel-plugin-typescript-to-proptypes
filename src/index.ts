@@ -77,6 +77,7 @@ export default (api: any, options: PluginOptions, root: string) => {
 					comments: false,
 					customPropTypeSuffixes: [],
 					forbidExtraProps: false,
+					mapUnknownReferenceTypesToAny: false,
 					maxDepth: MAX_DEPTH,
 					maxSize: MAX_SIZE,
 					strict: true,

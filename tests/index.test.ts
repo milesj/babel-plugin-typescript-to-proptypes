@@ -310,4 +310,18 @@ describe('babel-plugin-typescript-to-proptypes', () => {
 			).toMatchSnapshot();
 		});
 	});
+
+	describe('mapUnknownReferenceTypesToAny', () => {
+		it('supports custom prop type suffixes', () => {
+			expect(
+				transform(
+					path.join(__dirname, './fixtures/special/map-unknown-reference-types-to-any.ts'),
+					{},
+					{
+						mapUnknownReferenceTypesToAny: true,
+					},
+				),
+			).toMatchSnapshot();
+		});
+	});
 });

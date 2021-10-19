@@ -220,6 +220,26 @@ export class ImplicitChildrenNoProps extends React.Component<PropsC> {
 }"
 `;
 
+exports[`babel-plugin-typescript-to-proptypes mapUnknownReferenceTypesToAny supports custom prop type suffixes 1`] = `
+"import _pt from 'prop-types';
+import React from 'react';
+export interface Props<T> {
+  as?: T;
+  others: Array<T>;
+}
+export default class UnknownReferenceTypeToAny<T> extends React.Component<Props<T>> {
+  static propTypes = {
+    as: _pt.any,
+    others: _pt.arrayOf(_pt.any).isRequired
+  };
+
+  render() {
+    return null;
+  }
+
+}"
+`;
+
 exports[`babel-plugin-typescript-to-proptypes maxDepth stops converting once max depth is met 1`] = `
 "import _pt from 'prop-types';
 import React from 'react';
