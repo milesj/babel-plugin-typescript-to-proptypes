@@ -2,7 +2,7 @@ import React from 'react';
 
 // @ts-ignore
 const VarMissingType = function () {
-  return null;
+	return null;
 };
 
 export default VarMissingType;

@@ -1,11 +1,11 @@
 import React, { PureComponent } from 'react';
 
 interface Props {
-  name: string;
+	name: string;
 }
 
 export default class ClassNamedReactImportsPure extends PureComponent<Props> {
-  render() {
-    return null;
-  }
+	render() {
+		return null;
+	}
 }

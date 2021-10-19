@@ -1,7 +1,7 @@
 interface Props {}
 
 const VarNoReactImport = function (props: Props) {
-  return null;
+	return null;
 };
 
 export default VarNoReactImport;

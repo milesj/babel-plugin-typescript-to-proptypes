@@ -1,11 +1,11 @@
 import React from 'react';
 
 export interface AProps {
-  a: number;
+	a: number;
 }
 
 export interface BProps {
-  b: boolean;
+	b: boolean;
 }
 
 const VarMultipleAnnotations: React.SFC<AProps & BProps> = () => null;

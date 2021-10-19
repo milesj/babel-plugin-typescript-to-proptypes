@@ -1,30 +1,30 @@
 import React from 'react';
 
 export interface PropsA {
-  name: string;
+	name: string;
 }
 
 export class ImplicitNoChildren extends React.Component<PropsA> {
-  render() {
-    return null;
-  }
+	render() {
+		return null;
+	}
 }
 
 export interface PropsB {
-  children: string;
-  name: string;
+	children: string;
+	name: string;
 }
 
 export class ImplicitWithChildren extends React.Component<PropsB> {
-  render() {
-    return null;
-  }
+	render() {
+		return null;
+	}
 }
 
 export interface PropsC {}
 
 export class ImplicitChildrenNoProps extends React.Component<PropsC> {
-  render() {
-    return null;
-  }
+	render() {
+		return null;
+	}
 }

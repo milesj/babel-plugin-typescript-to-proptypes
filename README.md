@@ -18,13 +18,13 @@ Supports class components that define generic props.
 import React from 'react';
 
 interface Props {
-  name?: string;
+	name?: string;
 }
 
 class Example extends React.Component<Props> {
-  render() {
-    return <div />;
-  }
+	render() {
+		return <div />;
+	}
 }
 
 // After
@@ -32,13 +32,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 class Example extends React.Component {
-  static propTypes = {
-    name: PropTypes.string,
-  };
+	static propTypes = {
+		name: PropTypes.string,
+	};
 
-  render() {
-    return <div />;
-  }
+	render() {
+		return <div />;
+	}
 }
 ```
 
@@ -50,11 +50,11 @@ explicit types (below).
 import React from 'react';
 
 interface Props {
-  name: string;
+	name: string;
 }
 
 function Example(props: Props) {
-  return <div />;
+	return <div />;
 }
 
 // After
@@ -62,11 +62,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 function Example(props) {
-  return <div />;
+	return <div />;
 }
 
 Example.propTypes = {
-  name: PropTypes.string.isRequired,
+	name: PropTypes.string.isRequired,
 };
 ```
 
@@ -78,7 +78,7 @@ or `React.FunctionComponent`.
 import React from 'react';
 
 type Props = {
-  name?: string;
+	name?: string;
 };
 
 const Example: React.FC<Props> = (props) => <div />;
@@ -90,7 +90,7 @@ import PropTypes from 'prop-types';
 const Example = (props) => <div />;
 
 Example.propTypes = {
-  name: PropTypes.string,
+	name: PropTypes.string,
 };
 ```
 
@@ -140,7 +140,7 @@ be enabled in your Babel config. Defaults to `false`.
 
 ```tsx
 module.exports = {
-  plugins: [['babel-plugin-typescript-to-proptypes', { comments: true }]],
+	plugins: [['babel-plugin-typescript-to-proptypes', { comments: true }]],
 };
 ```
 
@@ -149,14 +149,14 @@ module.exports = {
 import React from 'react';
 
 interface Props {
-  /** This name controls the fate of the whole universe */
-  name?: string;
+	/** This name controls the fate of the whole universe */
+	name?: string;
 }
 
 class Example extends React.Component<Props> {
-  render() {
-    return <div />;
-  }
+	render() {
+		return <div />;
+	}
 }
 
 // After
@@ -164,14 +164,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 class Example extends React.Component {
-  static propTypes = {
-    /** This name controls the fate of the whole universe */
-    name: PropTypes.string,
-  };
+	static propTypes = {
+		/** This name controls the fate of the whole universe */
+		name: PropTypes.string,
+	};
 
-  render() {
-    return <div />;
-  }
+	render() {
+		return <div />;
+	}
 }
 ```
 
@@ -183,7 +183,7 @@ Defaults to `[]`.
 
 ```tsx
 module.exports = {
-  plugins: [['babel-plugin-typescript-to-proptypes', { customPropTypeSuffixes: ['Shape'] }]],
+	plugins: [['babel-plugin-typescript-to-proptypes', { customPropTypeSuffixes: ['Shape'] }]],
 };
 ```
 
@@ -193,13 +193,13 @@ import React from 'react';
 import { NameShape } from './shapes';
 
 interface Props {
-  name?: NameShape;
+	name?: NameShape;
 }
 
 class Example extends React.Component<Props> {
-  render() {
-    return <div />;
-  }
+	render() {
+		return <div />;
+	}
 }
 
 // After
@@ -207,13 +207,13 @@ import React from 'react';
 import { NameShape } from './shapes';
 
 class Example extends React.Component {
-  static propTypes = {
-    name: NameShape,
-  };
+	static propTypes = {
+		name: NameShape,
+	};
 
-  render() {
-    return <div />;
-  }
+	render() {
+		return <div />;
+	}
 }
 ```
 
@@ -225,7 +225,7 @@ any unknown and unspecified prop. Defaults to `false`.
 
 ```tsx
 module.exports = {
-  plugins: [['babel-plugin-typescript-to-proptypes', { forbidExtraProps: true }]],
+	plugins: [['babel-plugin-typescript-to-proptypes', { forbidExtraProps: true }]],
 };
 ```
 
@@ -234,13 +234,13 @@ module.exports = {
 import React from 'react';
 
 interface Props {
-  name?: string;
+	name?: string;
 }
 
 class Example extends React.Component<Props> {
-  render() {
-    return <div />;
-  }
+	render() {
+		return <div />;
+	}
 }
 
 // After
@@ -249,13 +249,13 @@ import PropTypes from 'prop-types';
 import { forbidExtraProps } from 'airbnb-prop-types';
 
 class Example extends React.Component {
-  static propTypes = forbidExtraProps({
-    name: PropTypes.string,
-  });
+	static propTypes = forbidExtraProps({
+		name: PropTypes.string,
+	});
 
-  render() {
-    return <div />;
-  }
+	render() {
+		return <div />;
+	}
 }
 ```
 
@@ -266,7 +266,7 @@ Automatically include a `children` prop type to mimic the implicit nature of Typ
 
 ```tsx
 module.exports = {
-  plugins: [['babel-plugin-typescript-to-proptypes', { implicitChildren: true }]],
+	plugins: [['babel-plugin-typescript-to-proptypes', { implicitChildren: true }]],
 };
 ```
 
@@ -275,13 +275,13 @@ module.exports = {
 import React from 'react';
 
 interface Props {
-  foo: string;
+	foo: string;
 }
 
 class Example extends React.Component<Props> {
-  render() {
-    return <div />;
-  }
+	render() {
+		return <div />;
+	}
 }
 
 // After
@@ -289,14 +289,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 class Example extends React.Component {
-  static propTypes = {
-    foo: PropTypes.string.isRequired,
-    children: PropTypes.node,
-  };
+	static propTypes = {
+		foo: PropTypes.string.isRequired,
+		children: PropTypes.node,
+	};
 
-  render() {
-    return <div />;
-  }
+	render() {
+		return <div />;
+	}
 }
 ```
 
@@ -306,7 +306,7 @@ Maximum depth to convert while handling recursive or deeply nested shapes. Defau
 
 ```tsx
 module.exports = {
-  plugins: [['babel-plugin-typescript-to-proptypes', { maxDepth: 3 }]],
+	plugins: [['babel-plugin-typescript-to-proptypes', { maxDepth: 3 }]],
 };
 ```
 
@@ -315,23 +315,23 @@ module.exports = {
 import React from 'react';
 
 interface Props {
-  one: {
-    two: {
-      three: {
-        four: {
-          five: {
-            super: 'deep';
-          };
-        };
-      };
-    };
-  };
+	one: {
+		two: {
+			three: {
+				four: {
+					five: {
+						super: 'deep';
+					};
+				};
+			};
+		};
+	};
 }
 
 class Example extends React.Component<Props> {
-  render() {
-    return <div />;
-  }
+	render() {
+		return <div />;
+	}
 }
 
 // After
@@ -339,17 +339,17 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 class Example extends React.Component {
-  static propTypes = {
-    one: PropTypes.shape({
-      two: PropTypes.shape({
-        three: PropTypes.object,
-      }),
-    }),
-  };
+	static propTypes = {
+		one: PropTypes.shape({
+			two: PropTypes.shape({
+				three: PropTypes.object,
+			}),
+		}),
+	};
 
-  render() {
-    return <div />;
-  }
+	render() {
+		return <div />;
+	}
 }
 ```
 
@@ -361,7 +361,7 @@ max.
 
 ```tsx
 module.exports = {
-  plugins: [['babel-plugin-typescript-to-proptypes', { maxSize: 2 }]],
+	plugins: [['babel-plugin-typescript-to-proptypes', { maxSize: 2 }]],
 };
 ```
 
@@ -370,19 +370,19 @@ module.exports = {
 import React from 'react';
 
 interface Props {
-  one: 'foo' | 'bar' | 'baz';
-  two: {
-    foo: number;
-    bar: string;
-    baz: boolean;
-  };
-  three: null;
+	one: 'foo' | 'bar' | 'baz';
+	two: {
+		foo: number;
+		bar: string;
+		baz: boolean;
+	};
+	three: null;
 }
 
 class Example extends React.Component<Props> {
-  render() {
-    return <div />;
-  }
+	render() {
+		return <div />;
+	}
 }
 
 // After
@@ -390,17 +390,17 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 class Example extends React.Component {
-  static propTypes = {
-    one: PropTypes.oneOf(['foo', 'bar']),
-    two: PropTypes.shape({
-      foo: PropTypes.number,
-      bar: PropTypes.string,
-    }),
-  };
+	static propTypes = {
+		one: PropTypes.oneOf(['foo', 'bar']),
+		two: PropTypes.shape({
+			foo: PropTypes.number,
+			bar: PropTypes.string,
+		}),
+	};
 
-  render() {
-    return <div />;
-  }
+	render() {
+		return <div />;
+	}
 }
 ```
 
@@ -411,7 +411,7 @@ if you want to accept nulls and non-required for all prop types. Defaults to `tr
 
 ```tsx
 module.exports = {
-  plugins: [['babel-plugin-typescript-to-proptypes', { strict: true }]],
+	plugins: [['babel-plugin-typescript-to-proptypes', { strict: true }]],
 };
 ```
 
@@ -420,14 +420,14 @@ module.exports = {
 import React from 'react';
 
 interface Props {
-  opt?: string;
-  req: number;
+	opt?: string;
+	req: number;
 }
 
 class Example extends React.Component<Props> {
-  render() {
-    return <div />;
-  }
+	render() {
+		return <div />;
+	}
 }
 
 // After
@@ -435,14 +435,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 class Example extends React.Component {
-  static propTypes = {
-    opt: PropTypes.string,
-    req: PropTyines.number.isRequired,
-  };
+	static propTypes = {
+		opt: PropTypes.string,
+		req: PropTyines.number.isRequired,
+	};
 
-  render() {
-    return <div />;
-  }
+	render() {
+		return <div />;
+	}
 }
 ```
 
@@ -456,7 +456,7 @@ customized by passing a string. Defaults to `false`.
 
 ```tsx
 module.exports = {
-  plugins: [['babel-plugin-typescript-to-proptypes', { typeCheck: true }]],
+	plugins: [['babel-plugin-typescript-to-proptypes', { typeCheck: true }]],
 };
 ```
 
@@ -466,13 +466,13 @@ import React from 'react';
 import { Location } from './types';
 
 interface Props {
-  location?: Location;
+	location?: Location;
 }
 
 class Example extends React.Component<Props> {
-  render() {
-    return <div />;
-  }
+	render() {
+		return <div />;
+	}
 }
 
 // After
@@ -480,15 +480,15 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 class Example extends React.Component {
-  static propTypes = {
-    location: PropTypes.shape({
-      lat: PropTypes.number,
-      long: PropTypes.number,
-    }),
-  };
+	static propTypes = {
+		location: PropTypes.shape({
+			lat: PropTypes.number,
+			long: PropTypes.number,
+		}),
+	};
 
-  render() {
-    return <div />;
-  }
+	render() {
+		return <div />;
+	}
 }
 ```
