@@ -130,9 +130,7 @@ export default (api: any, options: PluginOptions, root: string) => {
 						}
 
 						if (node.source.value === 'react') {
-							const response = upsertImport(node, {
-								checkForDefault: 'React',
-							});
+							const response = upsertImport(node);
 
 							state.reactImportedName = response.defaultImport;
 						}
@@ -419,7 +417,7 @@ export default (api: any, options: PluginOptions, root: string) => {
 						return;
 					}
 
-					// Remove the `prop-types` import of no components exist,
+					// Remove the `prop-types` import if no components exist,
 					// and be sure not to remove pre-existing imports.
 					path.get('body').forEach((bodyPath) => {
 						if (
