@@ -3255,10 +3255,10 @@ __metadata:
     fast-glob: ^3.2.7
     packemon: ^1.6.0
     prop-types: ^15.7.2
-    typescript: ^4.4.4
+    typescript: ^5.0.0
   peerDependencies:
     "@babel/core": ^7.0.0
-    typescript: ^4.0.0
+    typescript: ^4.0.0 || ^5.0.0
   languageName: unknown
   linkType: soft
 
@@ -8876,7 +8876,7 @@ resolve@~1.19.0:
   languageName: node
   linkType: hard
 
-"typescript@^4.4.3, typescript@^4.4.4, typescript@~4.4.2":
+"typescript@^4.4.3, typescript@~4.4.2":
   version: 4.4.4
   resolution: "typescript@npm:4.4.4"
   bin:
@@ -8886,13 +8886,33 @@ resolve@~1.19.0:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@^4.4.3#~builtin<compat/typescript>, typescript@patch:typescript@^4.4.4#~builtin<compat/typescript>, typescript@patch:typescript@~4.4.2#~builtin<compat/typescript>":
+typescript@^5.0.0:
+  version: 5.0.3
+  resolution: "typescript@npm:5.0.3"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: 3cce0576d218cb4277ff8b6adfef1a706e9114a98b4261a38ad658a7642f1b274a8396394f6cbff8c0ba852996d7ed2e233e9b8431d5d55ac7c2f6fea645af02
+  languageName: node
+  linkType: hard
+
+"typescript@patch:typescript@^4.4.3#~builtin<compat/typescript>, typescript@patch:typescript@~4.4.2#~builtin<compat/typescript>":
   version: 4.4.4
   resolution: "typescript@patch:typescript@npm%3A4.4.4#~builtin<compat/typescript>::version=4.4.4&hash=32657b"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
   checksum: c97c33903f1eb4f9e178649befdfc859d93157db1eccd1e521e84976ec6861db53412d8018e5e4c5d09268771c65498d42caa64bd881878346c3644f6b7cd202
+  languageName: node
+  linkType: hard
+
+"typescript@patch:typescript@^5.0.0#~builtin<compat/typescript>":
+  version: 5.0.3
+  resolution: "typescript@patch:typescript@npm%3A5.0.3#~builtin<compat/typescript>::version=5.0.3&hash=32657b"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: b2448a6cb465e42aa45b744d84765d99f25ef717d39df638758e5cda82157a832392fb7c2362c1f5a9665bf33ae5e7f1620306585c5fd7c611108cd135eeee23
   languageName: node
   linkType: hard
 
